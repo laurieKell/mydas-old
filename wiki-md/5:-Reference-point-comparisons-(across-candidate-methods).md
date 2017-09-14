@@ -1,1 +1,0 @@
-Once reference points have been identified, their performance should be evaluated through simple management strategy evaluations.
