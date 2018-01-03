@@ -1,0 +1,145 @@
+---
+title: "Risk Analysis"
+author: "Laurie kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r knitr, echo=FALSE}
+library(knitr)
+
+opts_chunk$set(comment=NA, fig.width =8, 
+               fig.height=6,
+               fig.path  ="../tex/",
+               warning=FALSE, 
+               message=FALSE, 
+               error  =FALSE, 
+               echo   =FALSE,
+               cache  =TRUE)
+```
+
+```{r}
+library(FLCore)
+library(ggplotFL)
+library(FLife)
+
+dirMy ="/home/laurence/Desktop/sea++/mydas"
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+ 
+theme_set(theme_bw())
+
+iFig=0
+```
+
+# Logical Framework
+
+## Activity 
+Conduct a PSA for all stocks in Celtic and North Seas, to identify main risks, i.e. those stocks where there is insufficient data to estimate reference points and stock status or no management in place, low productivity, high value and high vulnerability to fishing. 
+
+## Workplan
+Develop an data.frame with biological, assessment, fleet, fishery, gear and economic parameters for all stocks, fisheries and fleets in Celtic and North Seas. 
+
+Implement code to conduct the PSA by stock and fishery including social and economic analysis
+
+## Outputs
+
++ data.frame with all parameters, NAs as appropriate
++ code to conduct the "P" and "S" analyses, including estimation of missing values, uncertainty and conduction of qualitative assessments
++ Additional social and economic analysis
++ Interactive Shiny-app
+
+## Outcomes
+Identification of main stocks and fisheries at risk
+
+# Work
+
+## Stocks and Species (LK)
+
++ list all stocks in Celtic and North Sea
++ list all species in Celtic and North Sea
++ list all MyDas Stocks
++ obtain all data rich assessments
+
+```{r}
+cs=read.csv(file.path(dirInp,"cs/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
+ns=read.csv(file.path(dirInp,"ns/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
+
+stocks=rbind(data.frame(wg="Celtic Sea",stock=unique(cs[,"FishStock"])),
+             data.frame(wg="North Sea", stock=unique(ns[,"FishStock"])))
+
+c("spp","stock","wg")
+
+#regexec('\\.',ac(stocks$stock))
+```
+
+## Fleets and gears (AT)
+
++ list all main gears in Celtic and North Sea
++ List all fisheries from a social economic view point
+
+## PSA (AT)
+
+Create a database with PSA parameters, including management and where possible economic values
+
+### Productivity (LK)
+
++ get life history parameters for all stocks/spp
++ replicate Flavia et al.
+
+```{r}
+c("lmax","linf","t0","k","a50","amax","l50","fec","z/k","mort")
+```
+
+### Susceptibility (AT)
+
++ Quantitative estimates
+    + availability (horizontal overlap) by gear and stock
+    + encounterability (vertical overlap) by gear and stock
+    + post capture mortality
+
++ Qualitative estimate
+    + availability (horizontal overlap) by gear and stock
+    + encounterability (vertical overlap) by gear and stock
+    + post capture mortality
+
+```{r}
+c("stock","fleet","avail","encout")
+c("stock","price","value")
+```
+
+### Management or Harvest Strategy (AT & LK)
+
+Based on MSC
+
++ AT get assessment reports data together, 
++ LK goes through the assessments
+
+### 1.2.1: Harvest Strategy
+There is a robust and precautionary harvest strategy in place, i.e. target, threshold and limit reference 
+points for F and biomass
+
+### 1.2.2: Harvest Control Rules & Tools
+There are well defined and effective harvest control rules (HCRs) in place, i.e. using ref pts to set TAC
+
+### 1.2.3: Information/Monitoring
+Relevant information is collected to support the harvest strategy, i.e which ICES catagory does the stock belong to?
+
+### 1.2.4: Assessment of Stock Status 
+There is an adequate assessment of the stock status, i.e. when was the stock last assessed and what method
+ 
+```{r}
+c("ftar","fthresh","flim","btar","bthresh","blim","cat","assyr","assmethod")
+```
+
+```{r}
+
+```
+
+
+```{r}
+```
+**Figure `r iFig=iFig+1; iFig`** .
+
+# References
+
