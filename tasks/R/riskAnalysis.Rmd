@@ -61,7 +61,7 @@ Identification of main stocks and fisheries at risk
 + list all MyDas Stocks
 + obtain all data rich assessments
 
-```{r}
+```{r, echo=FALSE}
 cs=read.csv(file.path(dirInp,"cs/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
 ns=read.csv(file.path(dirInp,"ns/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
 
