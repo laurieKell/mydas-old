@@ -1,25 +1,23 @@
 ---
-title: "MyDas"
+title: "Risk Analysis"
 subtitle: "Productivity Analysis" 
+author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: pdf_document
+output: html_document
 ---
-  
+
 
 ```{r knitr, echo=FALSE}
 library(knitr)
 
-opts_chunk$set(comment=NA, 
-               fig.width =5.5, 
+opts_chunk$set(comment=NA, fig.width =8, 
                fig.height=6,
-               fig.path  ="../tex/pg-",
+               fig.path  ="../tex/",
                warning=FALSE, 
                message=FALSE, 
                error  =FALSE, 
-               echo   =FALSE, 
-               eval   =TRUE,
-               cache  =TRUE,
-               cache.path="/cache/productivity")
+               echo   =FALSE,
+               cache  =TRUE)
 iFig=0
 iTab=0
 ```
@@ -38,28 +36,23 @@ library(popbio)
 library(ggthemes)
 library(scales)
 
-dirMy="/home/laurence/Desktop/sea++/mydas"
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirInp=file.path(dirMy,"inputs")
 dirDat=file.path(dirMy,"data")
+ 
+theme_set(theme_bw())
 ```
 
 
 ```{r lhparams}
-load("/home/laurence/Desktop/papers/generic/fishnets-master/data/fishbase-web/fishbase-web.RData")
-data(wklife)
+load(file.path(dirDat,"lhpcns.RData"))
+load(file.path(dirDat,"lhpmydas.RData"))
+load(file.path(dirDat,"gurnards.RData"))
+load(file.path(dirDat,"skates.RData"))
+```
 
-cmn =c("Sprat","Gurnards","Saithe","Pollock","Ling","Rays","Skates","John Dory","Turbot","Brill")
-nm  =        c("Sprattus sprattus sprattus",
-               "Chelidonichthys cuculus",
-               "Pollachius virens","Pollachius pollachius","Molva molva",
-               "Chondrichthyes","Chondrichthyes",
-               "Zeus faber",
-               "Scophthalmus maximus","Scophthalmus rhombus")
-mydas=subset(fb,species%in%nm)
-
-gurnards=subset(fb,family%in%"Triglidae")
-skates  =subset(fb,family%in%"Rajiformes")
-
-lh =lhPar(as(mydas[,-(1:5)],"FLPar"))
+```{r lhparams}
+lh =lhPar(as(lhpmydas[,-(1:5)],"FLPar"))
 eql=lhEql(lh)
 ```
 
@@ -67,7 +60,6 @@ eql=lhEql(lh)
 l=leslie(eql,fmult=refpts(eql)["crash","harvest"])
 
 adply(l,3,lambda)
-
 ```
 **Figure `r iFig=iFig+1; iFig`** 
 
