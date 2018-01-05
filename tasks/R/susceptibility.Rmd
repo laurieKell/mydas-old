@@ -3,7 +3,7 @@ title: "Risk Analysis"
 subtitle: "Productivity Analysis" 
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: pdf_document
 ---
 
 ```{r knitr, echo=FALSE}
