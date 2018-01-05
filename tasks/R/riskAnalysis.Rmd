@@ -129,10 +129,10 @@ skates  =subset(fb,family%in%"Rajidae")
 ```
 
 ```{r lhpar-save}
-save(lhpcns,  file=file.path(dirDat,"lhpcns.RData"))
-save(lhpmydas,file=file.path(dirDat,"lhpmydas.RData"))
-save(gurnards,file=file.path(dirDat,"gurnards.RData"))
-save(skates,  file=file.path(dirDat,"skates.RData"))
+save(lhpcns,  file=file.path(dirDat,"lhpcns.RData"),compress="xz")
+save(lhpmydas,file=file.path(dirDat,"lhpmydas.RData"),compress="xz")
+save(gurnards,file=file.path(dirDat,"gurnards.RData"),compress="xz")
+save(skates,  file=file.path(dirDat,"skates.RData"),compress="xz")
 ```
 
 ## Fleets and gears (AT)

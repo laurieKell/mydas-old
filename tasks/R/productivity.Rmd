@@ -6,7 +6,6 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
-
 ```{r knitr, echo=FALSE}
 library(knitr)
 
