@@ -78,9 +78,9 @@ ggplot(dat)+
 
 \newpage
 
-**Table `r iTab=iTab+1; iTab`.** Frequencies of observations by species and area. 
+**Table `r iTab=iTab+1; iTab`.** Landings by species and area. 
 ```{r summary-area}
-with(stecf,table(area,code))
+print(daply(stecf,.(area,code),with,as.integer(sum(landings,na.rm=TRUE))),digits=1)
 ```
 
 ```{r, eval=FALSE}
