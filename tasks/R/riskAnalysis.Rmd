@@ -92,6 +92,8 @@ stocks[,c("code","spp","wg","area")]
 
 Missing species
 ```{r lhparams}
+unique(sort(ac(stocks$stock)))
+
 unique(subset(stocks,is.na(spp))$code)
 ```
 
@@ -129,10 +131,11 @@ skates  =subset(fb,family%in%"Rajidae")
 ```
 
 ```{r lhpar-save}
-save(lhpcns,  file=file.path(dirDat,"lhpcns.RData"),compress="xz")
+save(stocks,  file=file.path(dirDat,"stocks.RData"),  compress="xz")
+save(lhpcns,  file=file.path(dirDat,"lhpcns.RData"),  compress="xz")
 save(lhpmydas,file=file.path(dirDat,"lhpmydas.RData"),compress="xz")
 save(gurnards,file=file.path(dirDat,"gurnards.RData"),compress="xz")
-save(skates,  file=file.path(dirDat,"skates.RData"),compress="xz")
+save(skates,  file=file.path(dirDat,"skates.RData"),  compress="xz")
 ```
 
 ## Fleets and gears (AT)

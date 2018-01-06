@@ -6,6 +6,8 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
+## Risk Based Approaches
+
 ```{r knitr, echo=FALSE}
 library(knitr)
 
@@ -53,7 +55,6 @@ stecf=dbGetQuery(con,"SELECT * FROM data_stecflandings")
 stecf=transform(stecf,
                 code     =tolower(speciesgp),
                 stockarea=substr(stock,regexec('\\.',stock)[[1]][1]+1,nchar(stock)))
- 
 ```
 
 ```{r summary-country}
@@ -64,6 +65,7 @@ ggplot(dat)+
   facet_wrap(~code,scales="free_y")+
   xlab("Year")+ylab("Landings")
 ```
+**Figure `r iFig=iFig+1; iFig`.** Time series by species and country.
 
 ```{r summary-irl}
 dat=ddply(subset(stecf,country="IRL"),.(year,gear,code),with, sum(landings))
@@ -71,6 +73,14 @@ ggplot(dat)+
   geom_line(aes(year,V1,col=gear))+
   facet_wrap(~code,scales="free_y")+
   xlab("Year")+ylab("Landings")
+```
+**Figure `r iFig=iFig+1; iFig`.** Time series of Irish catches by species and gear. 
+
+\newpage
+
+**Table `r iTab=iTab+1; iTab`.** Frequencies of observations by species and area. 
+```{r summary-area}
+with(stecf,table(area,code))
 ```
 
 ```{r, eval=FALSE}
@@ -83,9 +93,9 @@ land2016         =subset(land2016, !(area %in% "6B RFMO"))
 area             =dbGetQuery(con,"SELECT * FROM div_area")
 ```
 
-Ices division isnt broken down by division in North sea
-```{r}
-# land2016$division = ifelse(land2016$area %in% "4", "4A", land2016$division)
+```{r eval=FALSE}
+#Ices division isnt broken down by division in North sea
+land2016$division = ifelse(land2016$area %in% "4", "4A", land2016$division)
 # #convert in order to join and sum with landings
 # area$division     = ifelse(area$division %in% c("12A","12B","12C"), "12",
 #                     ifelse(area$division %in% c("14A","14B"), "14", area$division))
@@ -139,6 +149,4 @@ Ices division isnt broken down by division in North sea
 ```{r save}
 #save(overlap,file=file.path(dirDat,"overlap.RData"),compress="xz")
 ```
-
-**Figure `r iFig=iFig+1; iFig`** 
 
