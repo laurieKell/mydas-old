@@ -94,6 +94,37 @@ area             =dbGetQuery(con,"SELECT * FROM div_area")
 ```
 
 ```{r eval=FALSE}
+drv  = dbDriver("PostgreSQL")
+
+con  = dbConnect(drv, host = 'postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.amazonaws.com',
+                 dbname='mydasDev',
+                 port = 5432,
+                 user = 'MydasApplication',
+                 password = 'gmit2017!')
+
+############### this is for all other species from stecf ############################
+stecf           = dbGetQuery(con,"SELECT * FROM data_otherstecflandings")
+############### this is for stecf effort ############################
+effort          = dbGetQuery(con,"SELECT * FROM data_stecfeffort")
+############### this is for faocodes and price data ############################
+price           = dbGetQuery(con,"SELECT * FROM data_faocodes")
+############### this is for speciescodes and can link to fao codes and price data above ############################
+species         = dbGetQuery(con,"SELECT * FROM data_speciescodes")
+############### this is for surveybio contains halduration and no/length data ############################
+survey          = dbGetQuery(con,"SELECT * FROM data_surveybio")
+
+survey$hours    = survey$hauldur_min/60
+
+survtots        = ddply(survey, .(year, survey_acronym, speciesgp), summarise, number=sum(number), effort=sum(hours))
+survtots$cpue   = survtots$number/survtots$effort 
+ggplot(survtots, aes(as.factor(year), cpue)) + geom_boxplot() + facet_wrap(~speciesgp, scale="free_y")+expand_limits(y=0)+theme_bw() + 
+  theme( text = element_text(size=16), strip.text.x = element_text(size = 16),strip.text.y = element_text(size = 16),
+  panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))+ylab("year")
+```
+
+
+
+```{r eval=FALSE}
 #Ices division isnt broken down by division in North sea
 land2016$division = ifelse(land2016$area %in% "4", "4A", land2016$division)
 # #convert in order to join and sum with landings
