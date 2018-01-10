@@ -193,6 +193,8 @@ It is assumed that an index is proportional to the stock so when plotting the ob
 ```{r diagHat, fig.margin=TRUE, fig.height=4, figwidth=4, fig.cap="Observed CPUE verses fitted, blue line is a linear resgression fitted to points, black the y=x line."}
 library(diags)
 
+stdz<-function(x,na.rm=TRUE) ((x-mean(x,na.rm=na.rm))/sd(x,na.rm=na.rm))
+
 ggplot(with(rsdl, data.frame(obs=stdz(obs),hat=stdz(hat))))   +
     geom_abline(aes(slope=1,intercept=0))                     +
     geom_point( aes(obs,hat))                                 +
