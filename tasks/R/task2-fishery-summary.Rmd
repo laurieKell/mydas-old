@@ -1,6 +1,6 @@
 ---
 title: "Data Collation"
-subtitle: "Fishery" 
+subtitle: "Fishery Data" 
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document

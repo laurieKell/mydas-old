@@ -1,7 +1,7 @@
 ---
 title: "Task 2"
-subtitle: "Data rich stock assessments (i.e. Cat 1)" 
-author: "Alex Tidd"
+subtitle: "Economic Data" 
+author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
@@ -24,7 +24,13 @@ iTab=0
 ```
 
 ```{r init}
-library(FLCore)
+library(DBI)
+library(RPostgreSQL)
+library(dplyr)
+library(plyr)
+library(reshape)
+library(ggplot2)
+library(maptools)
 
 dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
 dirInp=file.path(dirMy,"inputs")
@@ -33,3 +39,8 @@ dirDat=file.path(dirMy,"data")
 options(scipen = 999)
 theme_set(theme_bw())
 ```
+
+
+```{r postgres}
+```
+

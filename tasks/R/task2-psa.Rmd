@@ -1,6 +1,6 @@
 ---
 title: "Task 2"
-subtitle: "Life History Data"
+subtitle: "PSA"
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -36,6 +36,35 @@ dirDat=file.path(dirMy,"data")
  
 theme_set(theme_bw())
 ```
+
+# Logical Framework
+
+## Activity 
+Conduct a PSA for all stocks in Celtic and North Seas, to identify main risks, i.e. those stocks where there is insufficient data to estimate reference points and stock status or no management in place, low productivity, high value and high vulnerability to fishing. 
+
+## Workplan
+Develop an data.frame with biological, assessment, fleet, fishery, gear and economic parameters for all stocks, fisheries and fleets in Celtic and North Seas. 
+
+Implement code to conduct the PSA by stock and fishery including social and economic analysis
+
+## Outputs
+
++ data.frame with all parameters, NAs as appropriate
++ code to conduct the "P" and "S" analyses, including estimation of missing values, uncertainty and conduction of qualitative assessments
++ Additional social and economic analysis
++ Interactive Shiny-app
+
+## Outcomes
+Identification of main stocks and fisheries at risk
+
+# Work
+
+## Stocks and Species (LK)
+
++ list all stocks in Celtic and North Sea
++ list all species in Celtic and North Sea
++ list all MyDas Stocks
++ obtain all data rich assessments
 
 Stocks and species
 ```{r stocks, echo=FALSE}

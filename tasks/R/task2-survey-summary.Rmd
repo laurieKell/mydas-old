@@ -1,6 +1,6 @@
 ---
 title: "Task 2"
-subtitle: "Productivity Analysis" 
+subtitle: "Survey Data" 
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -39,19 +39,3 @@ dirDat=file.path(dirMy,"data")
 options(scipen = 999)
 theme_set(theme_bw())
 ```
-
-
-```{r postgres}
-drv  = dbDriver("PostgreSQL")
-
-survey = dbGetQuery(con,"SELECT * FROM data_surveybio")
-
-survey$hours = survey$hauldur_min/60
-
-survtots = ddply(survey, .(year, survey_acronym, speciesgp), summarise, number=sum(number), effort=sum(hours))
-survtots$cpue = survtots$number/survtots$effort 
-ggplot(survtots, aes(as.factor(year), cpue)) + geom_boxplot() + facet_wrap(~speciesgp, scale="free_y")+expand_limits(y=0)+theme_bw() + 
- theme( text = element_text(size=16), strip.text.x = element_text(size = 16),strip.text.y = element_text(size = 16),
- panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))+ylab("year")
-```
-
