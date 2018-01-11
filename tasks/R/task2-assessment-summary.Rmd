@@ -24,7 +24,9 @@ iTab=0
 ```
 
 ```{r init}
+library(ggplot2)
 library(FLCore)
+library(ggplotFL)
 
 dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
 dirInp=file.path(dirMy,"inputs")
