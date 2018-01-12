@@ -6,7 +6,11 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
-## Risk Based Approaches
+```{r dir}
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
 
 ```{r knitr, echo=FALSE}
 library(knitr)
@@ -24,18 +28,36 @@ iTab=0
 ```
 
 ```{r init}
-library(DBI)
-library(RPostgreSQL)
-library(dplyr)
-library(plyr)
-library(reshape)
-library(ggplot2)
-library(maptools)
+library(DBI) 
+library(RPostgreSQL) 
+library(dplyr) 
+library(plyr) 
+library(reshape) 
+library(maptools) 
+library(ggplot2) 
 
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
-dirInp=file.path(dirMy,"inputs")
-dirDat=file.path(dirMy,"data")
- 
-options(scipen = 999)
-theme_set(theme_bw())
+options(scipen = 999) 
 ```
+
+```{r postgres}
+drv=dbDriver("PostgreSQL") 
+
+con=dbConnect(drv, host    ='postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.amazonaws.com', 
+                   dbname  ='mydasDev', 
+                   port    =5432, 
+                   user    ='MydasApplication', 
+                   password='gmit2017!') 
+
+survey = dbGetQuery(con,"SELECT * FROM data_surveybio") 
+```
+
+```{r summary}
+names(survey)
+```
+
+```{r plot}
+names(survey)
+```
+ggplot(survtots, aes(as.factor(year), cpue)) + geom_boxplot() + facet_wrap(~speciesgp, scale="free_y")+expand_limits(y=0)+theme_bw() + theme( text = element_text(size=16), strip.text.x = element_text(size = 16),strip.text.y = element_text(size = 16), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))+ylab("year")
+```
+

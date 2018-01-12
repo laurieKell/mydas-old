@@ -50,7 +50,7 @@ load(file.path(dirDat,"gurnards.RData"))
 load(file.path(dirDat,"skates.RData"))
 ```
 
-```{r lhparams}
+```{r lheql}
 lh =lhPar(as(lhpmydas[,-(1:5)],"FLPar"))
 eql=lhEql(lh)
 ```
