@@ -35,3 +35,9 @@ dirDat=file.path(dirMy,"data")
 options(scipen = 999)
 theme_set(theme_bw())
 ```
+
+```{r saithe}
+load(file.path(dirInp,"ns/sai3a46/sai3a46.stock.object.Rdata"))
+
+plot(sei)
+```
