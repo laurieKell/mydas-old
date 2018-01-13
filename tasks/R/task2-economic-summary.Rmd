@@ -40,7 +40,16 @@ options(scipen = 999)
 theme_set(theme_bw())
 ```
 
-
 ```{r postgres}
+drv=dbDriver("PostgreSQL") 
+
+con=dbConnect(drv, host    ='postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.amazonaws.com', 
+                   dbname  ='mydasDev', 
+                   port    =5432, 
+                   user    ='MydasApplication', 
+                   password='gmit2017!') 
 ```
 
+```{r summary}
+price=dbGetQuery(con,"SELECT * FROM data_faocodes")
+```

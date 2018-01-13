@@ -47,17 +47,24 @@ con=dbConnect(drv, host    ='postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.amaz
                    port    =5432, 
                    user    ='MydasApplication', 
                    password='gmit2017!') 
-
-survey = dbGetQuery(con,"SELECT * FROM data_surveybio") 
 ```
 
 ```{r summary}
+survey = dbGetQuery(con,"SELECT * FROM data_surveybio") 
+
 names(survey)
+
+unique(survey$english_name)
+unique(survey$ices_division)
 ```
 
 ```{r plot}
-names(survey)
-```
-ggplot(survtots, aes(as.factor(year), cpue)) + geom_boxplot() + facet_wrap(~speciesgp, scale="free_y")+expand_limits(y=0)+theme_bw() + theme( text = element_text(size=16), strip.text.x = element_text(size = 16),strip.text.y = element_text(size = 16), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))+ylab("year")
-```
+dat=ddply(survey,.(english_name,ices_division,year),with,mean(densbiom_kg_sqkm))
+dat=ddply(dat,.(english_name,ices_division),transform,cpue=V1/mean(V1))
 
+ggplot(dat) +
+  geom_line( aes(year,cpue,col=ices_division))+
+  geom_point(aes(year,cpue,col=ices_division),size=.5)+
+  facet_wrap(~english_name,scale="free_y",ncol=4)
+```
+**Figure `r iFig=iFig+1; iFig`.** Time series of surveys. 
