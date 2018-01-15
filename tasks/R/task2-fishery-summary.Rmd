@@ -7,7 +7,7 @@ output: pdf_document
 ---
 
 ```{r dir}
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirMy =getwd()
 dirInp=file.path(dirMy,"inputs")
 dirDat=file.path(dirMy,"data")
 ```

@@ -7,7 +7,7 @@ output: pdf_document
 ---
 
 ```{r dir, echo=FALSE}
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirMy =getwd()
 dirInp=file.path(dirMy,"inputs")
 dirDat=file.path(dirMy,"data")
 ```
@@ -36,10 +36,6 @@ library(dplyr)
 library(FLife)
 library(stringr)
 
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
-dirInp=file.path(dirMy,"inputs")
-dirDat=file.path(dirMy,"data")
- 
 theme_set(theme_bw())
 ```
 

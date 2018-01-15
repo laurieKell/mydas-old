@@ -6,6 +6,12 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
+```{r dir}
+dirMy =getwd()
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
+
 ```{r knitr, echo=FALSE}
 library(knitr)
 
@@ -30,10 +36,6 @@ library(dplyr)
 library(FLife)
 library(stringr)
 
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
-dirInp=file.path(dirMy,"inputs")
-dirDat=file.path(dirMy,"data")
- 
 theme_set(theme_bw())
 ```
 
@@ -50,7 +52,7 @@ stocks=mutate(stocks,code  =substr(stock,1,regexec('\\.',ac(stock))[[1]][1]-1),
                      region=substr(x1,   1,regexec('\\.',x1)[[1]][1]-1),
                      area  =substr(x1,     regexec('\\.',x1)[[1]][1]+1,nchar(x1)))[,-4]
 
-spp=read.csv("/home/laurence/Desktop/sea++/mydas/tasks/inputs/species.txt",header=FALSE)[,-2]
+spp=read.csv(file.path(dirInp,"species.txt"),header=FALSE)[,-2]
 spp=transmute(spp,code=str_trim(tolower(V1)),spp=str_trim(tolower(V3)),worm=V4)
 
 stocks=merge(stocks,spp,by="code",all.x=TRUE)
