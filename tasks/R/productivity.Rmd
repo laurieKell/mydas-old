@@ -42,6 +42,28 @@ dirDat=file.path(dirMy,"data")
 theme_set(theme_bw())
 ```
 
+## Productivity attributes
+
+Seven life-history traits were selected for productivity attributes (Table 1), as follows: 
+Maximum Size (Lmax,cm): maximum reported fork length obtained from the literature, i.e. from the RFMOs (ICCAT, IOTC and CCSBT) and national Brazilian and French databases. When fork length was missing, conversion factors from the literature or national observer program databases were used.
+
+Fecundity (in millions of oocyts): Mid-point of the reported range of number of eggs per individual for a given spawning event or period. Data were obtained from literature.
+
+r: The intrinsic rate of population growth or maximum population growth that would occur in the absence of fishing at a small size. calculated from life history parameters for each stock using the approach of Fortuna et al. (2014) (see details in SOM 1). 
+
+Data on the following attributes were obtained from the literature, where values were given by sex these were averaged.
+
+von Bertalanffy growth coefficient (k, cm.k-1): which measures how rapidly a fish reaches its maximum size. 
+
+Size at first maturity (L50, cm): Length at which 50% of the individuals attain sexual maturity for the first time. 
+
+Maximum age (Tmax, years): Maximum reported age. 
+
+L50/Lmax: A ratio that describes the relative investment into somatic and reproductive growth.
+
+Many studies have shown that life history parameters are correlated (e.g. Roff, 1984; Jensen, 1996; Reynolds et al., 2001). Therefore, when data were missing, we used empirical relationships between life history parameters to estimate biological attributes.  For instance, missing L50 and k were estimated from linear regressions against maximum size (SOM 2).  
+The boundaries between the three risk categories (low, medium, high) were established using the quantiles of the distribution of the vulnerability scores for the 60 species (Table 1). 
+
 
 ```{r lhparams}
 load(file.path(dirDat,"lhpcns.RData"))
@@ -58,7 +80,7 @@ eql=lhEql(lh)
 ```{r r}
 l=leslie(eql,fmult=refpts(eql)["crash","harvest"])
 
-adply(l,3,lambda)
+r=adply(l,3,function(x) log(lambda(x)))
 ```
 **Figure `r iFig=iFig+1; iFig`** 
 
