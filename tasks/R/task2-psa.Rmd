@@ -6,6 +6,12 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
+```{r dir, echo=FALSE}
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
+
 ```{r knitr, echo=FALSE}
 library(knitr)
 

@@ -6,3 +6,7 @@ FLCore
 ggplot2
 ggplotFL
 FLife
+plyr
+dplyr
+bindrcpp
+stringr
