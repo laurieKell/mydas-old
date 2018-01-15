@@ -6,7 +6,11 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
-## Risk Based Approaches
+```{r dir}
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
 
 ```{r knitr, echo=FALSE}
 library(knitr)
@@ -28,10 +32,6 @@ library(ggplot2)
 library(FLCore)
 library(ggplotFL)
 
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks"
-dirInp=file.path(dirMy,"inputs")
-dirDat=file.path(dirMy,"data")
- 
 options(scipen = 999)
 theme_set(theme_bw())
 ```
