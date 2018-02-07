@@ -1,8 +1,10 @@
-backup
-data
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+FLife.aux
+FLife.blg
+FLife.log
+FLife.out
 docs
-tex
-
-
-
-
+FLife.toc

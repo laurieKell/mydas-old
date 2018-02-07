@@ -10,6 +10,7 @@
 # Now exclude our type
 !.R
 !.Rmd
+!.pdf
 
 
 
