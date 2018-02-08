@@ -1,21 +1,24 @@
 ---
-title: "Operating Models to Evaluate Black-, Grey- and White-Box Controllers"
-subtitle: "Operation Model"
+title: "Evaluation of Black-, Grey- and White-Box Controllers"
+subtitle: "Operating Model Conditioning"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
 
-# Operating model to simulate 3 contrasting stocks
+# Operating model to simulate 4 contrasting stocks
 + Atlantic bigeye tuna
-+ North East Atlantic Skate
-+ Irish Sea sprat
++ Thornback Ray
++ Sprat
 + Plaice
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE}
-dirMy="/home/laurence/Desktop/sea++/mydas"
+dirMy="/home/laurence/Desktop/sea++/mydas/papers/black-box"
 dirDat=file.path(dirMy,"data")
+
+nits=500
 ```
+
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -30,8 +33,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/box-om",
-               cache.path="../cache/box-om/" 
+               fig.path  ="../tex/xval2-om",
+               cache.path="../cache/xval2-om/" 
                )
 
 iFig=0
@@ -50,6 +53,15 @@ library(ggplotFL)
 library(FLife)
 ```
 
+```{r, source, eval=FALSE}
+source('~/Desktop/flr/FLBRP/R/fwd.R')
+source('~/Desktop/flr/FLash/R/fwd.R')
+source('~/Desktop/flr/FLash/R/fwdControl.R')
+source('~/Desktop/flr/FLife/R/generic.R')
+source('~/Desktop/flr/FLife/R/lopt.R')
+source('~/Desktop/flr/FLife/R/lhPar.R')
+```
+
 ## Life history parameters
 
 ```{r lh}
@@ -62,6 +74,11 @@ ray   =subset(fb,species=="Raja clavata")
 sprat =subset(fb,species=="Sprattus sprattus sprattus")
 bigeye=subset(fb,species=="Thunnus obesus")
 plaice=plaice=subset(fb,species=="Pleuronectes platessa")
+```
+
+```{r devs}
+set.seed(1233)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.5,b=0.0)
 ```
 
 ```{r}
@@ -164,8 +181,6 @@ ggpairs(transform(plaice[,-1],linf=log(linf),k=log(k),l50=log(l50)),
 The parameters are then used by `lhEql` to simulate the equilibrium dynamics by combining the spawner/yield per recruit relationships with a stock recruiment relationship.
 
 ```{r eql}
-source('~/Desktop/flr/FLife/R/lhPar.R')
-
 sim<-function(x,niters=500,se=0.3){
   
   mn=aaply(x,1,mean, na.rm=TRUE)
@@ -173,8 +188,7 @@ sim<-function(x,niters=500,se=0.3){
   n =aaply(x,1,function(x) sum(!is.na(x)))
   se=sd/n^0.5
   
-  if (any(is.na(se)))
-    se[is.na(se)]=mn[is.na(se)]*se
+  if (any(is.na(se))) se[is.na(se)]=se
   
   y=data.frame(mn=mn,se=se)
   y=mdply(y,function(mn,se) rnorm(niters,mn,se))[,-(1:2)]
@@ -186,16 +200,16 @@ sim<-function(x,niters=500,se=0.3){
   res}
 
 # create FLPar
-lhRay   =mf2FLPar(ray[,   -c(1)])
-lhSprat =mf2FLPar(sprat[, -c(1,7:8)])
-lhBigeye=mf2FLPar(bigeye[,-c(1,7:8)])
-lhPlaice=mf2FLPar(plaice[,-c(1)])
+lhRay   =FLife:::mf2FLPar(ray[,   -c(1)])
+lhSprat =FLife:::mf2FLPar(sprat[, -c(1,7:8)])
+lhBigeye=FLife:::mf2FLPar(bigeye[,-c(1,7:8)])
+lhPlaice=FLife:::mf2FLPar(plaice[,-c(1)])
 
 # Monte Carlo
-lhRay   =sim(lhRay)
-lhSprat =sim(lhSprat)
-LhBigeye=sim(lhBigeye)
-LhPlaice=sim(lhPlaice)
+lhRay   =sim(lhRay,niters=nits)
+lhSprat =sim(lhSprat,niters=nits)
+lhBigeye=sim(lhBigeye,niters=nits)
+lhPlaice=sim(lhPlaice,niters=nits)
 
 # create FLPar
 lhRay   =lhPar(lhRay)
@@ -208,11 +222,7 @@ eqlRay   =lhEql(lhRay)
 eqlSprat =lhEql(lhSprat)
 eqlBigeye=lhEql(lhBigeye)
 eqlPlaice=lhEql(lhPlaice)
-```
 
-```{r eqlSave}
-save(lhRay,  lhSprat, lhBigeye, lhPlaice,file=file.path(dirDat,"box_lh.RData"))
-save(eqlRay,eqlSprat,eqlBigeye,eqlPlaice, file=file.path(dirDat,"box_eql.RData"))
 ```
 
 ```{r vectorRay}
@@ -238,7 +248,7 @@ ggplot(res)+
 ```{r vectorSprat}
 dat=FLQuants(eqlSprat,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
 
-res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
+res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975),na.rm=TRUE)),
                                age~iter,value="data"))
 
 ggplot(res)+
@@ -291,7 +301,17 @@ ggplot(res)+
 ## Population dynamics
 
 ```{r omRay}
+#http://www.fishbase.org/manual/Key%20Facts.htm
+
+gTime=round(FLife:::genTime(FLPar(aaply(lhRay,1,mean))))
+
+FLBRP:::fbar(eqlRay)=FLBRP:::refpts(eqlRay)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                                 seq(.1,2,length.out=40),
+                                                                 seq(2,.7,length.out=gTime)[-1],
+                                                                 rep(.7,61)))
+
 omRay=fwd(eqlRay)
+omRay=fwd(omRay,f=fbar(omRay)[,-1],sr=eqlRay,sr.residuals=srDev)
 
 plot(omRay)
 ```
@@ -299,11 +319,14 @@ plot(omRay)
 **Figure `r iFig=iFig+1; iFig`** Time series for thornback ray.
 
 ```{r omSprat}
-library(FLash)
-source('~/Desktop/flr/FLash/R/fwd.R')
-source('~/Desktop/flr/FLash/R/fwdControl.R')
+gTime=round(FLife:::genTime(FLPar(aaply(lhSprat,1,mean))))
 
+FLBRP:::fbar(eqlSprat)=FLBRP:::refpts(eqlSprat)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,2,length.out=40),
+                                                         seq(2,.7,length.out=gTime)[-1],
+                                                         rep(.7,61)))[,1:100]
 omSprat=fwd(eqlSprat,maxF=5)
+omSprat=fwd(omSprat,f=fbar(omSprat)[,-1],sr=eqlSprat) #,sr.residuals=srDev,maxF=5)
 
 plot(omSprat)
 ```
@@ -311,7 +334,14 @@ plot(omSprat)
 **Figure `r iFig=iFig+1; iFig`** Time series for sprat.
 
 ```{r omBigeye}
+gTime=round(FLife:::genTime(FLPar(aaply(lhBigeye,1,mean))))
+
+FLBRP:::fbar(eqlBigeye)=FLBRP:::refpts(eqlBigeye)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,2,length.out=40),
+                                                         seq(2,.7,length.out=gTime)[-1],
+                                                         rep(.7,61)))[,1:100]
 omBigeye=fwd(eqlBigeye)
+omBigeye=fwd(omBigeye,f=fbar(omBigeye)[,-1],sr=eqlBigeye,sr.residuals=srDev[,,,,,dimnames(m(omBigeye))$iter])
 
 plot(omBigeye)
 ```
@@ -320,7 +350,14 @@ plot(omBigeye)
 
 
 ```{r omPlaice}
+gTime=round(FLife:::genTime(FLPar(aaply(lhPlaice,1,mean))))
+
+FLBRP:::fbar(eqlPlaice)=FLBRP:::refpts(eqlPlaice)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,2,length.out=40),
+                                                         seq(2,.7,length.out=gTime)[-1],
+                                                         rep(.7,61)))[,1:100]
 omPlaice=fwd(eqlPlaice)
+omPlaice=fwd(omPlaice,f=fbar(omPlaice)[,-1],sr=eqlPlaice,sr.residuals=srDev[,,,,,dimnames(m(eqlPlaice))$iter])
 
 plot(omPlaice)
 ```
@@ -328,7 +365,8 @@ plot(omPlaice)
 **Figure `r iFig=iFig+1; iFig`** Time series for plaice.
 
 
-```{r omSave}
-save(omRay,omSprat,omBigeye,omPlaice,file=file.path(dirDat,"box_om.RData"),compress="xz")
+```{r eqlSave}
+save(lhRay,  lhSprat, lhBigeye, lhPlaice,  file=file.path(dirDat, "xval2_lh.RData"),compress="xz")
+save(omRay,  omSprat, omBigeye, omPlaice,  file=file.path(dirDat,"xval2_eql.RData"),compress="xz")
+save(eqlRay, eqlSprat,eqlBigeye,eqlPlaice, file=file.path(dirDat,"xval2_eql.RData"),compress="xz")
 ```
-
