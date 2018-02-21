@@ -1,0 +1,11 @@
+base
+knitr
+MASS
+lattice
+FLCore
+ggplot2
+ggplotFL
+plyr
+dplyr
+stringr
+bindrcpp

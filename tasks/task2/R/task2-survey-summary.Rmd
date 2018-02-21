@@ -1,0 +1,70 @@
+---
+title: "Task 2"
+subtitle: "Survey Data" 
+author: "Laurie Kell & Alex Tidd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+```{r dir}
+dirMy =getwd()
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
+
+```{r knitr, echo=FALSE}
+library(knitr)
+
+opts_chunk$set(comment=NA, fig.width =8, 
+               fig.height=6,
+               fig.path  ="../tex/",
+               warning=FALSE, 
+               message=FALSE, 
+               error  =FALSE, 
+               echo   =FALSE,
+               cache  =TRUE)
+iFig=0
+iTab=0
+```
+
+```{r init}
+library(DBI) 
+library(RPostgreSQL) 
+library(dplyr) 
+library(plyr) 
+library(reshape) 
+library(maptools) 
+library(ggplot2) 
+
+options(scipen = 999) 
+```
+
+```{r postgres}
+drv=dbDriver("PostgreSQL") 
+
+con=dbConnect(drv, host    ='postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.amazonaws.com', 
+                   dbname  ='mydasDev', 
+                   port    =5432, 
+                   user    ='MydasApplication', 
+                   password='gmit2017!') 
+```
+
+```{r summary}
+survey = dbGetQuery(con,"SELECT * FROM data_surveybio") 
+
+names(survey)
+
+unique(survey$english_name)
+unique(survey$ices_division)
+```
+
+```{r plot}
+dat=ddply(survey,.(english_name,ices_division,year),with,mean(densbiom_kg_sqkm))
+dat=ddply(dat,.(english_name,ices_division),transform,cpue=V1/mean(V1))
+
+ggplot(dat) +
+  geom_line( aes(year,cpue,col=ices_division))+
+  geom_point(aes(year,cpue,col=ices_division),size=.5)+
+  facet_wrap(~english_name,scale="free_y",ncol=4)
+```
+**Figure `r iFig=iFig+1; iFig`.** Time series of surveys. 
