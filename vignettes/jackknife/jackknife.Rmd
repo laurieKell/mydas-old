@@ -74,7 +74,7 @@ m   =c(0.49,0.24,0.24,0.24,0.24,0.20,0.175,0.15,0.125,0.10)
 ```
 
 ```{r jack,eval=FALSE}
-source('~/Desktop/flr/mpb/R/jackknife-vpa2box.R')
+source('~/Desktop/flr/diags/R/jackknife-vpa2box.R')
 
 jk=mlply(file,jackknife.vpa2box,m=m)
 

@@ -5,6 +5,7 @@ date: "21/07/2014"
 output: pdf_document
 ---
   
+
 ```{r knitr, echo=FALSE}
 library(knitr)
 
@@ -32,7 +33,7 @@ library(FLife)
 library(mpb)
 library(plyr)
 
-dirMy="/home/laurence/Desktop/sea++/MyDas/papers/bwg-box"
+dirMy="/home/laurence/Desktop/sea++/mydas/papers/black-box"
 dirDat=file.path(dirMy,"data")
 
 source('~/Desktop/flr/mse/R/msy.R')
@@ -42,38 +43,25 @@ source('~/Desktop/flr/mse/R/mseEMP.R')
 ```
 
 ```{r OM}
-##Use Life history to generate a stock
-data(teleost)
+load(file.path(dirDat,"box_lh.RData"))
+load(file.path(dirDat,"box_om.RData"))
+load(file.path(dirDat,"box_eql.RData"))
 
-alb=lhPar(teleost[,"Thunnus alalunga"])
-alb["sl"]=1
+nits=500
 
-nits=10
-mFn<-function(age,...) FLQuant(0.2,dimnames=dimnames(age))
-
-##OM
-eql=lhEql(alb, range=c(min=0,max=10,plusgroup=10,minfbar=5,maxfbar=9))
-fbar(eql)=FLBRP:::refpts(eql)["msy","harvest"]*FLQuant(c(rep(.1,19),
-                                                         seq(.1,2,length.out=40),
-                                                         seq(2,.7,length.out=11)[-1],
-                                                         rep(.7,61)))
 set.seed(1233)
-srDev=FLife:::rlnoise(nits,fbar(eql)[,-1,,,,1]*0,.3,b=0.0)
+srDev =FLife:::rlnoise(nits,fbar(eqlRay)[,-1,,,,1]*0,.3,b=0.0)
 set.seed(1233)
-srDev6=FLife:::rlnoise(nits,fbar(eql)[,-1,,,,1]*0,.3,b=0.5)
+srDev6=FLife:::rlnoise(nits,fbar(eqlRay)[,-1,,,,1]*0,.3,b=0.5)
+
 set.seed(3321)
-uDev =rlnorm(nits,setPlusGroup(stock.n(eql),10)*0,.2)
+uDev =rlnorm(nits,iter(stock.n(eqlRay),1)*0,.3)
 
-save(eql,  file=file.path(dirDat,"eql.RData"),  compress="xz")
-save(srDev,file=file.path(dirDat,"srDev.RData"),compress="xz")
-save(uDev, file=file.path(dirDat,"uDev.RData"), compress="xz")
-
-om =propagate(fwd(eql),nits)
-oms=FLStocks("Perfect"=fwd(om,f=fbar(om)[,-1],sr.residuals=rlnorm(nits,fbar(om)[,-1,,,,1]*0,.3),sr=eql))
+oms=FLStocks("Perfect"=omRay)
 ```
 
 ```{r xsa}
-rf=lhEql(alb,range=c(min=0,max=10,plusgroup=10,minfbar=5,maxfbar=9))
+rf=lhEql(lhRay,range=c(min=0,max=10,plusgroup=10,minfbar=5,maxfbar=9))
 mp=window(setPlusGroup(oms[["Perfect"]],10),end=90)
 
 ##Assessment
@@ -86,7 +74,7 @@ control=FLXSA.control(tol    =1e-09,maxit=50,
                       tspower=0,
                       vpa=FALSE)
 
-idx=FLIndex(index=stock.n(mp)%*%uDev[,dimnames(stock.n(mp))$year])
+idx=FLIndex(index=setPlusGroup(stock.n(omRay)%*%uDev[,dimnames(stock.n(omRay))$year],10))
 range(idx)[c("plusgroup","startf","endf")]=c(NA,0.1,.2)
 
 xsa=FLXSA(mp,idx,

@@ -65,7 +65,7 @@ source('~/Desktop/flr/FLife/R/lhPar.R')
 ## Life history parameters
 
 ```{r lh}
-load("/home/laurence/Desktop/sea++/mydas/tasks/data/fishbase-web.RData")
+load("/home/laurence/Desktop/sea++/mydas/tasks/task2/inputs/fishbase-web.RData")
 
 names(fb)[c(14,17)]=c("l50","a50")
 fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
@@ -93,7 +93,7 @@ my_density <- function(data,mapping,...){
 
 theme_set(theme_bw(base_size=20))
 
-p=ggpairs(transform(rbind(ray,sprat,bigeye,plaice),
+ggpairs(transform(rbind(ray,sprat,bigeye,plaice),
                     species=factor(ac(species)),linf=log(linf),k=log(k),l50=log(l50)),
   mapping = ggplot2::aes(color=species),
   lower = list(continuous = wrap(my_smooth)),
@@ -106,6 +106,8 @@ p=ggpairs(transform(rbind(ray,sprat,bigeye,plaice),
   axis.text.y      =element_blank(),
   panel.border     =element_rect(linetype = 1, colour="black", fill=NA))
 ```
+**Figure `r iFig=iFig+1; iFig`** Pairwise scatter plots.
+
 
 ```{r parSprat}
 theme_set(theme_bw(base_size=20))
@@ -326,7 +328,7 @@ FLBRP:::fbar(eqlSprat)=FLBRP:::refpts(eqlSprat)["msy","harvest"]%*%FLQuant(c(rep
                                                          seq(2,.7,length.out=gTime)[-1],
                                                          rep(.7,61)))[,1:100]
 omSprat=fwd(eqlSprat,maxF=5)
-omSprat=fwd(omSprat,f=fbar(omSprat)[,-1],sr=eqlSprat) #,sr.residuals=srDev,maxF=5)
+omSprat=fwd(omSprat,f=fbar(omSprat)[,-1],sr=eqlSprat,sr.residuals=srDev) #,sr.residuals=srDev,maxF=5)
 
 plot(omSprat)
 ```
@@ -366,7 +368,7 @@ plot(omPlaice)
 
 
 ```{r eqlSave}
-save(lhRay,  lhSprat, lhBigeye, lhPlaice,  file=file.path(dirDat, "xval2_lh.RData"),compress="xz")
-save(omRay,  omSprat, omBigeye, omPlaice,  file=file.path(dirDat,"xval2_eql.RData"),compress="xz")
-save(eqlRay, eqlSprat,eqlBigeye,eqlPlaice, file=file.path(dirDat,"xval2_eql.RData"),compress="xz")
+save(lhRay,  lhSprat, lhBigeye, lhPlaice,  file=file.path(dirDat, "box_lh.RData"), compress="xz")
+save(omRay,  omSprat, omBigeye, omPlaice,  file=file.path(dirDat, "box_eql.RData"),compress="xz")
+save(eqlRay, eqlSprat,eqlBigeye,eqlPlaice, file=file.path(dirDat, "box_eql.RData"),compress="xz")
 ```
