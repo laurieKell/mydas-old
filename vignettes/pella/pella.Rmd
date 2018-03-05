@@ -18,12 +18,13 @@ library(knitr)
 
 opts_chunk$set(comment=NA, fig.width =8, 
                fig.height=6,
-               fig.path  ="../tex/bd-test-",
+               fig.path  ="../tex/pella-",
                warning=FALSE, 
                message=FALSE, 
                error  =FALSE, 
                echo   =FALSE,
-               cache  =TRUE)
+               cache  =TRUE,
+               cache.path="../cache/pella/")
 iFig=0
 iTab=0
 ```
