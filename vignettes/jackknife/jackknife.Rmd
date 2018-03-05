@@ -66,8 +66,6 @@ dirInp="/home/laurence/Desktop/SCRS/bftAss/bft2017/inputs/2017/VPA/"
 dirDat="/home/laurence/Desktop/sea++/mydas/vignettes/data"
 
 source('~/Desktop/flr/FLife/R/refs.R')
-ctl=c("base/bfte2017.c1",
-      "fratio/bfte2017.c1")
 
 file=file.path(dirInp,ctl)
 m   =c(0.49,0.24,0.24,0.24,0.24,0.20,0.175,0.15,0.125,0.10) 
@@ -75,6 +73,7 @@ m   =c(0.49,0.24,0.24,0.24,0.24,0.20,0.175,0.15,0.125,0.10)
 
 ```{r jack,eval=FALSE}
 source('~/Desktop/flr/diags/R/jackknife-vpa2box.R')
+file="/home/laurence/Desktop/sea++/xval/inputs/vpa/ebft/bfte2017.c1"
 
 jk=mlply(file,jackknife.vpa2box,m=m)
 
@@ -84,9 +83,6 @@ save(jk,file=file.path(dirDat,"jk.RData"),compress="xz")
 
 ```{r refs}
 load(file.path(dirDat,"jk.RData"))
-
-source('~/Desktop/flr/FLife/R/refs.R')
-source('~/Desktop/flr/FLife/R/lhPar.R')
 
 dgs=mdply(data.frame(scen=file.path(dirInp,c("base/MINUS0.R","fratio/MINUS0.R")),
                      stringsAsFactors=FALSE),

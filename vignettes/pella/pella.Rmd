@@ -1,0 +1,292 @@
+---
+title: "Biomass Dynamic Assessment Model"
+author: "Laurence Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: rmarkdown:::html_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+bibliography: refs.bib
+tags: FLPKG FLR
+license: Creative Commons Attribution-ShareAlike 4.0 International
+--- 
+
+
+```{r knitr, echo=FALSE}
+library(knitr)
+
+opts_chunk$set(comment=NA, fig.width =8, 
+               fig.height=6,
+               fig.path  ="../tex/bd-test-",
+               warning=FALSE, 
+               message=FALSE, 
+               error  =FALSE, 
+               echo   =FALSE,
+               cache  =TRUE)
+iFig=0
+iTab=0
+```
+
+```{r}
+library(ggplot2)
+library(reshape2)
+library(plyr)
+library(diags)
+library(corrplot)
+library(gam)
+library(GGally)
+
+library(FLCore)
+library(ggplotFL)
+library(mpb)
+
+dirMy="/media/laurence/CE78-43CC7/casablanca"
+#dirMy="D:/casablanca"
+dirInp=file.path(dirMy,"inputs")
+
+#source('d:/mpb/R/biodyn-fit.R')
+#source('~/Desktop/flr/diags/R/diags-funcs.R')
+
+stdz=diags:::stdz
+iFig=0
+```
+
+## Simulate CPUE and Indices of abudance 
+
+```{r}
+simBd=sim()
+
+ctc=catch(simBd)
+
+set.seed(12345)
+u  =(stock(simBd)[,-50]+stock(simBd)[,-1])/2
+u  =rlnorm(1,log(stock(simBd)),0.2)
+```
+
+```{r catch}
+plot(ctc)
+```
+**Figure `r iFig=iFig+1; iFig`** Catch.
+
+```{r u}
+plot(u)
+```
+**Figure `r iFig=iFig+1; iFig`** Indices of abundance.
+
+
+## Biomass Dynamic Assessment
+
+```{r}
+bd=biodyn(catch=ctc[,-(49:50)],indices=u[,-(49:50)])
+
+params(bd)[c("r","k","b0")]=c(.3,1500,1)
+setControl(bd)=params(bd)
+#control(bd)["q1",c("phase","val")]=c(-1,1)
+
+bd=fit(bd)
+```
+
+```{r fit}
+plot(bd)
+```
+**Figure `r iFig=iFig+1; iFig`** Biomass dynamic estimates of stock, harvest rate and catch
+
+```{r compare}
+plot(as(list("fit"=bd,"sim"=simBd),"biodyns"))
+```
+**Figure `r iFig=iFig+1; iFig`** Comparision of biomass dynamic estimates of stock, harvest rate and catch
+
+
+```{r prod}
+plotProduction(bd)+
+  geom_path( aes(stock,catch),
+             model.frame(mcf(FLQuants(bd,"stock","catch"))))+
+  geom_point(aes(stock,catch),
+             model.frame(mcf(FLQuants(bd,"stock","catch"))))+
+  theme_bw()+theme(legend.position="none")
+```
+**Figure `r iFig=iFig+1; iFig`** Production function with stock trajectory 
+
+\clearpage
+\section{Residual Analysis}
+
+```{r}
+dgs=diags(bd)
+```
+
+
+/newpage 
+Fit to the indices is evaluated by plotting the residuals. The first plot is of the observed and the predicted values. Since $U=qB$, i.e. the index is assumed to be proportional to stock size the points should fall either side of the $y=x$ line.    
+
+
+```{r rsd1}
+ggplot(aes(hat,obs),data=dgs) +   
+      geom_point()+
+      geom_smooth(se=FALSE,method="lm")+
+      geom_abline(aes(slope=1,intercept=0))+
+      xlab("Assessment Estimate")+ylab("Observered CPUE")+
+      facet_wrap(~name,scale="free",
+                 ncol=2)
+```
+**Figure `r iFig=iFig+1; iFig`**  Observed CPUE verses fitted, blue line is a linear resgression fitted to points, black the y=x line.
+
+
+/newpage 
+Departures from the assumption that the index is proportional to the stock can also be seen by plotting the residuals by time. 
+  
+```{r rsdl2}
+ggplot(aes(year,residual),data=dgs) +
+  geom_hline(aes(yintercept=0))      +
+  geom_point()                       +
+  geom_linerange(aes(year,ymin=0,ymax=residual))                       +
+  stat_smooth(,method="loess",se=T,fill="blue", alpha=0.1)  +
+  facet_wrap(~name,scale="free",ncol=2)  
+```
+**Figure `r iFig=iFig+1; iFig`**  Residuals by year, with lowess smoother and SEs.
+
+
+/newpage 
+Autocorrelated residuals may mean that the estimated parameters are biased, autocorrelation can be checked by plotting the residuals against each other with a lag e.g.
+
+```{r rsdl3}
+ggplot(dgs)                                              +
+  geom_point( aes(residual,residualLag))                  +
+  stat_smooth(aes(residual,residualLag),method="lm",se=T,fill="blue", alpha=0.1)      +
+  geom_hline(aes(yintercept=0))                           +
+  facet_wrap(~name,scale="free",ncol=2)                   +
+  xlab(expression(Residual[t])) + 
+  ylab(expression(Residual[t+1])) 
+```
+
+**Figure `r iFig=iFig+1; iFig`** Plot of autocorrelation, i.e. $residual_{t+1}$ verses $residual_{t}$.
+
+
+/newpage 
+The error dostribution can be checked by plotting the observed and the predicted quantiles for a given distribution e.g. for the normal distributuion
+
+```{r rsdl4}
+ggplot(dgs)                                           +
+  geom_point( aes(qqx,qqy))                            +
+  stat_smooth(aes(qqx,qqHat),method="lm",se=T,fill="blue", alpha=0.1)         +
+  facet_wrap(~name,ncol=2)          
+```
+**Figure `r iFig=iFig+1; iFig`**  Quantile-quantile plot to compare residual distribution with the normal distribution.
+
+
+/newpage 
+The variance 
+
+```{r rsdl5}
+ggplot(aes(hat, residual),data=dgs)   +
+  geom_hline(aes(yintercept=0))         +
+  geom_point()                          +
+  stat_smooth(method="loess",span=.9,fill="blue", alpha=0.1)   +
+  facet_wrap(~name,scale="free",ncol=2) 
+```
+**Figure `r iFig=iFig+1; iFig`**  Plot of residuals against fitted value, to check variance relationship.
+
+\newpage
+## Likelihood Profiles
+
+## Profiles
+
+Likelihood profiles are useful to check that you are actually at a global solution and not stuck on a small hill with your back to the mountain. They are also useful for evaluating the infomation content of the data and whether different data sets are telling you different things and you need to ask more questions to determine the truth.
+
+The control slot can be used to produce a profile, i.e. fix a parameter or parameters for a range of values and then find the maximum likelihood by estimating the other parameters.
+
+```{r prfl-r, eval=FALSE}
+bdr=profile(bd,which='r',fixed=c('b0','p'),range=seq(0.95,1.03,.002))
+
+ggplot(ddply(bdr,.(r), with, data.frame(ll=sum(ll))))+
+  geom_line(aes(r,ll))  +
+  theme_bw()
+```
+**Figure `r iFig=iFig+1; iFig`** Likelihood profile of r
+
+
+```{r prfl-k, eval=FALSE}
+bdk=profile(bd,which='k',fixed=c('b0','p'),range=seq(0.95,1.03,.002))
+
+ggplot(ddply(bdk,.(k), with, data.frame(ll=sum(ll))))+
+  geom_line(aes(k,ll))  +
+  theme_bw()
+```
+**Figure `r iFig=iFig+1; iFig`**  Likelihood profile of K
+
+
+## Retrospective Analysis
+
+```{r retro}
+retro=function(x,year){
+         for (i in seq(length(x@indices)))
+           x@indices[[i]]=window(x@indices[[i]],end=year)
+        
+        ctrl=control(x)
+        x@catch=window(x@catch,end=year)
+        x=biodyn(catch=x@catch,indices=x@indices)
+        control(x)=ctrl
+       
+        fit(x)}
+
+ret=as(mlply(data.frame(year=45:49),function(year) retro(bd,year)),"biodyns")
+
+plot(ret)
+```
+**Figure `r iFig=iFig+1; iFig`** Retrospective analysis.
+
+## Hindcast
+
+```{r,eval=FALSE}
+hcast=function(x,year){
+         for (i in seq(length(x@indices)))
+           x@indices[[i]]=window(x@indices[[i]],end=year)
+        
+        ctc    =catch(x)
+        x@catch=window(x@catch,end=year)
+        x=biodyn(catch=x@catch,indices=x@indices)
+        
+        x=fit(x)
+        x=fwd(x,catch=ctc[,ac(year:dims(ctc)$maxyear)])
+        x}
+
+hc=as(mlply(data.frame(year=45:49),function(year) hcast(bd,year)),"biodyns")
+
+plot(hc)
+```
+**Figure `r iFig=iFig+1; iFig`** Hindcast
+
+## Projections
+
+```{r prj}
+bdFmsy=fwd(bd,harvest=FLQuant(1,dimnames=list(year=49:75))%*%refpts(bd)["fmsy"])
+
+plot(bdFmsy)
+```
+**Figure `r iFig=iFig+1; iFig`** Projection for Fmsy.
+
+## Uncertainty
+
+### Model Assumptions
+
+
+\newpage
+
+## Software Versions
+
+* `r version$version.string`
+* FLCore: `r packageVersion('FLCore')`
+* FLPKG: `r # packageVersion('FLPKG')`
+* **Compiled**: `r date()`
+* **Git Hash**: `r system("git log --pretty=format:'%h' -n 1", intern=TRUE)`
+
+## Author information
+
+**Laurence KELL**. laurie.kell.es
+
+
+## Acknowledgements
+
+This vignette and many of the methods documented in it were developed under the MyDas project funded by the Irish exchequer and EMFF 2014-2020. The overall aim of MyDas is to develop and test a range of assessment models and methods to establish Maximum Sustainable Yield (MSY) reference points (or proxy MSY reference points) across the spectrum of data-limited stocks.
+
+# References {#References}
