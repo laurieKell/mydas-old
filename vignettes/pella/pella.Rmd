@@ -46,7 +46,7 @@ stdz=diags:::stdz
 iFig=0
 ```
 
-## Simulate CPUE and Indices of abudance 
+## Simulate CPUE and Indices of abundance 
 
 ```{r}
 simBd=sim()
@@ -61,7 +61,7 @@ u  =rlnorm(1,log(stock(simBd,0.5)),0.2)
 ```{r ts}
 plot(simBd)
 ```
-**Figure `r iFig=iFig+1; iFig`** Stock trends
+**Figure `r iFig=iFig+1; iFig`** Simulated stock trends
 
 ```{r prod}
 plotProduction(simBd)+
@@ -71,17 +71,17 @@ plotProduction(simBd)+
              model.frame(mcf(FLQuants(simBd,"stock","catch"))))+
   theme_bw()+theme(legend.position="none")
 ```
-**Figure `r iFig=iFig+1; iFig`** Production function with stock trajectory 
+**Figure `r iFig=iFig+1; iFig`** Simulated production function with stock trajectory 
 
 ```{r u}
 ggplot(u)+
   geom_point(aes(year,data))+
   geom_line(aes(year,data),data=as.data.frame(stock(simBd,0.5)))
 ```
-**Figure `r iFig=iFig+1; iFig`** Indices of abundance.
+**Figure `r iFig=iFig+1; iFig`** Simulated indices of abundance.
 
 
-## Biomass Dynamic Assessment
+## Assessment
 
 ```{r}
 bd=biodyn(catch=ctc,indices=u)
@@ -98,6 +98,8 @@ ggplot(u)+
   geom_point(aes(year,data))+
   geom_line(aes(year,data),data=as.data.frame(stock(bd,0.5)%*%params(bd)["q1"]))
 ```
+**Figure `r iFig=iFig+1; iFig`** Fitted CPUE 
+
 
 ```{r compare}
 plot(as(list("fit"=bd,"sim"=simBd),"biodyns"))
@@ -125,21 +127,6 @@ ggplot(bdk)+
 ```
 **Figure `r iFig=iFig+1; iFig`**  Likelihood profile of K
 
-
-```{r}
-library(stringr)
-source('~/Desktop/flr/mpb/R/biodyn-fit.R')
-
-bdi=bd
-catch(bdi)=propagate(catch(bdi),10)
-bdi=fit(bdi)
-```
-
-```{r}
-bdu=bd
-bdu@indices[[1]]=propagate(bdu@indices[[1]],10)
-bdu=fit(bdu)
-```
 
 \clearpage
 \section{Residual Analysis}
@@ -280,6 +267,20 @@ plot(bdFmsy)
 **Figure `r iFig=iFig+1; iFig`** Projection for Fmsy.
 
 ## Uncertainty
+
+```{r}
+library(stringr)
+source('~/Desktop/flr/mpb/R/biodyn-fit.R')
+
+bdu=bd
+bdu@indices[[1]]=rlnorm(100,log(bdu@indices[[1]]),0.2)
+bdu=fit(bdu)
+```
+
+```{r}
+plot(bdu)
+```
+**Figure `r iFig=iFig+1; iFig`** Monte Carlo simulation.
 
 ### Model Assumptions
 
