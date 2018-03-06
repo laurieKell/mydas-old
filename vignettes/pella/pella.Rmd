@@ -42,13 +42,6 @@ library(FLCore)
 library(ggplotFL)
 library(mpb)
 
-dirMy="/media/laurence/CE78-43CC7/casablanca"
-#dirMy="D:/casablanca"
-dirInp=file.path(dirMy,"inputs")
-
-#source('d:/mpb/R/biodyn-fit.R')
-#source('~/Desktop/flr/diags/R/diags-funcs.R')
-
 stdz=diags:::stdz
 iFig=0
 ```
@@ -60,18 +53,30 @@ simBd=sim()
 
 ctc=catch(simBd)
 
-set.seed(12345)
-u  =(stock(simBd)[,-50]+stock(simBd)[,-1])/2
-u  =rlnorm(1,log(stock(simBd)),0.2)
+set.seed(345)
+u  =rlnorm(1,log(stock(simBd,0.5)),0.2)
 ```
 
-```{r catch}
-plot(ctc)
+
+```{r ts}
+plot(simBd)
 ```
-**Figure `r iFig=iFig+1; iFig`** Catch.
+**Figure `r iFig=iFig+1; iFig`** Stock trends
+
+```{r prod}
+plotProduction(simBd)+
+  geom_path( aes(stock,catch),
+             model.frame(mcf(FLQuants(simBd,"stock","catch"))))+
+  geom_point(aes(stock,catch),
+             model.frame(mcf(FLQuants(simBd,"stock","catch"))))+
+  theme_bw()+theme(legend.position="none")
+```
+**Figure `r iFig=iFig+1; iFig`** Production function with stock trajectory 
 
 ```{r u}
-plot(u)
+ggplot(u)+
+  geom_point(aes(year,data))+
+  geom_line(aes(year,data),data=as.data.frame(stock(simBd,0.5)))
 ```
 **Figure `r iFig=iFig+1; iFig`** Indices of abundance.
 
@@ -79,19 +84,20 @@ plot(u)
 ## Biomass Dynamic Assessment
 
 ```{r}
-bd=biodyn(catch=ctc[,-(49:50)],indices=u[,-(49:50)])
+bd=biodyn(catch=ctc,indices=u)
 
-params(bd)[c("r","k","b0")]=c(.3,1500,1)
+params(bd)[c("r","k","b0")]=c(.5,1000,1)
 setControl(bd)=params(bd)
-#control(bd)["q1",c("phase","val")]=c(-1,1)
 
 bd=fit(bd)
 ```
 
-```{r fit}
-plot(bd)
+
+```{r}
+ggplot(u)+
+  geom_point(aes(year,data))+
+  geom_line(aes(year,data),data=as.data.frame(stock(bd,0.5)%*%params(bd)["q1"]))
 ```
-**Figure `r iFig=iFig+1; iFig`** Biomass dynamic estimates of stock, harvest rate and catch
 
 ```{r compare}
 plot(as(list("fit"=bd,"sim"=simBd),"biodyns"))
@@ -99,15 +105,41 @@ plot(as(list("fit"=bd,"sim"=simBd),"biodyns"))
 **Figure `r iFig=iFig+1; iFig`** Comparision of biomass dynamic estimates of stock, harvest rate and catch
 
 
-```{r prod}
-plotProduction(bd)+
-  geom_path( aes(stock,catch),
-             model.frame(mcf(FLQuants(bd,"stock","catch"))))+
-  geom_point(aes(stock,catch),
-             model.frame(mcf(FLQuants(bd,"stock","catch"))))+
-  theme_bw()+theme(legend.position="none")
+```{r prfl-r}
+setControl(bd)=params(bd)
+bdr=profile(bd,which='r',fixed=c('b0','p'),range=seq(0.975,1.025,length.out=51))
+
+ggplot(bdr)+
+  geom_line(aes(r,ll))  +
+  theme_bw()
 ```
-**Figure `r iFig=iFig+1; iFig`** Production function with stock trajectory 
+**Figure `r iFig=iFig+1; iFig`** Likelihood profile of r
+
+
+```{r prfl-k}
+bdk=profile(bd,which='k',fixed=c('b0','p'),range=seq(0.95,1.05,length.out=51))
+
+ggplot(bdk)+
+  geom_line(aes(k,ll))  +
+  theme_bw()
+```
+**Figure `r iFig=iFig+1; iFig`**  Likelihood profile of K
+
+
+```{r}
+library(stringr)
+source('~/Desktop/flr/mpb/R/biodyn-fit.R')
+
+bdi=bd
+catch(bdi)=propagate(catch(bdi),10)
+bdi=fit(bdi)
+```
+
+```{r}
+bdu=bd
+bdu@indices[[1]]=propagate(bdu@indices[[1]],10)
+bdu=fit(bdu)
+```
 
 \clearpage
 \section{Residual Analysis}
@@ -196,25 +228,6 @@ Likelihood profiles are useful to check that you are actually at a global soluti
 
 The control slot can be used to produce a profile, i.e. fix a parameter or parameters for a range of values and then find the maximum likelihood by estimating the other parameters.
 
-```{r prfl-r, eval=FALSE}
-bdr=profile(bd,which='r',fixed=c('b0','p'),range=seq(0.95,1.03,.002))
-
-ggplot(ddply(bdr,.(r), with, data.frame(ll=sum(ll))))+
-  geom_line(aes(r,ll))  +
-  theme_bw()
-```
-**Figure `r iFig=iFig+1; iFig`** Likelihood profile of r
-
-
-```{r prfl-k, eval=FALSE}
-bdk=profile(bd,which='k',fixed=c('b0','p'),range=seq(0.95,1.03,.002))
-
-ggplot(ddply(bdk,.(k), with, data.frame(ll=sum(ll))))+
-  geom_line(aes(k,ll))  +
-  theme_bw()
-```
-**Figure `r iFig=iFig+1; iFig`**  Likelihood profile of K
-
 
 ## Retrospective Analysis
 
@@ -230,7 +243,7 @@ retro=function(x,year){
        
         fit(x)}
 
-ret=as(mlply(data.frame(year=45:49),function(year) retro(bd,year)),"biodyns")
+ret=as(mlply(data.frame(year=44:48),function(year) retro(bd,year)),"biodyns")
 
 plot(ret)
 ```
