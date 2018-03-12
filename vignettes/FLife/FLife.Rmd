@@ -36,6 +36,7 @@ library(ggplot2)
 library(FLife)
 library(plyr)
 
+rodFn=FLife:::rodFn
 theme_set(theme_bw())
 options(digits=3)
 ```
