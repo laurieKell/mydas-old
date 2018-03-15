@@ -13,14 +13,13 @@ subtitle: Stock prioritisation
 knitr::opts_chunk$set(message=FALSE, 
 tidy.opts=list(width.cutoff=60)) 
 ```
-
 ## Choice of stocks and justification  
 
 + The wiki has a summary stocks from the original call,  however, the actual stocks still have to be chosen. This could be done based on a variety of justifications, e.g. commercial value of the stocks, ecological importance, or based on catch compostion of fleets. Stocks could also be selected based on productivity, i.e. stocks that are low in productivity relative to target species are more likely to be below $B_{MSY}$. Alternatively stocks could be selected based on susceptibility, i.e. are there found in the same area as the fishing metiers/fleets/gears. 
 
 + Preparation of data:
 
-```{r}
+```{r,  tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 library(DBI)
 library(RPostgreSQL)
 library(dplyr)
@@ -83,7 +82,7 @@ overlap          = inner_join(price_sum, overlap)
 
 + Susceptibility
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 #horizontal overlap categories 3 highest 1 lowest
 overlap$score_olap = ifelse(overlap$olap_percent >30, 3, 
                      ifelse(overlap$olap_percent >10 & overlap$olap_percent <30, 2,
@@ -118,7 +117,7 @@ overlap$S          = (((overlap$score_postc*overlap$score_olap*overlap$score_pri
 
 + Productivity
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 
 # 3 low productivity 1 high productivity
 #< 5 years 5-15 years > 15 years
@@ -142,13 +141,13 @@ overlap$P           = ((overlap$tm_score+overlap$fec_score+overlap$repro_score+o
 
 + Vulnerability 
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 overlap$V           = sqrt(overlap$P^2 + overlap$S^2)    
 ```
 
 + Ranking index giving equal Weight to the mean Value of landings and vulnerability
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 overlap$speciesgp   = tolower(overlap$speciesgp)
 overlap$value       = overlap$price*overlap$totland*1000
 
@@ -156,7 +155,7 @@ overlap$value       = overlap$price*overlap$totland*1000
 
 + Additive combination (ranking variable = scaled landings Value + scaled vulnerability) results in linear equal ranking lines over Value and vulnerability.
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 
 
 meanvals      = ddply(overlap, .(year,country,gear, stock, mesh, length), summarise, mnval=mean(value))
@@ -173,7 +172,7 @@ rnkspc     =  ddply(allvs, .(year,country,gear, speciesgp), summarise, rank = me
 
 + Plot of ranking of variables by country, stock and gear
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, rank, group=gear, colour=gear)) + geom_line(size=1)+facet_grid(speciesgp~country, scales="free")+theme_bw()+
   theme( text = element_text(size=8), strip.text.x = element_text(size = 8),strip.text.y = element_text(size = 8),
          panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_manual(values=c("#000000","slateblue3", "#E69F00", "#56B4E9", "#009E73",  "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "cadetblue3")) 
@@ -181,7 +180,7 @@ ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, rank, group=gear, colour=
 
 + Plot of value (€) of variables by country, stock and gear
 
-```{r}
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, val, group=gear, colour=gear)) + geom_line(size=1)+facet_grid(speciesgp~country, scales="free")+theme_bw()+
   theme( text = element_text(size=8), strip.text.x = element_text(size = 8),strip.text.y = element_text(size = 8),
          panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_manual(values=c("#000000","slateblue3", "#E69F00", "#56B4E9", "#009E73",  "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "cadetblue3")) 
