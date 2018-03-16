@@ -11,7 +11,7 @@ subtitle: Stock prioritisation
 ---
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(message=FALSE, 
-tidy.opts=list(width.cutoff=60)) 
+tidy.opts=list(width.cutoff=60), warning=F) 
 ```
 ## Choice of stocks and justification  
 
@@ -25,9 +25,7 @@ library(RPostgreSQL)
 library(dplyr)
 library(plyr)
 library(reshape)
-library(maptools)
 library(ggplot2)
-library(ggrepel)
 library(RColorBrewer)
 options(scipen = 999)
 
@@ -184,4 +182,41 @@ ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, rank, group=gear, colour=
 ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, val, group=gear, colour=gear)) + geom_line(size=1)+facet_grid(speciesgp~country, scales="free")+theme_bw()+
   theme( text = element_text(size=8), strip.text.x = element_text(size = 8),strip.text.y = element_text(size = 8),
          panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_manual(values=c("#000000","slateblue3", "#E69F00", "#56B4E9", "#009E73",  "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "cadetblue3")) 
+```
+
++ ranking of the stocks by country and gear for last 3 years
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+################ranking
+prioryr = subset(rnkspc, year %in% c(2014:2016))
+prioryr$combo = paste(prioryr$country, prioryr$gear, prioryr$speciesgp, sep="_")
+tblrnk10 = prioryr %>% group_by(year) %>% arrange(desc(year), desc(rank), desc(val))%>%top_n(10, rank)
+tblrnk10       = tblrnk10%>%group_by(year)%>%mutate(combo=factor(combo, levels = unique(combo)))
+tblrnk10       = transform(tblrnk10, fill=cut(val, c(0,10000,100000,500000,1000000,10000000,20000000)))
+mycolours = brewer.pal(6,"Set3")
+names(mycolours) = levels(tblrnk10$fill)
+#top 10 sorted on rank (combo of economics and vulnerability) and actual value
+a=ggplot(subset(tblrnk10, year==2014), aes(x=reorder(tolower(combo), rank), y=rank, fill=fill)) + geom_bar(stat="identity")+coord_flip()+ facet_wrap(~year, scale="free_y")+
+  guides(fill=guide_legend(title="Value (€)"))+scale_fill_manual(name = "fill",values = mycolours) + theme_bw() + ylab("Rank") + xlab(" ")
+
+b=ggplot(subset(tblrnk10, year==2015), aes(x=reorder(tolower(combo), rank), y=rank, fill=fill)) + geom_bar(stat="identity")+coord_flip()+ facet_wrap(~year, scale="free_y")+
+  guides(fill=guide_legend(title="Value (€)")) + scale_fill_manual(name = "fill",values = mycolours) + theme_bw() + ylab("Rank") + xlab(" ")
+
+c=ggplot(subset(tblrnk10, year==2016), aes(x=reorder(tolower(combo), rank), y=rank, fill=fill)) + geom_bar(stat="identity")+coord_flip()+ facet_wrap(~year, scale="free_y")+
+  guides(fill=guide_legend(title="Value (€)"))+ scale_fill_manual(name = "fill",values = mycolours) + theme_bw() + ylab("Rank") + xlab(" ")
+gridExtra::grid.arrange(a, b, c,  nrow=3)
+
+tblval10       = prioryr %>% group_by(year) %>% arrange(desc(year), desc(val), desc(rank))%>%top_n(10, val)
+tblval10       = transform(tblval10, fill=cut(rank, c(8,10,12,14,16,18,20)))
+tblval10       = tblval10%>%group_by(year)%>%mutate(combo=factor(combo, levels = unique(combo)))
+mycolours2 = brewer.pal(6,"Set1")
+names(mycolours2) = levels(tblval10$fill)
+#top 10 based purely on price and rank
+d = ggplot(subset(tblval10, year==2014), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+    guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
+e = ggplot(subset(tblval10, year==2015), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+    guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
+f = ggplot(subset(tblval10, year==2016), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+    guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
+gridExtra::grid.arrange(d, e, f,  nrow=3)   
+
 ```
