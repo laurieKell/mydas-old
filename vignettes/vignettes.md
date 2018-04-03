@@ -30,6 +30,9 @@ Examples of running empirical Management Procedures
 
 oem.Rmd
 
+Stock prioritisation
+stockprioritisation.Rmd
+
 Observation Error Models (OEM) to simulate 
 fisheries dependent and independent indices of relative abundance
 length data-limited
