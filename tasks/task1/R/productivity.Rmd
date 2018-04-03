@@ -1,6 +1,6 @@
 ---
 title: "MyDas"
-subtitle: "Gurnard Life History Relationships"
+subtitle: "Species Productivity"
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -51,6 +51,7 @@ opts_chunk$set(echo      =FALSE,
                cache.path="../cache/r")
 
 iFig=0
+iTab=0
 ```
 
 ```{r, pkgs, message=FALSE}
@@ -128,6 +129,9 @@ ggplot(melt(t(r[,-1])))+
     scale_x_continuous(limits=c(0,3))
 ```
 
+**Figure `r iFig=iFig+1; iFig`** r.
+
+
 ```{r}
 save(lh,file=file.path(dirDat,"lh.RData"))
 ```
@@ -146,14 +150,23 @@ fn=function(x){
   eql=lhEql(res,
             m=function(length,params) exp(params["m1"])*(length^params["m2"])%*%(params["linf"]^params["m3"])%*%params["k"])
   
-  c(log(lambda(leslie(eql,fbar=c(refpts(eql)["crash","harvest"]))[drop=TRUE])),
-    log(lambda(leslie(eql,fbar=c(refpts(eql)["msy","harvest"]))[drop=TRUE])))}
+  log(c(log(lambda(leslie(eql,fbar=c(refpts(eql)["crash","harvest"]))[drop=TRUE])),
+        log(lambda(leslie(eql,fbar=c(refpts(eql)["msy","harvest"]))[drop=TRUE]))))}
 
 jac=jacobian(fn,res)
 dimnames(jac)=list(var=c("r","r.c"),params=dimnames(res)$params)
+jac
 ```
 
-jac r}
+\newpage
+
+**Table `r iTab=iTab+1; iTab`** Life history Parameters.
+```{r}
+laply(lh,function(x) apply(x,1,mean,na.rm=T))
+```
+
+**Table `r iTab=iTab+1; iTab`** Population growth rate at low population size (r) and at $B_{MSY}$ (r.c).
+```{r pr}
 res=laply(lh,function(x) FLPar(aaply(x,1,mean,na.rm=TRUE)))
 res[is.na(res[,"t0"]),"t0"]=with(as.data.frame(res[is.na(res[,"t0"]),c("linf","k")]),-exp(-0.3922-0.2752*log(linf)-1.038*log(k)))
 res=as.data.frame(res)
@@ -177,7 +190,14 @@ prod=function(x){
   res}
 
 pr=aaply(res,2,prod)
+dimnames(pr)=list(spp=names(lh),params=c("r","r.c"))
+
 pr
+```
+
+**Table `r iTab=iTab+1; iTab`** Population doubling time at low population size (r) and at $B_{MSY}$ (r.c).
+```{r}
+log(2)/pr
 ```
 
 ```{r elasticity2}
@@ -188,8 +208,8 @@ elas=function(x){
     eql=lhEql(res,
               m=function(length,params) exp(params["m1"])*(length^params["m2"])%*%(params["linf"]^params["m3"])%*%params["k"])
     
-    c(log(lambda(leslie(eql,fbar=c(refpts(eql)["crash","harvest"]))[drop=TRUE])),
-      log(lambda(leslie(eql,fbar=c(refpts(eql)["msy","harvest"]))[drop=TRUE])))}
+    log(c(log(lambda(leslie(eql,fbar=c(refpts(eql)["crash","harvest"]))[drop=TRUE])),
+          log(lambda(leslie(eql,fbar=c(refpts(eql)["msy","harvest"]))[drop=TRUE]))))}
 
   jac=jacobian(fn,x)
   dimnames(jac)=list(var=c("r","r.c"),params=dimnames(x)$params)
@@ -205,3 +225,28 @@ jac=FLPar(aperm(jac,c(2:3,1)))
 jac
 ```
 
+```{r, fig.height=6, fig.width=6}
+library(GGally)
+
+dat=cbind(laply(lh,function(x) apply(x,1,mean,na.rm=T)),log(2)/pr)
+
+my_smooth <- function(data,mapping,...){
+  ggplot(data=data,mapping=mapping)+
+  geom_point(...,size=.5)+
+  geom_smooth(...,method="lm",se=FALSE)}
+
+my_density <- function(data,mapping,...){
+  ggplot(data=data,mapping=mapping)+
+  geom_density(...,lwd=1)}
+
+ggpairs(transform(dat,linf=log(linf),k=log(k),lmat=log(lmat))[,c("r.c","linf","k","t0","lmat")],
+  lower = list(continuous = wrap(my_smooth)),
+  diag=list(continuous=wrap(my_density,alpha=0.2)),
+  title = "")+
+  theme(legend.position ="none",
+  panel.grid.major =element_blank(),
+  axis.ticks       =element_blank(),
+  axis.text.x      =element_blank(),
+  axis.text.y      =element_blank(),
+  panel.border     =element_rect(linetype = 1, colour="black", fill=NA))
+```

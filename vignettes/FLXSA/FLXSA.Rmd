@@ -1,0 +1,289 @@
+---
+title: "Extended Survivors Analysis"
+author: "Laurence Kell"
+date: "August 13th, 2016"
+output:
+    tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+bibliography: refs.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{mpb}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(echo    =!TRUE,
+               eval    =!TRUE,
+               cache   =!FALSE,
+               cache.path="cache/",
+               prompt  =FALSE,
+               comment =NA,
+               message =FALSE,
+               tidy    =FALSE,
+               warnings=FALSE,
+               fig.height=4.5,
+               fig.width =4.5,
+               fig.path  ="tex/")
+```
+
+```{r,eval=TRUE,echo=FALSE}
+sink(NULL)
+warn=options()$warn
+options(warn=-1)
+library(FLCore)
+library(FLAssess)
+library(plyr)
+library(ggplotFL)
+library(FLXSA)
+
+theme_set(theme_bw())
+options(digits=3)
+options(warn=warn)
+sink()
+```
+
+# Introduction
+
+@shepherd1999extended
+@kell2007flr
+@kell2005flat
+@kell2005round
+
+```{r int,echo=TRUE,eval=FALSE}
+library(FLCore)
+library(FLXSA)
+```
+
+```{r class1,eval=TRUE,echo=TRUE}
+data(ple4)
+data(ple4.indices)
+```
+
+```{r class2,echo=TRUE,eval=FALSE}
+is(ple4)
+getSlots(is(ple4))
+```
+
+```{r class3,echo=TRUE,eval=FALSE}
+is(ple4.indices)
+getSlots(is(ple4.indices[[1]]))
+```
+
+## Plotting
+
+\newthought{Plots} are important for examining objects, exploring data, summarising results, checking outputs, and diagnosing problems. FLXSA uses the `ggplot2` and `ggplotFL` packages.
+
+```{r plot,echo=TRUE,eval=FALSE}
+library(ggplotFL)
+```
+
+```{r plot2, eval=TRUE, echo=TRUE, fig.margin=TRUE, fig.width=4, fig.height=5, fig.cap="Time series"}
+plot(ple4)
+```
+
+```{r plot3, eval=TRUE, echo=TRUE, fig.margin=TRUE, fig.width=4, fig.height=4, fig.cap="CPUE Time series"}
+plot(ple4.indices[["SNS"]]@index)+
+       geom_point()+
+       geom_smooth(se=FALSE)
+```
+
+# `FLXSA` Class
+
+## Fitting
+
+```{r fit, echo=TRUE}
+ctl     =FLXSA.control()
+ple4.xsa=FLXSA(ple4,ple4.indices)
+ple4    =ple4+ple4.xsa
+```
+
+
+```{r U16}
+plot(ple4)+
+  theme_bw()+
+  theme(legend.position="none")
+```
+**Figure `r iFig=1;iFig`**. XSA fits.
+
+```{r diags}
+plot(ple4.xsa)
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA plots, weights for terminal year Ns for each CPUE observation and shrinkage
+
+## Diagnostics
+
+```{r diag, echo=TRUE}
+library(diags)
+
+dgs=diags(ple4.xsa)
+```
+
+
+```{r diags2}
+source('~/Desktop/flr/FLXSA/R/FLXSA-diags.R')
+
+dgs=diags(ple4.xsa)
+
+ggplot(dgs,aes(hat,residual))+
+  geom_point()+
+  geom_hline(aes(yintercept=0))+
+  facet_grid(name~age,scale="free_x")
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA diagnostics, residuals against fitted value.
+
+```{r diags3}
+ggplot(dgs,aes(year,residual))+
+  geom_point()+
+  geom_errorbar(aes(year,ymin=0,ymax=residual))+
+  geom_smooth(span=1,se=F)+
+  facet_grid(name~age)
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA diagnostics, residuals against year.
+
+```{r diags4,fig.height=2}
+ggplot(subset(dgs,age==4),aes(hat,obs))+
+  geom_abline(aes(intercept=0,slope=1))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE)+
+  facet_wrap(~name,scale="free",ncol=3)+
+  theme_bw()
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA diagnostics, Calibration regression plots for age 4.
+
+
+```{r diags5,fig.height=6}
+ggplot(dgs,aes(residual,residualLag))+
+  geom_hline(aes(yintercept=0))+
+  geom_point()+
+  geom_smooth(method="lm",se=F)+
+  facet_grid(age~name,scale="free")+
+  theme_bw()
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA diagnostics, AR plots of lagged residuals
+
+```{r diags6,fig.height=4}
+ggplot(dgs)                                           +
+  geom_point( aes(qqx,qqy))                            +
+  stat_smooth(aes(qqx,qqHat),method="lm",se=T,fill="blue", alpha=0.1)         +
+  facet_grid(age~name)                                    +
+  theme(legend.position="bottom")  
+```
+**Figure `r iFig=iFig+1;iFig`**. XSA diagnostics, QQ plots to check for normality
+
+
+# Uncertainty
+
+```{r uncertainty, echo=TRUE, fig.margin=TRUE}
+xsa =FLXSA(ple4,ple4.indices)
+ple4=FLXSA:::rand(100,ple4,xsa)
+```
+
+## Parameters
+## Retrospectives
+
+```{r Retro}
+plot(FLStocks(mlply(data.frame(year=2005:2008), function(year,stk,u,ctl){
+  stk=window(stk,end=year)  
+  stk+FLXSA(stk,u,ctl)
+  },stk=ple4,u=ple4.indices,ctl=ctl)))+
+  theme_bw()+theme(legend.position="bottom")+
+  scale_colour_discrete(labels=2005:2008,guide=guide_legend(title="Retrospective\nYear"))
+```
+**Figure `r iFig=iFig+1;iFig`**. Retrospective XSA time series estimates.
+
+## Crossvalidation
+
+@kell2016evaluation
+
+# Reference Points
+```{r refs, echo=TRUE}
+library(FLBRP)
+```
+
+```{r sr}
+ple4.sr=as.FLSR(ple4,model="bevholt")
+ple4.sr=fmle(ple4.sr,control=list(trace=0))
+plot(ple4.sr)+
+  theme_bw()
+```
+**Figure `r iFig=iFig+1;iFig`**. Stock Recruitment Relationship
+
+# Projection
+
+```{r fdwd, fig.margin=TRUE,fig.width=4, fig.height=6,fig.cap="Projection"}
+``` 
+
+```{r}
+library(FLBRP)
+
+brp=FLBRP(ple4,sr=ple4.sr)
+
+plot(brp)+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1;iFig`**. Equilibrium Analysis with reference points.
+
+```{r}
+plot(brp,obs=TRUE,refpts=FALSE)+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1;iFig`**. Equilibrium Analysis with observations.
+
+
+```{r}
+library(kobe)
+
+kb=kobe(brp,ple4)
+```
+
+```{r}
+kobePhase(kb,xlim=c(0,2))
+  geom_path(aes(stock,harvest,col=year))+
+  theme(legend.position="none")
+```
+**Figure `r iFig=iFig+1;iFig`**. Kobe Phase Plot.
+
+# Harvest Control Rules
+```{r hcr,fig.margin=TRUE,fig.width=6,fig.height=6}
+library(FLash)
+```
+
+```{r kobe,fig.margin=TRUE,fig.width=6,fig.height=6}
+```
+
+# Advice
+```{r advice, echo=TRUE}
+library(kobe)
+```
+
+# MSE
+
+```{r mse,eval=FALSE}
+library(mpb)
+```
+
+
+Tables
+=====================================
+
+Table 1a. XSA Control options from continuity run.
+```{r}
+ctl
+
+```
+
+
+Table 2a. XSA diagnostics from continuity run.
+```{r}
+diagnostics(ple4.xsa)
+```
+
+
+# References

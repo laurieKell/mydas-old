@@ -1,0 +1,245 @@
+---
+title: "Mydas: Stock Assessments"
+author: "Laurence Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: rmarkdown:::pdf_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+bibliography: /home/laurence/Desktop/sea++/cie/greySnapper/tex/refs.bib
+tags: FLPKG FLR
+license: Creative Commons Attribution-ShareAlike 4.0 International
+---
+\newpage 
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(echo    =FALSE,
+               eval    =TRUE,
+               cache   =!FALSE,
+               cache.path="../cache/stocks/",
+               prompt  =FALSE,
+               comment =NA,
+               message =FALSE,
+               tidy    =FALSE,
+               warning =FALSE,
+               fig.height=6,
+               fig.width =8,
+               fig.path  ="../tex/a1-stocks-")
+
+iFig=0
+```
+```{r, pkgs, echo=FALSE, message=FALSE}
+library(plyr)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+
+library(FLCore)
+library(FLBRP)
+library(ggplotFL)
+library(diags)
+library(FLife)
+
+options(digits=3)
+```
+```{r, dirs, echo=FALSE, message=FALSE}
+dirMy=dirname(dirname(FLife:::getScriptPath()))
+dirMy="/home/laurence/Desktop/sea++/mydas"
+dirInp=file.path(dirMy,"inputs")
+dirDat=file.path(dirMy,"data")
+```
+
+```{r, assessment, eval=FALSE}
+nms=c("Cod North Sea", "Haddock North Sea","Whiting North Sea","Saithe North Sea", 
+      "Plaice North Sea", "Sole North Sea",
+      "Cod Celtic Sea","Haddock Celtic Sea","Whiting Celtic Sea")
+spp=c("Gadus morhua","Melanogrammus aeglefinus","Merlangius merlangus",
+      "Pleuronectes platessa","Solea solea")
+spp=spp[c(1:6,1:3)]
+sea=c(rep("North Sea",6),rep("Celtic Sea",3))
+stock=c("cod347","hadns","whg3747d","ple27420","solnsea","sains",
+        "cod7ek","whg7bk","hadcs")
+nms=data.frame(nms,spp,sea,stock)
+
+load("/home/laurence/Desktop/sea++/stecf/data/stk.RData")
+stk=stk["hadns"]
+
+load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/cod347/cod347_FLStockObject_wgnssk17_nscod17_ass06.RData")
+stk["codns"]=cod
+
+load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/whg3747d/whg.27.47d.stock.Rdata")
+stk["whgns"]=x.stock
+
+load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/ple27420/ple27.7d_stockobject.Rdata")
+stk["plens"]=ass.stock
+
+load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/solns/sol-nsea_ass.stock_workspace.Rdata")
+stk["solns"]=ass.stock
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+stk["sains"]=ass.stock
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/xsa.stock.Rdata")
+stk["codcs"]=xsa.stock
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/whg7bk/xsa.Rdata")
+stk["whgcs"]=stock
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_stock.RData")
+stk["hadcs"]=stock
+
+stk=llply(stk[c("codns","hadns","sains","whgns","plens","solns","codcs","hadcs","whgcs")],
+                   function(x) iter(x,1))
+
+save(nms,file=file.path(dirDat,"nms.RData"),compress="xz")
+save(stk,file=file.path(dirDat,"stk.RData"),compress="xz")
+```
+
+```{r, indices, eval=FALSE}
+load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+idxs=list("solns"=indices)
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/cod_idx.RData")
+idxs["codcs"]=idx
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_tunning.RData")
+idxs["hadcs"]=tun
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/PLE_tun.Rdata")
+idxs["plecs"]=tun
+
+load("/home/laurence/Desktop/sea++/mydas/inputs/cs/sol7fg/INPUT/sol7fg_stock.Rdata")
+idxs["solcs"]=tun
+
+idxs=idxs[c("solns","codcs","hadcs","plecs","solcs")]
+idx=idxs
+
+save(idx,file=file.path(dirDat,"idx.RData"),compress="xz")
+```
+
+```{r, stk-ts}
+load(file.path(dirDat,"stk.RData"))
+
+stkTs=ldply(stk,
+          function(x) 
+              model.frame(FLQuants(
+                ssb    =ssb( x),
+                f      =fbar(x),
+                catch  =catch(x),
+                cpue   =catch(x)%/%fbar(x),
+                recruit=rec(x),
+                stock  =stock(x),
+                hrate  =catch(x)%/%stock(x),
+                pgwt   =stock.n(x)[ac(range(x)["plusgroup"])]%*%stock.wt(x)[ac(range(x)["plusgroup"])],
+                pgn    =stock.n(x)[ac(range(x)["plusgroup"])],
+                cmnwt  =FLQuant(aaply(catch.n(x)%*%catch.wt(x),2:6,sum))%/%
+                            FLQuant(aaply(catch.n(x),2:6,sum)),
+                smnwt  =FLQuant(aaply(stock.n(x)%*%stock.wt(x),2:6,sum))%/%
+                            FLQuant(aaply(stock.n(x),2:6,sum)),
+                cmnage =FLQuant(aaply(catch.n(x)%*%ages(catch.wt(x)),2:6,sum))%/%
+                            FLQuant(aaply(catch.n(x),2:6,sum)),
+                smnage =FLQuant(aaply(stock.n(x)%*%ages(stock.wt(x)),2:6,sum))%/%
+                            FLQuant(aaply(stock.n(x),2:6,sum))
+                ),drop=TRUE))
+save(stkTs,file=file.path(dirDat,"stkTs.RData"))
+```
+
+```{r, ssb}
+ggplot(stkTs)+
+  geom_line(aes(year,ssb,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("SSB")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+
+```{r, harvest}
+ggplot(stkTs)+
+  geom_line(aes(year,f,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("F")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+```{r, yield}
+ggplot(stkTs)+
+  geom_line(aes(year, catch,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Catch")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+
+```{r, ce}
+ggplot(stkTs)+
+  geom_line(aes(year,cpue,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("CPUE")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+```{r, rec}
+ggplot(stkTs)+
+  geom_line(aes(year,recruit,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Recruitment")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+
+```{r, biomass}
+ggplot(stkTs)+
+  geom_line(aes(year,stock,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Biomass")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+```{r, hrate}
+ggplot(stkTs)+
+  geom_line(aes(year,hrate,col=.id))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Harvest Rate")+
+  theme_bw()+
+  theme(legend.position="bottom")
+```
+**Figure `r iFig=iFig+1; paste("A1.",iFig,sep="")`**
+
+
+```{r}
+load(file.path(dirDat,"idx.RData"))
+
+x1=ldply(idx[c(1,1)], function(x) ldply(x, function(y) as.data.frame(index(y),drop=TRUE)))
+x2=ldply(idx[-1], function(y) as.data.frame(index(y),drop=TRUE))
+```
+
+\newpage
+## Software Versions
+
+* `r version$version.string`
+* FLCore: `r packageVersion('FLCore')`
+* FLife:  `r packageVersion('FLife')`
+* FLBRP:  `r packageVersion('FLBRP')`
+* **Compiled**: `r date()`
+
+## Author information
+
+**Laurence KELL**. laurie@kell.es
+
+# References {#References}
+
