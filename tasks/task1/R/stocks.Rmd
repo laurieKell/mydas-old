@@ -58,7 +58,7 @@ dirDat=file.path(dirMy,"data")
 nms=c("Cod North Sea", "Haddock North Sea","Whiting North Sea","Saithe North Sea", 
       "Plaice North Sea", "Sole North Sea",
       "Cod Celtic Sea","Haddock Celtic Sea","Whiting Celtic Sea")
-spp=c("Gadus morhua","Melanogrammus aeglefinus","Merlangius merlangus",
+spp=c("Gadus morhua","Melanogrammus aeglefinus","Merlangius merlangus","Pollachius virens",
       "Pleuronectes platessa","Solea solea")
 spp=spp[c(1:6,1:3)]
 sea=c(rep("North Sea",6),rep("Celtic Sea",3))
