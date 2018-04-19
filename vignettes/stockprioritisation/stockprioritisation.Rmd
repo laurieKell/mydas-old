@@ -1,6 +1,6 @@
 ---
 title: "MyDas"
-author: "Alex Tidd & Prof. Sir Laurence Kell"
+author: "Alex Tidd & Laurence Kell"
 date: "15/03/18"
 output:
   pdf_document: default
@@ -38,6 +38,7 @@ con  = dbConnect(drv, host = 'postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.ama
                  user = 'MydasApplication',
                  password = 'gmit2017!')
 
+
 stecf            = dbGetQuery(con,"SELECT * FROM data_stecflandings")
 land2016         = subset(stecf, year %in% c(2008:2016))
 #remove area 4bc etc
@@ -50,7 +51,7 @@ area             = dbGetQuery(con,"SELECT * FROM div_area")
 land2016$division = ifelse(land2016$area %in% "4", "4A", land2016$division)
 #convert in order to join and sum with landings
 area$division     = ifelse(area$division %in% c("12A","12B","12C"), "12",
-                    ifelse(area$division %in% c("14A","14B"), "14", area$division))
+                           ifelse(area$division %in% c("14A","14B"), "14", area$division))
 #areas not in euro zone so remove
 area              = subset(area, !(area_27 %in% c("8.d.1","7.k.1","7.c.1","6.b.1","7.j.1")))
 
@@ -58,10 +59,10 @@ totarea           = ddply(area, .(division), summarise, totareakm=sum(area_km2))
 
 allareas          = inner_join(land2016, totarea)
 
-allland           = ddply(allareas, .(year, country, gear, mesh, stock, speciesgp, length), summarise, totland=sum(landings))
+allland           = ddply(allareas, .(year, country, gear,  stock, speciesgp), summarise, totland=sum(landings))
 allland           = subset(allland, totland >0)
-alllandarea       = ddply(allareas, .(year, country, gear, mesh, stock, speciesgp, length,  ices_rectangle), summarise, uniarea=unique(area_km2))
-allareatot        = ddply(alllandarea, .(year, country, gear, mesh, stock, speciesgp, length), summarise, totfleetarea=sum(uniarea))
+alllandarea       = ddply(allareas, .(year, country, gear,  stock, speciesgp,   ices_rectangle), summarise, uniarea=unique(area_km2))
+allareatot        = ddply(alllandarea, .(year, country, gear,  stock, speciesgp), summarise, totfleetarea=sum(uniarea))
 combi             = inner_join(allland, allareatot)
 
 divarea           = ddply(allareas, .(stock, division), summarise, area=unique(totareakm))
@@ -73,7 +74,8 @@ overlap$olap_percent   = (overlap$totfleetarea/overlap$stockarea)*100
 
 catch            = dbGetQuery(con,"SELECT * FROM data_stecf_aer_cpuedays")
 catch$price      = catch$totval/catch$totctch
-price_sum        = ddply(catch, .(year, speciesgp), summarise, price=mean(price))
+
+price_sum        = ddply(catch, .(year,speciesgp), summarise, price=mean(price))
 
 overlap          = inner_join(price_sum, overlap)
 ```
@@ -140,7 +142,7 @@ overlap$P           = ((overlap$tm_score+overlap$fec_score+overlap$repro_score+o
 + Vulnerability 
 
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
-overlap$V           = sqrt(overlap$P^2 + overlap$S^2)    
+overlap$v           = sqrt(overlap$P^2 + overlap$S^2)    
 ```
 
 + Ranking index giving equal Weight to the mean Value of landings and vulnerability
@@ -156,16 +158,17 @@ overlap$value       = overlap$price*overlap$totland*1000
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 
 
-meanvals      = ddply(overlap, .(year,country,gear, stock, mesh, length), summarise, mnval=mean(value))
+meanvals      = ddply(overlap, .(year,country,gear, stock), summarise, mnval=mean(value))
 totvals       = ddply(meanvals, .(year), summarise, sdval=sd(mnval))
 getv          = inner_join(totvals, meanvals)
 getv          = na.omit(getv)
 allv          = inner_join(overlap, getv)
-getvW         = ddply(allv, .(year), summarise, sdwV= sd(V))
+getvW         = ddply(allv, .(year), summarise, sdv= sd(v))
 allvs         = inner_join(getvW, allv)
 
-allvs$rank = (allvs$mnval/allvs$sdval)+(allvs$V/allvs$sdwV)
-rnkspc     =  ddply(allvs, .(year,country,gear, speciesgp), summarise, rank = mean(rank, na.rm=T), val=sum(value))
+allvs$rank = (allvs$mnval/allvs$sdval)+(allvs$v/allvs$sdv)
+rnkspc=allvs[c("year", "country", "gear", "speciesgp", "rank", "value", "sdv","sdval", "v")]
+
 ```
 
 + Plot of ranking of variables by country, stock and gear
@@ -179,7 +182,7 @@ ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, rank, group=gear, colour=
 + Plot of value (€) of variables by country, stock and gear
 
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
-ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, val, group=gear, colour=gear)) + geom_line(size=1)+facet_grid(speciesgp~country, scales="free")+theme_bw()+
+ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, value, group=gear, colour=gear)) + geom_line(size=1)+facet_grid(speciesgp~country, scales="free")+theme_bw()+
   theme( text = element_text(size=8), strip.text.x = element_text(size = 8),strip.text.y = element_text(size = 8),
          panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_manual(values=c("#000000","slateblue3", "#E69F00", "#56B4E9", "#009E73",  "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "cadetblue3")) 
 ```
@@ -187,11 +190,11 @@ ggplot(subset(rnkspc, !(gear %in% "NONE")) , aes(year, val, group=gear, colour=g
 + ranking of the stocks by country and gear for last 3 years
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 ################ranking
-prioryr = subset(rnkspc, year %in% c(2014:2016))
+prioryr = subset(rnkspc , year %in% c(2014:2016))
 prioryr$combo = paste(prioryr$country, prioryr$gear, prioryr$speciesgp, sep="_")
-tblrnk10 = prioryr %>% group_by(year) %>% arrange(desc(year), desc(rank), desc(val))%>%top_n(10, rank)
+tblrnk10 = prioryr %>% group_by(year) %>% arrange(desc(year), desc(rank), desc(value))%>%top_n(10, rank)
 tblrnk10       = tblrnk10%>%group_by(year)%>%mutate(combo=factor(combo, levels = unique(combo)))
-tblrnk10       = transform(tblrnk10, fill=cut(val, c(0,10000,100000,500000,1000000,10000000,20000000)))
+tblrnk10       = transform(tblrnk10, fill=cut(value, c(1000000,2000000, 3000000, 4000000, 5000000,10000000,20000000)))
 mycolours = brewer.pal(6,"Set3")
 names(mycolours) = levels(tblrnk10$fill)
 #top 10 sorted on rank (combo of economics and vulnerability) and actual value
@@ -205,18 +208,17 @@ c=ggplot(subset(tblrnk10, year==2016), aes(x=reorder(tolower(combo), rank), y=ra
   guides(fill=guide_legend(title="Value (€)"))+ scale_fill_manual(name = "fill",values = mycolours) + theme_bw() + ylab("Rank") + xlab(" ")
 gridExtra::grid.arrange(a, b, c,  nrow=3)
 
-tblval10       = prioryr %>% group_by(year) %>% arrange(desc(year), desc(val), desc(rank))%>%top_n(10, val)
-tblval10       = transform(tblval10, fill=cut(rank, c(8,10,12,14,16,18,20)))
+tblval10       = prioryr %>% group_by(year) %>% arrange(desc(year), desc(value), desc(rank))%>%top_n(10, value)
+tblval10       = transform(tblval10, fill=cut(rank, c(8,12,14,18,20,22,24)))
 tblval10       = tblval10%>%group_by(year)%>%mutate(combo=factor(combo, levels = unique(combo)))
 mycolours2 = brewer.pal(6,"Set1")
 names(mycolours2) = levels(tblval10$fill)
 #top 10 based purely on price and rank
-d = ggplot(subset(tblval10, year==2014), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+d = ggplot(subset(tblval10, year==2014), aes(x=reorder(tolower(combo), value), y=value, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
     guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
-e = ggplot(subset(tblval10, year==2015), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+e = ggplot(subset(tblval10, year==2015), aes(x=reorder(tolower(combo), value), y=value, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
     guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
-f = ggplot(subset(tblval10, year==2016), aes(x=reorder(tolower(combo), val), y=val, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
+f = ggplot(subset(tblval10, year==2016), aes(x=reorder(tolower(combo), value), y=value, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
     guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
-gridExtra::grid.arrange(d, e, f,  nrow=3)   
-
+gridExtra::grid.arrange(d, e, f,  nrow=3)     
 ```
