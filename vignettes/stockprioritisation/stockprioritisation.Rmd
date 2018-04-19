@@ -9,9 +9,13 @@ output:
     df_print: paged
 subtitle: Stock prioritisation
 ---
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(message=FALSE, 
-tidy.opts=list(width.cutoff=60), warning=F, fig.width=12, fig.height=8) 
+```{r global_options,echo=FALSE}
+knitr::opts_chunk$set(message   =FALSE,
+                      tidy.opts =list(width.cutoff=60), 
+                      warning   =F, 
+                      fg.width  =12,  
+                      fig.height=8,
+                      echo      =FALSE) 
 ```
 ## Choice of stocks and justification  
 
@@ -220,5 +224,11 @@ e = ggplot(subset(tblval10, year==2015), aes(x=reorder(tolower(combo), value), y
     guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
 f = ggplot(subset(tblval10, year==2016), aes(x=reorder(tolower(combo), value), y=value, fill=fill)) + geom_bar(stat="identity")+coord_flip()+facet_wrap(~year)+
     guides(fill=guide_legend(title="Rank"))+scale_fill_manual(name = "fill",values = mycolours2) + theme_bw() + ylab("€") + xlab("")
+<<<<<<< HEAD
 gridExtra::grid.arrange(d, e, f,  nrow=3)     
 ```
+=======
+gridExtra::grid.arrange(d, e, f,  nrow=3)   
+
+```
+>>>>>>> 0eacaeaf747b5ffd8e89fe71d49f784c8f6398db
