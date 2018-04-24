@@ -26,10 +26,12 @@ knitr::opts_chunk$set(message   =FALSE,
 ```{r,  tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 library(DBI)
 library(RPostgreSQL)
-library(plyr)
 library(dplyr)
+library(plyr)
 library(reshape)
+library(maptools)
 library(ggplot2)
+library(ggrepel)
 library(RColorBrewer)
 options(scipen = 999)
 
@@ -41,7 +43,6 @@ con  = dbConnect(drv, host = 'postgresql-seascope.csffkpr9jjjn.eu-west-2.rds.ama
                  port = 5432,
                  user = 'MydasApplication',
                  password = 'gmit2017!')
-
 
 stecf            = dbGetQuery(con,"SELECT * FROM data_stecflandings")
 land2016         = subset(stecf, year %in% c(2008:2016))
@@ -58,8 +59,6 @@ area$division     = ifelse(area$division %in% c("12A","12B","12C"), "12",
                            ifelse(area$division %in% c("14A","14B"), "14", area$division))
 #areas not in euro zone so remove
 #area              = subset(area, !(area_27 %in% c("8.d.1","7.k.1","7.c.1","6.b.1","7.j.1")))
-
-totarea           = ddply(area, .(division), summarise, totareakm=sum(area_km2))
 
 totarea           = ddply(area, .(division), summarise, totareakm=sum(area_km2))
 spr               = subset(totarea, division %in% c("7A","7B","7C", "7F", "7G", "7H","7J","7K", "6A","6B","6B"))
@@ -87,17 +86,18 @@ allstock = rbind(spr, ska, bll, tur, pol, pok, lin, jod, gug)
 stockarea = ddply(allstock, .(stock), summarise, totareakm=sum(totareakm))
 
 allareas          = inner_join(land2016, stockarea)
+
 allland           = ddply(allareas, .(year, country, gear,  stock, speciesgp), summarise, totland=sum(landings))
 allland           = subset(allland, totland >0)
 alllandarea       = ddply(allareas, .(year, country, gear,  stock, speciesgp,   ices_rectangle), summarise, uniarea=unique(area_km2))
 allareatot        = ddply(alllandarea, .(year, country, gear,  stock, speciesgp), summarise, totfleetarea=sum(uniarea))
 combi             = inner_join(allland, allareatot)
 
-divarea           = ddply(allareas, .(stock, division), summarise, area=unique(totareakm))
-allstockarea      = ddply(divarea, .(stock), summarise, stockarea=sum(area))
+divarea           = ddply(allareas, .(stock), summarise, area=unique(totareakm))
 
-overlap           = inner_join(combi, allstockarea)
-overlap$olap_percent   = (overlap$totfleetarea/overlap$stockarea)*100
+overlap           = inner_join(combi, divarea)
+
+overlap$olap_percent   = (overlap$totfleetarea/overlap$area)*100
 
 
 catch            = dbGetQuery(con,"SELECT * FROM data_stecf_aer_cpuedays")
@@ -237,7 +237,7 @@ c=ggplot(subset(tblrnk10, year==2016), aes(x=reorder(tolower(combo), rank), y=ra
 gridExtra::grid.arrange(a, b, c,  nrow=3)
 
 tblval10       = prioryr %>% group_by(year) %>% arrange(desc(year), desc(value), desc(rank))%>%top_n(10, value)
-tblval10       = transform(tblval10, fill=cut(rank, c(8,12,14,18,20,22,24)))
+tblval10       = transform(tblval10, fill=cut(rank, c(8,12,14,18,20,22,25)))
 tblval10       = tblval10%>%group_by(year)%>%mutate(combo=factor(combo, levels = unique(combo)))
 mycolours2 = brewer.pal(6,"Set1")
 names(mycolours2) = levels(tblval10$fill)
