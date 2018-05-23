@@ -1,16 +1,16 @@
 ---
-title: "Task 2"
-subtitle: "Life History Data"
+title: "MyDas"
+subtitle: "Stock Assssments"
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: pdf_document
+output: rmarkdown:::pdf_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+tags: FLPKG FLR
+license: Creative Commons Attribution-ShareAlike 4.0 International
 ---
-
-```{r dir}
-dirMy =getwd()
-dirInp=file.path(dirMy,"inputs")
-dirDat=file.path(dirMy,"data")
-```
 
 ```{r knitr, echo=FALSE}
 library(knitr)
@@ -26,7 +26,6 @@ opts_chunk$set(comment=NA, fig.width =8,
 iFig=0
 iTab=0
 ```
-
 ```{r}
 library(FLCore)
 library(ggplotFL)
@@ -37,6 +36,13 @@ library(FLife)
 library(stringr)
 
 theme_set(theme_bw())
+```
+```{r dir}
+dirMy=dirname(dirname(FLife:::getScriptPath()))
+dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
+
+dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
+dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")
 ```
 
 Stocks and species
