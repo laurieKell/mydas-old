@@ -1,6 +1,6 @@
 ---
 title: "FLife: Operating Model Conditioning"
-subtitle: "Turbot"
+subtitle: "Pollack"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document

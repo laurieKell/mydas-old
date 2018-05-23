@@ -66,6 +66,7 @@ fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
 ray   =subset(fb,species=="Raja clavata")
 sprat =subset(fb,species=="Sprattus sprattus sprattus")
 bigeye=subset(fb,species=="Thunnus obesus")
+bigeye["a"]=0.1*bigeye["a"]
 plaice=subset(fb,species=="Pleuronectes platessa")
 ```
 
@@ -176,7 +177,7 @@ ggpairs(transform(plaice[,-1],linf=log(linf),k=log(k),l50=log(l50)),
 The parameters are then used by `lhEql` to simulate the equilibrium dynamics by combining the spawner/yield per recruit relationships with a stock recruiment relationship.
 
 ```{r eql}
-sim<-function(x,niters=500,se.default=0.3){
+sim<-function(x,niters=500,se.default=0.2){
   
   mn=aaply(x,1,mean, na.rm=TRUE)
   sd=aaply(x,1,var,  na.rm=TRUE)^0.5
