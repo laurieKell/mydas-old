@@ -176,14 +176,14 @@ ggpairs(transform(plaice[,-1],linf=log(linf),k=log(k),l50=log(l50)),
 The parameters are then used by `lhEql` to simulate the equilibrium dynamics by combining the spawner/yield per recruit relationships with a stock recruiment relationship.
 
 ```{r eql}
-sim<-function(x,niters=500,se=0.3){
+sim<-function(x,niters=500,se.default=0.3){
   
   mn=aaply(x,1,mean, na.rm=TRUE)
   sd=aaply(x,1,var,  na.rm=TRUE)^0.5
   n =aaply(x,1,function(x) sum(!is.na(x)))
   se=sd/n^0.5
   
-  if (any(is.na(se))) se[is.na(se)]=se*mn[is.na(se)]
+  if (any(is.na(se))) se[is.na(se)]=se.default*mn[is.na(se)]
   
   y=data.frame(mn=mn,se=se)
   y=mdply(y,function(mn,se) rnorm(niters,mn,se))[,-(1:2)]
@@ -197,7 +197,7 @@ sim<-function(x,niters=500,se=0.3){
 # create FLPar
 lhRay   =FLife:::mf2FLPar(ray[,   -c(1)])
 lhSprat =FLife:::mf2FLPar(sprat[, -c(1,7:8)])
-lhBigeye=FLife:::mf2FLPar(bigeye[,-c(1,7:8)])
+lhBigeye=FLife:::mf2FLPar(bigeye[,-c(1,7)])
 lhPlaice=FLife:::mf2FLPar(plaice[,-c(1)])
 
 lhRay["t0"][]   =pmin(-0.1,c(lhRay["t0"]))
@@ -210,7 +210,6 @@ lhRay   =sim(lhRay,    niters=nits)
 lhSprat =sim(lhSprat,  niters=nits)
 lhBigeye=sim(lhBigeye, niters=nits)
 lhPlaice=sim(lhPlaice, niters=nits)
-
 
 # create FLPar
 lhRay   =lhPar(lhRay,   s=0.8)
@@ -264,7 +263,6 @@ ggplot(res)+
 
 ```{r vectorBigye}
 dat=FLQuants(eqBigeye,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
-
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
                                age~iter,value="data"))
