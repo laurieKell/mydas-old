@@ -48,7 +48,7 @@ opts_chunk$set(echo      =FALSE,
                fig.width =8,
                fig.path  ="../tex/r-",
                cache     =TRUE,
-               cache.path="../cache/r")
+               cache.path="../cache/r/")
 
 iFig=0
 iTab=0
@@ -64,6 +64,7 @@ library(reshape)
 
 library(RPostgreSQL)
 library(popbio)
+library(numDeriv)
 
 library(FLife)
 ```
@@ -114,12 +115,13 @@ eq=llply(lhpar,lhEql)
 ```
 
 ```{r, leslie}
-library(FLBRP)
+library(FLRP)
 L=llply(eq,function(x) leslie(x,fbar=c(refpts(x)["crash","harvest"])))      
 ```
 
 ```{r, r}
 r=ldply(L,function(x) log(aaply(x, 3, lambda)))
+save(r,file=file.path(dirDat,"r.RData"))
 ```
 
 ```{r, plot}
@@ -250,3 +252,12 @@ ggpairs(transform(dat,linf=log(linf),k=log(k),lmat=log(lmat))[,c("r.c","linf","k
   axis.text.y      =element_blank(),
   panel.border     =element_rect(linetype = 1, colour="black", fill=NA))
 ```
+
+```{r}
+load(file.path(dirDat,"stk.RData"))
+
+rfs=as.data.frame(laply(stk,refs))
+```
+
+
+

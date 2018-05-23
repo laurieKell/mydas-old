@@ -62,13 +62,16 @@ library(FLife)
 library(FLCore)
 library(FLash)
 library(FLBRP)
-library(ggplotFL)
 library(FLAssess)
 library(FLXSA)
+
+library(ggplotFL)
+
+library(FLasher)
+library(FLRP)
 library(FLife)
 library(mpb)
 library(plyr)
-
 
 theme_set(theme_bw())
 
