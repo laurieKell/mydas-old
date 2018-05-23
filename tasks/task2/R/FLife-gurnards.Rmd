@@ -3,15 +3,14 @@ title: "MyDas"
 subtitle: "Gurnard Life History Relationships"
 author: "Laurie Kell & Alex Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: pdf_document
+output: rmarkdown:::pdf_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+tags: FLPKG FLR
+license: Creative Commons Attribution-ShareAlike 4.0 International
 ---
-
-```{r dir}
-dirMy="/home/laurence/Desktop/sea++/mydas"
-#dirMy =getwd()
-dirInp=file.path(dirMy,"tasks/inputs")
-dirDat=file.path(dirMy,"tasks/data")
-```
 
 ```{r knitr_init, echo=FALSE, results="hide"}
 library(knitr)
@@ -30,8 +29,6 @@ opts_chunk$set(cache     =!TRUE,
 
 iFig=0
 ```
-
-
 ```{r, pkgs, message=FALSE}
 library(ggplot2)
 library(GGally)
@@ -39,20 +36,21 @@ library(GGally)
 library(FLife)
 library(plyr)
 library(reshape)
-```
 
-```{r, theme, echo=FALSE}
 theme_set(theme_bw())
 options(digits=3)
 ```
+```{r dir}
+dirMy=dirname(dirname(FLife:::getScriptPath()))
+dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task1"
 
-# Life history parameters
-```{r, data}
-load(file.path(dirDat,"gurnards.RData"))
+dirInp=file.path(dirMy,"tasks/inputs")
+dirDat=file.path(dirMy,"tasks/data")
 ```
-
-
-```{r, fig.height=8, echo=FALSE}
+```{r, data}
+load("/home/laurence/Desktop/sea++/mydas/data/fishbase-web.RData")
+```
+```{r, source, fig.height=8, echo=FALSE}
 my_smooth <- function(data,mapping,...){
   ggplot(data=data,mapping=mapping)+
   geom_point(...,size=.5)+

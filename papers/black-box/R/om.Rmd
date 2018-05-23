@@ -33,8 +33,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/xval2-om",
-               cache.path="../cache/xval2-om/" 
+               fig.path  ="../tex/om-",
+               cache.path="../cache/om/" 
                )
 
 iFig=0
@@ -49,23 +49,16 @@ library(reshape)
 library(GGally)
 
 library(FLCore)
+library(FLRP)
+library(FLasher)
 library(ggplotFL)
 library(FLife)
-```
-
-```{r, source, eval=FALSE}
-source('~/Desktop/flr/FLBRP/R/fwd.R')
-source('~/Desktop/flr/FLash/R/fwd.R')
-source('~/Desktop/flr/FLash/R/fwdControl.R')
-source('~/Desktop/flr/FLife/R/generic.R')
-source('~/Desktop/flr/FLife/R/lopt.R')
-source('~/Desktop/flr/FLife/R/lhPar.R')
 ```
 
 ## Life history parameters
 
 ```{r lh}
-load("/home/laurence/Desktop/sea++/mydas/tasks/task2/inputs/fishbase-web.RData")
+load("/home/laurence/Desktop/papers/generic/fishnets-master/data/fishbase-web/fishbase-web.RData")
 
 names(fb)[c(14,17)]=c("l50","a50")
 fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
@@ -73,7 +66,7 @@ fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
 ray   =subset(fb,species=="Raja clavata")
 sprat =subset(fb,species=="Sprattus sprattus sprattus")
 bigeye=subset(fb,species=="Thunnus obesus")
-plaice=plaice=subset(fb,species=="Pleuronectes platessa")
+plaice=subset(fb,species=="Pleuronectes platessa")
 ```
 
 ```{r devs}
@@ -81,7 +74,7 @@ set.seed(1233)
 srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.5,b=0.0)
 ```
 
-```{r}
+```{r, par}
 my_smooth <- function(data,mapping,...){
   ggplot(data=data,mapping=mapping)+
   geom_point(...,size=.5)+
@@ -207,31 +200,35 @@ lhSprat =FLife:::mf2FLPar(sprat[, -c(1,7:8)])
 lhBigeye=FLife:::mf2FLPar(bigeye[,-c(1,7:8)])
 lhPlaice=FLife:::mf2FLPar(plaice[,-c(1)])
 
+lhRay["t0"][]   =pmin(-0.1,c(lhRay["t0"]))
+lhSprat["t0"][] =pmin(-0.1,c(lhSprat["t0"]))
+lhBigeye["t0"][]=pmin(-0.1,c(lhBigeye["t0"]))
+lhPlaice["t0"][]=pmin(-0.1,c(lhPlaice["t0"]))
+
 # Monte Carlo
-lhRay   =sim(lhRay,niters=nits)
-lhSprat =sim(lhSprat,niters=nits)
-lhBigeye=sim(lhBigeye,niters=nits)
-lhPlaice=sim(lhPlaice,niters=nits)
+lhRay   =sim(lhRay,    niters=nits)
+lhSprat =sim(lhSprat,  niters=nits)
+lhBigeye=sim(lhBigeye, niters=nits)
+lhPlaice=sim(lhPlaice, niters=nits)
 
 # create FLPar
-lhRay   =lhPar(lhRay)
-lhSprat =lhPar(lhSprat[, -c(7:8)])
-lhBigeye=lhPar(lhBigeye[,-c(7:8)])
-lhPlaice=lhPar(lhPlaice[,-c(7:8)])
+lhRay   =lhPar(lhRay,   s=0.8)
+lhSprat =lhPar(lhSprat, s=0.8)
+lhBigeye=lhPar(lhBigeye,s=0.8)
+lhPlaice=lhPar(lhPlaice,s=0.8)
 
 # equilibium dynamics
-eqlRay   =lhEql(lhRay)
-eqlSprat =lhEql(lhSprat)
-eqlBigeye=lhEql(lhBigeye)
-eqlPlaice=lhEql(lhPlaice)
-
+eqRay   =lhEql(lhRay)
+eqSprat =lhEql(lhSprat)
+eqBigeye=lhEql(lhBigeye)
+eqPlaice=lhEql(lhPlaice)
 ```
 
 ```{r vectorRay}
 sel<-function(x) 
   catch.sel(x)%/%fapex(catch.sel(x))
 
-dat=FLQuants(eqlRay,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
+dat=FLQuants(eqRay,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
                                age~iter,value="data"))
@@ -248,7 +245,7 @@ ggplot(res)+
 **Figure `r iFig=iFig+1; iFig`** Vectors for thornback ray.
 
 ```{r vectorSprat}
-dat=FLQuants(eqlSprat,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
+dat=FLQuants(eqSprat,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975),na.rm=TRUE)),
                                age~iter,value="data"))
@@ -260,13 +257,12 @@ ggplot(res)+
   facet_wrap(~.id,scale="free")+
   scale_x_continuous(limits=c(0,10))+
   xlab("Age")+ylab("")
-  
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Vectors for sprat.
 
 ```{r vectorBigye}
-dat=FLQuants(eqlBigeye,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
+dat=FLQuants(eqBigeye,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
                                age~iter,value="data"))
@@ -284,7 +280,7 @@ ggplot(res)+
 
 
 ```{r vectorPlaice}
-dat=FLQuants(eqlPlaice,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
+dat=FLQuants(eqPlaice,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
                                age~iter,value="data"))
@@ -306,29 +302,36 @@ ggplot(res)+
 #http://www.fishbase.org/manual/Key%20Facts.htm
 
 gTime=round(FLife:::genTime(FLPar(aaply(lhRay,1,mean))))
+maxf =mean(refpts(eqRay)["crash","harvest"]/refpts(eqRay)["msy","harvest"]*0.75)
 
-FLBRP:::fbar(eqlRay)=FLBRP:::refpts(eqlRay)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                                                 seq(.1,2,length.out=40),
-                                                                 seq(2,.7,length.out=gTime)[-1],
-                                                                 rep(.7,61)))
+eqRay@fbar=refpts(eqRay)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                       seq(.1,maxf,length.out=40),
+                                                       seq(maxf,.7,length.out=gTime)[-1],
+                                                       rep(.7,61)))[,1:100]
 
-omRay=fwd(eqlRay)
-omRay=fwd(omRay,f=fbar(omRay)[,-1],sr=eqlRay,sr.residuals=srDev)
+omRay=as(eqRay,"FLStock")
+omRay=fwd(omRay,fbar=fbar(omRay)[,-1],sr=eqRay,residuals=srDev)
+
+save(lhRay,eqRay,omRay,file=file.path(dirDat,"ray.RData"),compress="xz")
 
 plot(omRay)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Time series for thornback ray.
-
+  
 ```{r omSprat}
 gTime=round(FLife:::genTime(FLPar(aaply(lhSprat,1,mean))))
+maxf =mean(refpts(eqSprat)["crash","harvest"]/refpts(eqSprat)["msy","harvest"]*0.75)
 
-FLBRP:::fbar(eqlSprat)=FLBRP:::refpts(eqlSprat)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                                         seq(.1,2,length.out=40),
-                                                         seq(2,.7,length.out=gTime)[-1],
+eqSprat@fbar=refpts(eqSprat)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,maxf,length.out=40),
+                                                         seq(maxf,.7,length.out=gTime)[-1],
                                                          rep(.7,61)))[,1:100]
-omSprat=fwd(eqlSprat,maxF=5)
-omSprat=fwd(omSprat,f=fbar(omSprat)[,-1],sr=eqlSprat,sr.residuals=srDev) #,sr.residuals=srDev,maxF=5)
+omSprat=as(eqSprat,"FLStock")
+
+omSprat=fwd(omSprat,fbar=fbar(omSprat)[,-1],sr=eqSprat,residuals=srDev)
+
+save(lhSprat,eqSprat,omSprat,file=file.path(dirDat,"sprat.RData"),compress="xz")
 
 plot(omSprat)
 ```
@@ -337,13 +340,16 @@ plot(omSprat)
 
 ```{r omBigeye}
 gTime=round(FLife:::genTime(FLPar(aaply(lhBigeye,1,mean))))
+maxf =mean(refpts(eqBigeye)["crash","harvest"]/refpts(eqBigeye)["msy","harvest"]*0.75)
 
-FLBRP:::fbar(eqlBigeye)=FLBRP:::refpts(eqlBigeye)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                                         seq(.1,2,length.out=40),
-                                                         seq(2,.7,length.out=gTime)[-1],
+fbar(eqBigeye)=refpts(eqBigeye)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,maxf,length.out=40),
+                                                         seq(maxf,.7,length.out=gTime)[-1],
                                                          rep(.7,61)))[,1:100]
-omBigeye=fwd(eqlBigeye)
-omBigeye=fwd(omBigeye,f=fbar(omBigeye)[,-1],sr=eqlBigeye,sr.residuals=srDev[,,,,,dimnames(m(omBigeye))$iter])
+omBigeye=as(eqBigeye,"FLStock")
+omBigeye=fwd(omBigeye,fbar=fbar(omBigeye)[,-1],sr=eqBigeye,residuals=srDev)
+
+save(lhBigeye,eqBigeye,omBigeye,file=file.path(dirDat,"bigeye.RData"),compress="xz")
 
 plot(omBigeye)
 ```
@@ -353,22 +359,19 @@ plot(omBigeye)
 
 ```{r omPlaice}
 gTime=round(FLife:::genTime(FLPar(aaply(lhPlaice,1,mean))))
+maxf =mean(refpts(eqBigeye)["crash","harvest"]/refpts(eqBigeye)["msy","harvest"]*0.75)
 
-FLBRP:::fbar(eqlPlaice)=FLBRP:::refpts(eqlPlaice)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                                         seq(.1,2,length.out=40),
-                                                         seq(2,.7,length.out=gTime)[-1],
+fbar(eqPlaice)=refpts(eqPlaice)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
+                                                         seq(.1,maxf,length.out=40),
+                                                         seq(maxf,.7,length.out=gTime)[-1],
                                                          rep(.7,61)))[,1:100]
-omPlaice=fwd(eqlPlaice)
-omPlaice=fwd(omPlaice,f=fbar(omPlaice)[,-1],sr=eqlPlaice,sr.residuals=srDev[,,,,,dimnames(m(eqlPlaice))$iter])
+omPlaice=as(eqPlaice,"FLStock")
+omPlaice=fwd(omPlaice,fbar=fbar(omPlaice)[,-1],sr=eqPlaice,residuals=srDev)
 
 plot(omPlaice)
+
+save(lhPlaice,eqPlaice,omPlaice,file=file.path(dirDat,"plaice.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Time series for plaice.
 
-
-```{r eqlSave}
-save(lhRay,  lhSprat, lhBigeye, lhPlaice,  file=file.path(dirDat, "box_lh.RData"), compress="xz")
-save(omRay,  omSprat, omBigeye, omPlaice,  file=file.path(dirDat, "box_eql.RData"),compress="xz")
-save(eqlRay, eqlSprat,eqlBigeye,eqlPlaice, file=file.path(dirDat, "box_eql.RData"),compress="xz")
-```
