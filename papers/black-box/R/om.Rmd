@@ -183,7 +183,7 @@ sim<-function(x,niters=500,se=0.3){
   n =aaply(x,1,function(x) sum(!is.na(x)))
   se=sd/n^0.5
   
-  if (any(is.na(se))) se[is.na(se)]=se
+  if (any(is.na(se))) se[is.na(se)]=se*mn[is.na(se)]
   
   y=data.frame(mn=mn,se=se)
   y=mdply(y,function(mn,se) rnorm(niters,mn,se))[,-(1:2)]
@@ -210,6 +210,7 @@ lhRay   =sim(lhRay,    niters=nits)
 lhSprat =sim(lhSprat,  niters=nits)
 lhBigeye=sim(lhBigeye, niters=nits)
 lhPlaice=sim(lhPlaice, niters=nits)
+
 
 # create FLPar
 lhRay   =lhPar(lhRay,   s=0.8)
@@ -263,6 +264,7 @@ ggplot(res)+
 
 ```{r vectorBigye}
 dat=FLQuants(eqBigeye,"M"=m,"Selectivity"=sel,"Maturity"=mat,"Mass"=stock.wt)
+
 
 res=ldply(dat,function(x) cast(as.data.frame(quantile(x,probs=c(0.025,0.25,0.5,0.75,0.975))),
                                age~iter,value="data"))
@@ -341,6 +343,7 @@ plot(omSprat)
 ```{r omBigeye}
 gTime=round(FLife:::genTime(FLPar(aaply(lhBigeye,1,mean))))
 maxf =mean(refpts(eqBigeye)["crash","harvest"]/refpts(eqBigeye)["msy","harvest"]*0.75)
+
 
 fbar(eqBigeye)=refpts(eqBigeye)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                                          seq(.1,maxf,length.out=40),
