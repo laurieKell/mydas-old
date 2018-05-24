@@ -1,6 +1,6 @@
 ---
 title: "FLife: Operating Model Conditioning"
-subtitle: "Brill"
+subtitle: "Razors"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -19,8 +19,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-brill-",
-               cache.path="../cache/om-brill/")
+               fig.path  ="../tex/om-razor",
+               cache.path="../cache/om-razor-/")
 
 iFig=0
 iTab=0
@@ -52,13 +52,24 @@ srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
 ## Life history parameters
 
 ```{r, lh}
-load("/home/laurence/Desktop/papers/generic/fishnets-master/data/fishbase-web/fishbase-web.RData")
+ab=cbind(a=c(0.000009,0.000020,0.000010),
+         b=c(3.099000,2.848680,3.030000),
+         a.se=c(1.53E-06,1.00E-05,NA),
+         b.se=c(3.62E-02,0.11418,0.059))
 
-names(fb)[c(14,17)]=c("l50","a50")
-fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
-
-lh=subset(fb,species=="Scophthalmus rhombus")
-lh[lh$t0>=0,"t0"]=NA
+lhist=c(t0  =5/365,
+        a50 =492/365,
+        l0  =0.0136,
+        l50 =4.841,
+        lmax=18.6,
+        k   =0.002*365,
+        amax=2555/365) 
+     
+lh=read.csv("/home/laurence/Desktop/sea++/mydas/tasks/task5/inputs/razorGrowth.csv")[,1:3]     
+lh=cbind(lh,rbind(ab[,c("a","b")],
+                  cbind(a   =rep(NA,dim(lh)[1]-dim(ab)[1]),
+                        b   =rep(NA,dim(lh)[1]-dim(ab)[1]))))
+lh=cbind(lh,a50=c(492/365,rep(NA,dim(lh)[1]-1)))
 ```
 
 ```{r, par}
@@ -73,7 +84,7 @@ my_density <- function(data,mapping,...){
 
 theme_set(theme_bw(base_size=20))
 
-ggpairs(transform(lh[,-1],linf=log(linf),k=log(k),l50=log(l50)),
+ggpairs(transform(lh,linf=log(linf),k=log(k),a50=a50),
         lower = list(continuous = wrap(my_smooth)),
         diag=list(continuous=wrap(my_density,alpha=0.2)),
         title = "")+
@@ -112,7 +123,7 @@ sim<-function(x,niters=500,se=0.3){
   res}
 
 # create FLPar
-lh=FLife:::mf2FLPar(lh[,   -c(1,7)])
+lh=FLife:::mf2FLPar(lh)
 lh[lh$t0>=0,"t0"]=NA
 
 lh=sim(lh,    niters=nits)
@@ -143,11 +154,12 @@ ggplot(res)+
 **Figure `r iFig=iFig+1; iFig`** Vectors.
 
 
-```{r}
+```{r eq, fig.height=6,fig.width=8}
 plot(iter(eq,1),refpts=FALSE)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Example equilibrum Curve.
+
 
 ## Population dynamics
 
@@ -165,7 +177,7 @@ eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
-save(lh,eq,om,file=file.path(dirDat,"brill.RData"),compress="xz")
+save(lh,eq,om,file=file.path(dirDat,"razor.RData"),compress="xz")
 
 plot(om)
 ```

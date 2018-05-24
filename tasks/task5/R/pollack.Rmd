@@ -19,8 +19,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-pollack",
-               cache.path="../cache/om-pollack-/")
+               fig.path  ="../tex/om-pollack-",
+               cache.path="../cache/om-pollack/")
 
 iFig=0
 iTab=0
@@ -142,6 +142,13 @@ ggplot(res)+
 
 **Figure `r iFig=iFig+1; iFig`** Vectors.
 
+```{r eq, fig.height=6,fig.width=8}
+plot(iter(eq,1),refpts=FALSE)+theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`** Example equilibrum Curve.
+
+
 ## Population dynamics
 
 ```{r om}
@@ -163,4 +170,4 @@ save(lh,eq,om,file=file.path(dirDat,"pollack.RData"),compress="xz")
 plot(om)
 ```
 
-**Figure `r iFig=iFig+1; iFig`** Time series for thornback ray.
+**Figure `r iFig=iFig+1; iFig`** Time series.

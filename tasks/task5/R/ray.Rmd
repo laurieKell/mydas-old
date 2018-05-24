@@ -1,6 +1,6 @@
 ---
 title: "FLife: Operating Model Conditioning"
-subtitle: "Brill"
+subtitle: "Thornback Ray"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -19,8 +19,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-brill-",
-               cache.path="../cache/om-brill/")
+               fig.path  ="../tex/om-ray-",
+               cache.path="../cache/om-ray/")
 
 iFig=0
 iTab=0
@@ -57,7 +57,7 @@ load("/home/laurence/Desktop/papers/generic/fishnets-master/data/fishbase-web/fi
 names(fb)[c(14,17)]=c("l50","a50")
 fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
 
-lh=subset(fb,species=="Scophthalmus rhombus")
+lh=subset(fb,species=="Raja clavata")
 lh[lh$t0>=0,"t0"]=NA
 ```
 
@@ -149,6 +149,7 @@ plot(iter(eq,1),refpts=FALSE)
 
 **Figure `r iFig=iFig+1; iFig`** Example equilibrum Curve.
 
+
 ## Population dynamics
 
 ```{r om}
@@ -165,7 +166,7 @@ eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
-save(lh,eq,om,file=file.path(dirDat,"brill.RData"),compress="xz")
+save(lh,eq,om,file=file.path(dirDat,"ray.RData"),compress="xz")
 
 plot(om)
 ```

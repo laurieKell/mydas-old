@@ -1,6 +1,6 @@
 ---
 title: "FLife: Operating Model Conditioning"
-subtitle: "Brill"
+subtitle: "Sprat"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -19,8 +19,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-brill-",
-               cache.path="../cache/om-brill/")
+               fig.path  ="../tex/om-sprat-",
+               cache.path="../cache/om-sprat/")
 
 iFig=0
 iTab=0
@@ -57,7 +57,7 @@ load("/home/laurence/Desktop/papers/generic/fishnets-master/data/fishbase-web/fi
 names(fb)[c(14,17)]=c("l50","a50")
 fb=fb[,c("species","linf","k","t0","a","b","a50","l50")]
 
-lh=subset(fb,species=="Scophthalmus rhombus")
+lh =subset(fb,species=="Sprattus sprattus sprattus")
 lh[lh$t0>=0,"t0"]=NA
 ```
 
@@ -112,7 +112,7 @@ sim<-function(x,niters=500,se=0.3){
   res}
 
 # create FLPar
-lh=FLife:::mf2FLPar(lh[,   -c(1,7)])
+lh=FLife:::mf2FLPar(lh[,   -c(1,7:8)])
 lh[lh$t0>=0,"t0"]=NA
 
 lh=sim(lh,    niters=nits)
@@ -142,7 +142,6 @@ ggplot(res)+
 
 **Figure `r iFig=iFig+1; iFig`** Vectors.
 
-
 ```{r}
 plot(iter(eq,1),refpts=FALSE)
 ```
@@ -155,7 +154,7 @@ plot(iter(eq,1),refpts=FALSE)
 #http://www.fishbase.org/manual/Key%20Facts.htm
 
 gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
-maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.75)
+maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.5)
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                               seq(.1,maxf,length.out=40),
@@ -165,7 +164,7 @@ eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
-save(lh,eq,om,file=file.path(dirDat,"brill.RData"),compress="xz")
+save(lh,eq,om,file=file.path(dirDat,"sprat.RData"),compress="xz")
 
 plot(om)
 ```
