@@ -1,7 +1,7 @@
 ---
 title: "FLife: Operating Model Conditioning"
 subtitle: "Lobster"
-author: "L Kell"
+author: "A Tidd & L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
@@ -120,7 +120,7 @@ lh=FLife:::mf2FLPar(lh)
 lh=sim(lh,    niters=nits)
 
 lh=lhPar(lh,s=0.8)
-eq=lhEql(lh,mFn=function(params) 0.1)
+eq=lhEql(lh)
 ```
 
 ```{r vectors}
