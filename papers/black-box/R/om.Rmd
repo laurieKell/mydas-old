@@ -361,7 +361,8 @@ plot(omBigeye)
 
 ```{r omPlaice}
 gTime=round(FLife:::genTime(FLPar(aaply(lhPlaice,1,mean))))
-maxf =mean(refpts(eqBigeye)["crash","harvest"]/refpts(eqBigeye)["msy","harvest"]*0.75)
+maxf =mean(refpts(eqPlaice)["crash","harvest"]/refpts(eqPlaice)["msy","harvest"]*0.75)
+
 
 fbar(eqPlaice)=refpts(eqPlaice)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                                          seq(.1,maxf,length.out=40),
