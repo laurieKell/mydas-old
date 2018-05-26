@@ -1,0 +1,124 @@
+---
+title: "Operating Models Conditioned using Life History Relationships"
+author: "L Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{FLife}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+github_document:
+    mathjax: TRUE
+bibliography: refs.bib
+tags: FLife FLR
+license: Creative Commons Attribution-ShareAlike 4.0 International Public License
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(cache     =TRUE,
+               cache.path="../cache/FLife-OM/",
+               echo      =FALSE,
+               eval      =TRUE,
+               prompt    =FALSE,
+               comment   =NA,
+               message   =FALSE,
+               warning   =FALSE,
+               tidy      =TRUE,
+               fig.height=6,
+               fig.width =8,
+               fig.path  ="../tex/FLife-OM-")
+
+options(digits=3)
+```
+
+LIfe history relationships were used to create operating models for data poor stocks based on life history relationships. 
+
+# Introduction
+
+An objective of Management Strategy Evaluation is to develop stock assessment methods, reference points and harvest control rules that are robust to uncertainty. Many Operating Models have been developed using a stock assessment parigdim, however, there are many processes for which there is little infomation about in stock assessment datasets, e.g. natural mortality, the steepness of the stock recruitment relationship, the form of population regulation and density dependence. The **FLife** package therefore allows operating models to be developed based on life history relationships and ecological processes. Doing this is particularly valuable in data poor situtations where knowledge and data are limited, but also in data rich situtaions as simulation testing an assessment procedure using a model conditioned on the same assumptions is not necessarily a true test of robustness.  
+
+# Material and Methods
+
+Life history parameters for growth, natural mortality and maturity were used to develop an age-based Operating Model. The life history parameters were first used to generate vectors at age for life history processes to derive mass ($W$), proportion mature ($Q$), natural mortality ($M$) and fishing mortality ($F$) at age. These were then used to to combine a stock recruitment relationship with a spawner-per-recruit ($S/R$) and yield-per-recruit ($Y/R$) analyses @sissenwine1987alternative. These relationships are then used to create a forward projection. 
+
+## Life history processes
+
+Growth in length is modelled by the Von Bertalanffy growth equation @vonbert1957quantitative
+
+\begin{equation} L = L_\infty(1 - exp(-k(t-t_0)) \end{equation}
+         
+where $k$ is the rate at which the rate of growth in length declines as length approaches the asymptotic length  $L_\infty$ and $t_{0}$ is the hypothetical time at which an individual is of zero length.
+
+Length is converted to mass using the length-weight relationship 
+    
+\begin{equation} W = aL_t^b \end{equation}
+
+\noindent where $a$ is the condition factor and $b$ is the allometric growth coefficient.
+
+@gislason2010does showed that M is significantly related to body length, asymptotic length and k. Temperature is non-significant when k is included, since k itself is correlated with temperature. We therefore model M as
+
+\begin{equation}
+            M =  0.55L^{1.61}L_\infty^{1.44}k
+\end{equation} 
+
+Selection pattern of the fishery was represented by a double normal with three parameters that describe the age at maximum selection ($a1$), the rate at which the left-hand  limb increases ($sl$) and the right-hand limb decreases ($sr$) which allows flat topped or domed shaped selection patterns to be chosen.
+         
+\begin{equation}
+f(x) = \left\{ \begin{array}{ll}
+			0                                 &\mbox{ if $(a_{50}-x)/a_{95} >  5$} \\
+			a_\infty                        &\mbox{ if $(a_{50}-x)/a_{95} < -5$} \\
+			\frac{m_\infty}{1.0+19.0^{(a_{50}-x)/_{95})}} &\mbox{ otherwise}
+		\end{array}
+       \right.
+\end{equation}
+
+## Per Recruit Analysis 
+
+\begin{equation}
+S/R=\sum\limits_{i=0}^{p-1} {e^{\sum\limits_{j=0}^{i-1} {-F_j-M_j}}} W_i Q_i + e^{\sum\limits_{i=0}^{p-1} {-F_i-M_i}} \frac{W_p Q_p}{1-e^{-F_p-M_p}}\\
+\end{equation} 
+
+\begin{equation}
+Y/R=\sum\limits_{a=r}^{n-1} {e^{\sum\limits_{i=r}^{a-1} {-F_i-M_i}}} W_a\frac{F_a}{F_a+M_a}\left(1-e^{-F_i-M_i} \right) + e^{\sum\limits_{i=r}^{n-1} {-F_n-M_n}} W_n\frac{F_n}{F_n+M_n}\\
+\end{equation} 
+
+The second term is the plus-group, i.e. the summation of all ages from the last age to infinity. 
+
+## Stock Recruitment Relationship
+
+The relationship between stock and recruitment was modelled by a Beverton and Holt stock-recruitment relationship @beverton1993dynamics reformulated in terms of steepness ($h$), virgin biomass ($v$) and $S/R_{F=0}$
+
+\begin{equation}
+R=\frac{0.8R_0h}{0.2S/R_{F=0}R_0(1-h)+(h-0.2)S}
+\end{equation} 
+
+\noindent where steepness is the ratio of recruitment at 20\% of virgin biomass to virgin recruitment ($R_0$) and $S/R_{F=0}$ is the spawner per recruit at virgin biomass, i.e. when fishing mortality is zero. Steepness is difficult to estimate from stock assessment data sets as there is often insufficient contrast in biomass levels required for its estimation @pepin2015reconsidering.
+
+S is spawning stock biomass, the sum of the products of the numbers of females, $N$, proportion mature-at-age, $Q$ and their mean fecundity-at-age, $F$, i.e. 
+
+\begin{equation} S = \sum\limits_{i=0}^{p} {N_iQ_iF_i} \end{equation}
+
+where fecundity-at-age is assumed proportional to biomass and the sex ratio to be 1:1. Proportion mature is 50\% at the age that attains a length of $l50$, 0\% below this age and 100\% above. 
+
+## Combined analysis
+
+Reordering the stock recruitment relationship as a function of S/R  
+
+The stock recruitment relationship can then be reparameterised so that recruitment $R$ is a function of $S/R$ 
+ 
+e.g. for a @beverton1956review  
+ 
+ \begin{equation} S/R=(b+S)/a \end{equation} 
+ 
+$S$ can then be derived from F by combining equation 3 or 4 with equation 1.  
+
+allows $S$ to be defined as a function of $F$ by combining the stock recruit and per recruit analyses.
+
+## Projection
+
+The stock recruitment relationship and the vectors of weigth, natural mortality, maturity and selectivity-at-age allow a forward projection model to be created, which forms the basis of the Operating model.
+
+# References {#References}
+
