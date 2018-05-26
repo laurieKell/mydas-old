@@ -45,7 +45,7 @@ Life history parameters for growth, natural mortality and maturity were used to 
 
 ## Life history processes
 
-Growth in length is modelled by the Von Bertalanffy growth equation @von1957quantitative
+Growth in length is modelled by the Von Bertalanffy growth equation @vonbert1957quantitative
 
 \begin{equation} L = L_\infty(1 - exp(-k(t-t_0)) \end{equation}
          
@@ -106,9 +106,13 @@ where fecundity-at-age is assumed proportional to biomass and the sex ratio to b
 
 Reordering the stock recruitment relationship as a function of S/R  
 
-\begin{equation}
-S/R=\frac{0.2/R_{F=0}R_0(1-h)+(h-0.2)}{0.8R_0h}
-\end{equation} 
+The stock recruitment relationship can then be reparameterised so that recruitment $R$ is a function of $S/R$ 
+ 
+e.g. for a @beverton1956review  
+ 
+ \begin{equation} S/R=(b+S)/a \end{equation} 
+ 
+$S$ can then be derived from F by combining equation 3 or 4 with equation 1.  
 
 allows $S$ to be defined as a function of $F$ by combining the stock recruit and per recruit analyses.
 
