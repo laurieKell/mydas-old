@@ -25,7 +25,7 @@ opts_chunk$set(cache     =!TRUE,
                message   =FALSE,
                warning   =FALSE,
                tidy      =FALSE,
-               fig.height=6,
+               fig.height=10,
                fig.width =8,
                fig.path  ="../tex/task2-sa-")
 
@@ -54,7 +54,7 @@ dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
 dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")
 ```
 
-```{r, stocks, eval=FALSE}
+```{r, stocks}
 nms=c("Cod North Sea", "Haddocki North Sea","Whiting North Sea","Saithe North Sea", 
       "Plaice North Sea", "Sole North Sea",
       "Cod Celtic Sea","Haddock Celtic Sea","Whiting Celtic Sea")
@@ -81,16 +81,17 @@ stk["plens"]=ass.stock
 load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/solns/sol-nsea_ass.stock_workspace.Rdata")
 stk["solns"]=ass.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/ple27420/ple.27.420_stock.object.Rdata")
 stk["sains"]=ass.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/xsa.stock.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/cod7ek/xsa.stock.Rdata")
+stock(xsa.stock)=computeStock(xsa.stock)
 stk["codcs"]=xsa.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/whg7bk/xsa.Rdata")
+load("//home/laurence/Desktop/rfmo/ices/cs/2017/whg7bk/xsa.Rdata")
 stk["whgcs"]=stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_stock.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/HAD_stock.RData")
 stk["hadcs"]=stock
 
 stk=llply(stk[c("codns","hadns","sains","whgns","plens","solns","codcs","hadcs","whgcs")],
@@ -100,19 +101,19 @@ save(stk,nms,file=file.path(dirDat,"stk.RData"),compress="xz")
 ```
 
 ```{r, indices}
-load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/ple27420/ple.27.420_stock.object.Rdata")
 idxs=list("solns"=indices)
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/cod_idx.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/cod7ek/cod_idx.RData")
 idxs["codcs"]=idx
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_tunning.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/HAD_tunning.RData")
 idxs["hadcs"]=tun
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/PLE_tun.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/PLE_tun.Rdata")
 idxs["plecs"]=tun
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/sol7fg/INPUT/sol7fg_stock.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/sol7fg/INPUT/sol7fg_stock.Rdata")
 idxs["solcs"]=tun
 
 idxs=idxs[c("solns","codcs","hadcs","plecs","solcs")]
@@ -124,7 +125,7 @@ save(idx,file=file.path(dirDat,"idx.RData"),compress="xz")
 ```{r, ts}
 load(file.path(dirDat,"stk.RData"))
 
-stkTs=ldply(stk[1],
+stkTs=ldply(stk,
           function(x) {
               x=iter(x,1)
       
@@ -163,13 +164,13 @@ idxNs=list(mlply(c(
 	            "sole3a2017",
 	            "witch_2018_007",
 	            "witch_2018_008"), function(x){ print(x)
-	              readFLIndices(file.path(dirInp,"ns/sa.org",x,"data/survey.dat"))}))
+	       readFLIndices(file.path("/home/laurence/Desktop/rfmo/ices/ns/2017/sa.org",x,"data/survey.dat"))}))
 idxCs=list(mlply(c(  
           "CODGis"
           #"HADPia",
           #"meg_rock_2016"
           ), function(x){ print(x)
-	              readFLIndices(file.path(dirInp,"cs/sa.org",x,"data/survey.dat"))}))
+	     readFLIndices(file.path("/home/laurence/Desktop/rfmo/ices/cs/2017/sa.org",x,"data/survey.dat"))}))
 
 nsIdx=ldply(idxNs, function(x) 
       ldply(x, function(y) 
@@ -177,7 +178,7 @@ nsIdx=ldply(idxNs, function(x)
 
 bioNs=list(mdply(c("nsea-dab"), 
             function(x){ print(x)
-	              read.csv(file.path(dirInp,"ns/sa.org",x,"data/data.txt"),skip=1)}))
+	 read.csv(file.path("/home/laurence/Desktop/rfmo/ices/ns/2017/sa.org",x,"data/data.txt"),skip=1)}))
 
 spictCs=c("meg_rock_2016",
           "Megrim_78_ADGWW2_IBP_update_Land",
@@ -191,7 +192,7 @@ spictCs=c("meg_rock_2016",
           "ple-iris_ADGWW2")[-c(3:4,8)]
 bioCs=mdply(spictCs, 
             function(x){ print(x)
-               read.csv(file.path(dirInp,"cs/sa.org",x,"data/data.txt"),skip=1)})
+      read.csv(file.path("/home/laurence/Desktop/rfmo/ices/cs/2017/sa.org",x,"data/data.txt"),skip=1)})
 bioCs$stock=spictCs[bioCs$X1]
 names(bioCs)=c("X1","year","yearEnd","fleet","obs","stock")
 bioCs=bioCs[c(6,2:5)]
@@ -201,91 +202,101 @@ save(bioNs,bioCs,idxNs,idxCs,spictCs,file=file.path(dirDat,"saorg.RData"),compre
 
 ```{r, plot-ts-ssb}
 ggplot(stkTs)+
-  geom_line(aes(year,ssb,col=.id))+
+  geom_line(aes(year,ssb))+
   guides(colour=guide_legend(title="Stock",title.position="left"))+
   xlab("Year")+ylab("SSB")+
   theme_bw()+
-  theme(legend.position="bottom")
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
 ```
-**Figure r iFig=iFig+1; iFig**
+**Figure `r iFig=iFig+1; iFig`** SSB
 
 ```{r, plot-ts-f}
 ggplot(stkTs)+
-  geom_line(aes(year,f,col=.id))+
+  geom_line(aes(year,f))+
   guides(colour=guide_legend(title="Stock",title.position="left"))+
   xlab("Year")+ylab("F")+
   theme_bw()+
-  theme(legend.position="bottom")
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
 ```
-**Figure r iFig=iFig+1; iFig**
+**Figure `r iFig=iFig+1; iFig`** Fishing Mortality
 
-```{r, plot-ts-y}
-ggplot(stkTs)+
-  geom_line(aes(year, catch,col=.id))+
-  guides(colour=guide_legend(title="Stock",title.position="left"))+
-  xlab("Year")+ylab("Catch")+
-  theme_bw()+
-  theme(legend.position="bottom")
-```
-**Figure r iFig=iFig+1; iFig**
-
-```{r, plot-ts-u}
-ggplot(stkTs)+
-  geom_line(aes(year,cpue,col=.id))+
-  guides(colour=guide_legend(title="Stock",title.position="left"))+
-  xlab("Year")+ylab("CPUE")+
-  theme_bw()+
-  theme(legend.position="bottom")
-```
-**Figure r iFig=iFig+1; iFig**
-
-```{r, plot-ts-r}
-ggplot(stkTs)+
-  geom_line(aes(year,recruit,col=.id))+
-  guides(colour=guide_legend(title="Stock",title.position="left"))+
-  xlab("Year")+ylab("Recruitment")+
-  theme_bw()+
-  theme(legend.position="bottom")
-```
-**Figure r iFig=iFig+1; iFig**
-
-```{r, plot-b}
-ggplot(stkTs)+
-  geom_line(aes(year,stock,col=.id))+
-  guides(colour=guide_legend(title="Stock",title.position="left"))+
-  xlab("Year")+ylab("Biomass")+
-  theme_bw()+
-  theme(legend.position="bottom")
-```
-**Figure r iFig=iFig+1; iFig**
 
 ```{r, plot-h}
 ggplot(stkTs)+
-  geom_line(aes(year,hrate,col=.id))+
+  geom_line(aes(year,hrate))+
   guides(colour=guide_legend(title="Stock",title.position="left"))+
   xlab("Year")+ylab("Harvest Rate")+
   theme_bw()+
-  theme(legend.position="bottom")
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
 ```
-**Figure r iFig=iFig+1; iFig**
+**Figure `r iFig=iFig+1; iFig`** Harvest rate
+
+```{r, plot-ts-y}
+ggplot(stkTs)+
+  geom_line(aes(year, catch))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Catch")+
+  theme_bw()+
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
+```
+**Figure `r iFig=iFig+1; iFig`** Yield
+
+```{r, plot-ts-u}
+ggplot(stkTs)+
+  geom_line(aes(year,cpue))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("CPUE")+
+  theme_bw()+
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
+```
+**Figure `r iFig=iFig+1; iFig`** CPUE
+
+```{r, plot-ts-r}
+ggplot(stkTs)+
+  geom_line(aes(year,recruit))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Recruitment")+
+  theme_bw()+
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
+```
+**Figure `r iFig=iFig+1; iFig`** Recruitment
+
+```{r, plot-b}
+ggplot(stkTs)+
+  geom_line(aes(year,stock))+
+  guides(colour=guide_legend(title="Stock",title.position="left"))+
+  xlab("Year")+ylab("Biomass")+
+  theme_bw()+
+  theme(legend.position="bottom")+
+  facet_wrap(~.id,scale="free_y",ncol=2)
+```
+**Figure `r iFig=iFig+1; iFig`** Stock biomass.
 
 ```{r, plot-biocs1}
 ggplot(ddply(subset(bioCs,fleet!=1),.(stock,fleet),transform, 
              obs=diags:::stdz(log(obs))))+
   geom_point(aes(year,obs,col=ac(fleet)))+
   geom_line(aes(year,obs,col=ac(fleet)))+
-  facet_wrap(~stock,scale="free_y")
+  xlab("Year")+ylab("CPUE")+
+  facet_wrap(~stock,scale="free_y",ncol=2)
 ```
-**Figure r iFig=iFig+1; iFig**
+**Figure `r iFig=iFig+1; iFig`** CPUE
 
 ```{r, plot-biocs2}
 ggplot(ddply(subset(bioCs,fleet==1),.(stock,fleet),transform, 
              obs=diags:::stdz(log(obs))))+
   geom_point(aes(year,obs,col=ac(fleet)))+
   geom_line(aes(year,obs,col=ac(fleet)))+
-  facet_wrap(~stock,scale="free_y")
+  xlab("Year")+ylab("biomass")+
+  facet_wrap(~stock,scale="free_y",ncol=2)
 ```
-**Figure r iFig=iFig+1; iFig**
+**Figure `r iFig=iFig+1; iFig`** CPUE
 
 \newpage
 ## Software Versions
