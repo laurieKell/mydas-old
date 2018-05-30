@@ -14,6 +14,21 @@ tags: FLife FLR
 license: Creative Commons Attribution-ShareAlike 4.0 International Public License
 ---
 
+# Revisions 
++  Natural mortality is always a tricky one. M is likely to be related to body length but other factors must also play a role. I personally like the idea that age at first maturity should be a good indicator as this makes intuitive sense but Then et al (2015 I think) concluded that the oldest observed age was the best predictor. Even so, the uncertainty around the predictions by Then is huge. Anyway, I suppose Gislason is as good as any but we should test the sensitivity
++   I don’t understand equations 4,5,6 in the document; the parameters are not explained
++   How do you estimate selectivity from life-history parameters?
++   Is S in eq 7 spawner or ssb?
++   Is S in eq 8 SSB? Then why is fecundity in there and not weight-at-age?
++   How do you use the life-history parameters to estimate the SR?
+
+## Operating models for the species (e.g. Brill)
+
++   It is not clear to me how you go from the (multiple) lh parameters from fishbase to a single set of lh parameters. I think it happens here: mf2FLPar(lh[,   -c(1,7)]). Or are you keeping them all and is that reflected in the ‘uncertainty’ in figure 2?
++   Also, it is not clear to me which parameters are observed and which are inferred from correlations.
++   Is the whole OM based on lh parameters or are you making additional assumptions on the SR (steepness?) and selectivity? It would be nice to see all the assumptions more clearly in the markdown documents.
+
+
 ```{r knitr_init, echo=FALSE, results="hide"}
 library(knitr)
 ## Global options
