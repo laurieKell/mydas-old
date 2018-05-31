@@ -5,7 +5,21 @@ author: " L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
-  
+
+<!-- ###   It is not clear to me how you go from the (multiple) lh parameters from fishbase to a single set of lh parameters. I think it happens here: mf2FLPar(lh[,   -c(1,7)]). Or are you keeping them all and is that reflected in the ‘uncertainty’ in figure 2? -->
+
+<!-- There are multiple values for each life history parameter due to natural variablity and uncertainty about them. Therefore to reflect this uncertainty in the parameters their means and standard errors was estimated from their distribution. These were then used to simulate 500 replicates using Monte Carlo simulation, this allows the natural variation in life history parameters to be included in the OM.   -->
+
+<!-- ### Also, it is not clear to me which parameters are observed and which are inferred from correlations. -->
+
+<!-- The parameters used to construct the OM were the parameters for the Von Bertalanffy growth equation ($L_{\infty}$, $k$, $t_0$), those of the length weight relationship ($a$, $b$) and age at which $50%$ are maturity ($a_{50}$). These allow the biological processes to be parameterised. Natural mortality is derived from the relationship of @gislason2010does i.e. -->
+<!-- \begin{equation} -->
+<!--             M =  0.55L^{1.61}L_\infty^{1.44}k -->
+<!-- \end{equation}  -->
+
+<!-- Selection pattern by default was assumed to be equal to the maturity ogive, i.e. the fishery is only catching mature fish.  -->
+
+
 ```{r, knitr, eval=TRUE, echo=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
@@ -73,7 +87,7 @@ my_density <- function(data,mapping,...){
 
 theme_set(theme_bw(base_size=20))
 
-ggpairs(transform(lh[,-1],linf=log(linf),k=log(k),l50=log(l50)),
+p=ggpairs(transform(lh[,-1],linf=log(linf),k=log(k),l50=log(l50)),
         lower = list(continuous = wrap(my_smooth)),
         diag=list(continuous=wrap(my_density,alpha=0.2)),
         title = "")+
@@ -85,12 +99,6 @@ ggpairs(transform(lh[,-1],linf=log(linf),k=log(k),l50=log(l50)),
         panel.border     =element_rect(linetype = 1, colour="black", fill=NA))
 ```
 
-**Figure `r iFig=iFig+1; iFig`** Pairwise scatter plots of life history parameters.
-
-
-## Equilibrium dynamics
-
-The parameters are then used by `lhEql` to simulate the equilibrium dynamics by combining the spawner/yield per recruit relationships with a stock recruiment relationship.
 
 ```{r eql}
 sim<-function(x,niters=500,se=0.3){
@@ -121,6 +129,26 @@ lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 lh=lhPar(lh,s=0.8)
 eq=lhEql(lh)
 ```
+
+Life history parameters from Fish Base for the Von Bertalanffy growth model were $L_{\infty}$ `r tmp<-lh["linf"]` (`r signif(mean(lh["linf"],na.rm=TRUE),3)`), $k$  (`r signif(mean(lh["k"]),3)`), and $t_0$ (`r signif(mean(lh["t0"]),3)`), for the length/weight relationship $W=aL^b$ were $a$ (`r signif(mean(lh["a"],na.rm=TRUE),3)`) and $b$ (`r signif(mean(lh["b"],na.rm=TRUE),3)`),  and age at maturity  ($a_{50}$) was (`r signif(mean(lh["a50"],na.rm=TRUE),3)`).
+
+The values for the empirical Gislason natural mortality relationship $m_1$ and $m_2$ were (`r signif(mean(lh["m1"],na.rm=TRUE),4)`) and (`r signif(mean(lh["m2"],na.rm=TRUE),3)`) respectively.
+
+The fishery was aassumed to only catch mature fish and so selection pattern is modelled by a double normal equivalent to the maturity ogive,  parameters were $a_1$, $s_l$ and $s_r$ were (`r signif(mean(lh["a1"],na.rm=TRUE),3)`, `r signif(mean(lh["sl"],na.rm=TRUE),3)`, `r signif(mean(lh["sr"],na.rm=TRUE),3)`) respectively.
+
+The stock recruitment relationship is assummed to be of a Beverton and Holt functional form with a steepness and virgin biomass of `r signif(mean(lh["s"],na.rm=TRUE),3)` and `r signif(mean(lh["v"],na.rm=TRUE),3)` units respectively.
+
+```{r, pairs}
+p
+```
+
+**Figure `r iFig=iFig+1; iFig`** Pairwise scatter plots of life history parameters.
+
+
+## Equilibrium dynamics
+
+The parameters are then used by `lhEql` to simulate the equilibrium dynamics by combining the spawner/yield per recruit relationships with a stock recruiment relationship.
+
 
 ```{r vectors}
 sel<-function(x) 
