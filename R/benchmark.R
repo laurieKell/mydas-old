@@ -2,6 +2,8 @@ library(FLCore)
 library(FLAssess)
 library(FLXSA)
 
+library(plyr)
+
 library(doParallel)
 library(foreach)
 
