@@ -229,11 +229,33 @@ plot(mnLen(om))
 Lmax	Amax	Selectivity (S50; S95)	K or B0	r	Lc	Lopt	k	Linf	to	Lm50	A50	M	h	alpha-B-H	M/K	Fmsy/M	Fmsy/K	Bmsy/K (or B0)	Depletion	Fecundity at age/length	Length-weight relationship
 
 ```{r}
-priors=refs(om)
+lh[c("linf","k","t0","a50","ato95","a","b","s","v")]
+rf=FLPar(refpts(eq)["msy",c("harvest","yield","ssb"),drop=T])
+names(rf)[1]="params"
+dimnames(rf)[[1]]=c("fmsy","msy","bmsy")
 
+rbind(lh,rf)
 
-#c("virgin","r","lc","Lopt","k","linf","t0","l50","a50","m","h","alpha","m/k","fmsy/m","fmsy/k","bmsy/K",
-"bp0","Depletion","Fecundity at age/length","Length-weight relationship")
+#lopt
+lopt(lhPar(lh),growth=vonB)
+
+#lc
+vonB(alh["a50"]-lh["ato95"],lh)
+
+maply(seq(dims(eq)[6]), function(x) lamba(leslie(iter(eq,x),fbar=c(refpts(eq)["crash","harvest"]))[drop=TRUE]))
+
+#"fmsy/m"
+eq@fbar=fbar(eq)[,1]
+eq@fbar[]=refpts(eq)["msy","harvest"]
+
+apply(fbar(eq)%/%m(eq),6,mean)
+
+#"m/k",
+apply(m(eq),6,mean)
+
+#"fmsy/k",
+
+#"bmsy/K"
 ```
 
 
