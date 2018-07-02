@@ -3,7 +3,7 @@ title: "Pollack"
 subtitle: " Operating Model"
 author: "Laurence Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: rmarkdown:::pdf_document
+output: rmarkdown:::html_document
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Vignette Title}

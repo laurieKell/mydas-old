@@ -1,0 +1,203 @@
+---
+title: "Cross test using Operating Model based on Life History"
+subtitle: "Biomass Dynamic and Stock Reduction Analysis"
+author: "L Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{FLife}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+github_document:
+    mathjax: TRUE
+tags: FLife
+license: Creative Commons Attribution-ShareAlike 4.0 International Public License
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(cache     =TRUE,
+               cache.path="../cache/crosstest/bd",
+               echo      =FALSE,
+               eval      =TRUE,
+               prompt    =FALSE,
+               comment   =NA,
+               message   =FALSE,
+               warning   =FALSE,
+               tidy      =TRUE,
+               fig.height=10,
+               fig.width =8,
+               fig.path  ="../tex/crosstest-bd")
+
+options(digits=3)
+
+iFig=0
+```
+```{r pkgs}
+library(ggplot2)
+library(reshape)
+library(plyr)
+library(dplyr)
+library(FLCore)
+library(ggplotFL)
+
+library(mpb)
+```
+```{r, dir}
+dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task5"
+dirDat=file.path(dirMy,"data")
+```
+```{r, dat}
+load(file.path(dirDat,"brill.RData"))
+```
+
+```{r, bd}
+bd=biodyn(om)
+
+save(bd,file=file.path(dirDat,"brill/bd.RData"),compress="xz")
+
+params(bd)["r"]=mean(prior[c("r")])
+params(bd)["k"]=1200
+params(bd)["p"]=0.000000001
+
+u  =stock(bd,0.5)[,-100]
+
+hat=bd
+
+setParams(hat)=u
+setControl(hat)=params(hat)
+hat=fit(hat,u)
+
+plot(as(list(hat=hat,true=bd),"biodyns"))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
+
+```{r, sra}
+dpl=u
+dpl[]=NA
+dpl[,c(1:5,95:99)]=c(rep(1,5),rep(0.5,5))
+
+sra=bd
+
+setParams(sra)=dpl
+setControl(sra)=params(sra)
+sra=fit(sra,dpl)
+
+sra=fit(sra,u)
+
+plot(as(list(true=bd,sra=sra),"biodyns"))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
+
+
+```{r, bd-fwd}
+bd=biodyn(om)
+
+params(bd)["r"]=mean(prior[c("r")])
+params(bd)["k"]=1200
+params(bd)["p"]=0.000000001
+
+bdfwd=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,end=x)
+          u  =window(stock(hat,0.5),end=x)
+          
+          u[]=NA
+          u[,c(1:5,x-0:4)]=c(rep(1,5),rep(mean(stock(bd)[,x]/stock(bd)[,1]),5))
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,x+0:10])
+          })
+
+bdfwd=as(bdfwd,"biodyns")
+
+save(bdfwd,file=file.path(dirDat,"brill/bdfwd.RData"),compress="xz")
+```
+
+```{r}
+plot(bdfwd)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
+
+```{r, sra-fwd}
+srafwd=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,end=x)
+          u  =window(stock(hat,0.5),end=x)
+          u[]=NA
+          u[,c(1:5,x-4:0)]=c(rep(1,5),rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
+          
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,x+0:10])
+          })
+
+srafwd=as(srafwd,"biodyns")
+
+save(srafwd,file=file.path(dirDat,"brill/srafwd.RData"),compress="xz")
+```
+
+```{r}
+plot(srafwd)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
+
+
+
+```{r, sra-fwd-p20}
+srafwdp20=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,end=x)
+          u  =window(stock(hat,0.5),end=x)
+          u[]=NA
+          u[,c(1:5,x-4:0)]=c(rep(1,5),1.2*rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
+          
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,x+0:10])
+          })
+
+srafwdp20=as(srafwdp20,"biodyns")
+
+save(srafwdp20,file=file.path(dirDat,"brill/srafwdp20.RData"),compress="xz")
+```
+
+```{r}
+plot(srafwdp20)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis +20%
+
+
+```{r, sra-fwd-n20}
+srafwdn20=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,end=x)
+          u  =window(stock(hat,0.5),end=x)
+          u[]=NA
+           u[,c(1:5,x-4:0)]=c(rep(1,5),0.8*rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
+         
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,x+0:10])
+          })
+
+srafwdn20=as(srafwdn20,"biodyns")
+
+save(srafwdn20,file=file.path(dirDat,"brill/srafwdn20.RData"),compress="xz")
+```
+
+```{r}
+plot(srafwdn20)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis -20%
