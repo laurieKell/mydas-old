@@ -1,6 +1,6 @@
 ---
 title: "Cross test using Operating Model based on Life History"
-subtitle: "Biomass Dynamic"
+subtitle: "Biomass Dynamic and Stock Reduction Analysis"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -79,6 +79,28 @@ plotProduction(iter(bd,1))+
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic production function.
 
+```{r, sra}
+bd=biodyn(window(om,start=25,end=75))
+
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+
+dpl =stock(bd,0.5)
+dpl[]=NA
+dpl[,c(1:5,dim(u)[2]-(4:0))]=c(rep(0.8,5),rep(0.5,5))
+
+setParams(bd) =dpl
+setControl(bd)=params(bd)
+sra           =fit(bd,dpl)
+
+print(plot(as(list("MP"=sra,"OM"=biodyn(om)),"biodyns")))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
+
+
 ```{r, bd-fwd}
 bd=biodyn(window(om,start=25))
 
@@ -107,6 +129,38 @@ plot(bdfwd)
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
 
+```{r, sra-fwd}
+bd=biodyn(window(om,start=25))
+
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+
+srafwd=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,end=x)
+          u  =window(stock(hat,0.5),end=x)
+          u[]=NA
+          u[,c(1:5,dim(u)[2]-4:0)]=c(rep(0.8,5),rep(mean(c(stock(hat)[,dim(u)[2]-0:4]/
+                                                           stock(hat)[,1:5])),5))
+          
+          params(hat)=params(hat)[1:4]
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])
+          })
+
+srafwd=as(srafwd,"biodyns")
+```
+
+```{r}
+plot(srafwd)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
+
 \newpage
 ## Session Info
 
@@ -127,3 +181,4 @@ sessionInfo()
 **Laurence KELL**. laurie@kell.es
 
 # References {#References}
+

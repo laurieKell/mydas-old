@@ -3,7 +3,7 @@ title: "Cross test using Operating Model based on Life History"
 subtitle: "VPA"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: pdf_document
 vignette: >
   %\VignetteIndexEntry{FLife}
   %\VignetteEngine{knitr::rmarkdown}
@@ -127,7 +127,23 @@ plot(iter(xsafwd,67))+
 **Figure `r iFig=iFig+1; iFig`.** VPA cross test
 
 
+\newpage
+## Session Info
+
 ```{r}
 sessionInfo()
 ```
 
+## Software Versions
+
+* `r version$version.string`
+* FLCore: `r packageVersion('FLCore')`
+* FLife:  `r packageVersion('FLife')`
+* FLRP:  `r packageVersion('FLRP')`
+* **Compiled**: `r date()`
+
+## Author information
+
+**Laurence KELL**. laurie@kell.es
+
+# References {#References}
