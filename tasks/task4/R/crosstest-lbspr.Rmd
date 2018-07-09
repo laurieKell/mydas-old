@@ -1,0 +1,164 @@
+---
+title: "Cross test using Operating Model based on Life History"
+subtitle: "LBSPR, length based assessment"
+author: "L Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{FLife}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+github_document:
+    mathjax: TRUE
+tags: FLife
+license: Creative Commons Attribution-ShareAlike 4.0 International Public License
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(cache     =TRUE,
+               cache.path="../cache/crosstest/lbspr/",
+               echo      =FALSE,
+               eval      =TRUE,
+               prompt    =FALSE,
+               comment   =NA,
+               message   =FALSE,
+               warning   =FALSE,
+               tidy      =TRUE,
+               fig.height=6,
+               fig.width =8,
+               fig.path  ="../tex/FLife-OM-lbspr")
+
+options(digits=3)
+
+iFig=0
+```
+```{r pkgs}
+library(plyr)
+library(reshape)
+library(ggplot2)
+library(dplyr)
+
+library(FLCore)
+library(ggplotFL)
+library(FLRP)
+library(FLife)
+
+library(LBSPR)
+```
+```{r, dir}
+dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task5"
+dirDat=file.path(dirMy,"data")
+```
+```{r, dat}
+load(file.path(dirDat,"brill.RData"))
+```
+
+## OM
+```{r, om}
+plot(om)
+```
+**Figure `r iFig=iFig+1; iFig`** Operating model for Brill. 
+
+
+## OEM
+```{r, oem}
+# Length frequency distribution
+om1=window(iter(om,1),start=21,end=100)
+
+n  =catch.n(om1)
+ln =vonB(ages(catch.n(om1)),iter(lh,1))
+sd =ln*0.2
+bin=0:ceiling(max(ln)*1.10)+0.5
+
+### Create lengths-at-age 
+lfq=ddply(model.frame(FLQuants(ln=ln,sd=sd,n=n)),.(age,year,unit,season,area,iter), 
+           with, data.frame(length=bin,data=dnorm(bin,ln,sd)*n))
+  
+### sum up by length 
+lfq=ddply(lfq,.(length,year,unit,season,area,iter), 
+           with, data.frame(freq=sum(data)))
+```
+
+
+```{r, oemplot}
+ggplot(subset(lfq,year %in% seq(50,100,5)))+
+  geom_histogram(aes(length,weight=freq),binwidth=1)+
+  facet_grid(year~.,scale="free")+
+  xlab("Length (cm)")+ylab("Frequency")
+```
+
+**Figure `r iFig=iFig+1; iFig`** Catch size data . 
+
+
+## MP
+
+```{r}
+lbspr<-function(len,params,species="",units="cm"){
+
+  pars        =new("LB_pars")
+  pars@Linf   =c(params["linf"]) 
+  pars@L50    =vonB(c(params["a50"]),params) 
+  pars@L95    =pars@L50+vonB(c(params["ato95"]),params)
+  pars@MK     =c(params["mk"])
+  pars@Species=species
+  pars@L_units=units
+  
+  #labs=dimnames(len)[[1]]
+  #brks=cbind(lower = as.numeric( sub("\\((.+),.*", "\\1", labs) ),
+  #           upper = as.numeric( sub("[^,]*,([^]]*)\\]", "\\1", labs) ))
+  #mid=aaply(brks,1,mean)
+  
+  LBlen       =new("LB_lengths")
+  LBlen@LMids =as.numeric(dimnames(len)[[1]])
+  LBlen@LData =len
+  LBlen@Years =as.numeric(dimnames(len)[[2]])
+  LBlen@NYears=dim(len)[2] 
+  
+  LBSPRfit(pars,LBlen)}
+```
+
+```{r, fm}
+len=t(daply(lfq,.(year,length), with, sum(freq)))
+brl=lbspr(len,prior[,1])
+
+save(brl,file="/home/laurence/Desktop/tmp/brl.RData")
+ggplot(data.frame("Year"=21:100,
+               "MP"=brl@Ests[,"FM"],
+               "OM"=c(apply(harvest(om[,ac(21:100)])%/%m(om[,ac(21:100)]),c(2),mean))))+
+  geom_line(aes(Year,OM),col="red")+
+  geom_line(aes(Year,MP))
+```
+**Figure `r iFig=iFig+1; iFig`** Comparison of estimated and actual $F/M$ ratios.
+
+```{r, spr}
+ggplot(data.frame("Year"=21:100,
+               "MP"=brl@Ests[,"SPR"],
+               "OM"=c(apply(ssb(om[,ac(21:100)])%/%rec(om[,ac(21:100)]),c(2),mean))/1000))+
+  geom_line(aes(Year,OM),col="red")+
+  geom_line(aes(Year,MP))
+```
+**Figure `r iFig=iFig+1; iFig`** Estimated SPR.
+
+\newpage
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+## Software Versions
+
+* `r version$version.string`
+* FLCore: `r packageVersion('FLCore')`
+* FLife:  `r packageVersion('FLife')`
+* FLRP:  `r packageVersion('FLRP')`
+* **Compiled**: `r date()`
+
+## Author information
+
+**Laurence KELL**. laurie@kell.es
+
+# References {#References}
+

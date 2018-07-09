@@ -18,7 +18,7 @@ license: Creative Commons Attribution-ShareAlike 4.0 International Public Licens
 library(knitr)
 ## Global options
 opts_chunk$set(cache     =TRUE,
-               cache.path="../cache/crosstest/bd",
+               cache.path="../cache/crosstest/bd/",
                echo      =FALSE,
                eval      =TRUE,
                prompt    =FALSE,
@@ -45,77 +45,82 @@ library(ggplotFL)
 library(mpb)
 ```
 ```{r, dir}
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task5"
+dirMy ="/home/laurence/Desktop/sea++/mydas/papers/black-box"
 dirDat=file.path(dirMy,"data")
-```
-```{r, dat}
-load(file.path(dirDat,"brill.RData"))
-```
 
-```{r, bd}
-bd=biodyn(om)
+load(file.path(dirDat,"plaice.RData"))
 
-save(bd,file=file.path(dirDat,"brill/bd.RData"),compress="xz")
+load(file.path(dirDat,"plaice.RData"))
 
-params(bd)["r"]=mean(prior[c("r")])
-params(bd)["k"]=1200
-params(bd)["p"]=0.000000001
+om=omPlaice
 
-u  =stock(bd,0.5)[,-100]
+bd=biodyn(window(om,start=25,end=75))
 
-hat=bd
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
 
-setParams(hat)=u
-setControl(hat)=params(hat)
-hat=fit(hat,u)
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
 
-plot(as(list(hat=hat,true=bd),"biodyns"))
+bd              =fit(bd,u)
+
+print(plot(as(list("MP"=bd,"OM"=biodyn(om)),"biodyns")))
 ```
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
 
+```{r, prod, fig.height=6,fig.width=8}
+plotProduction(iter(bd,1))+
+  geom_path(aes(stock,catch),data=model.frame(mcf(FLQuants(iter(bd,1),"stock"=stock,"catch"=catch))))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic production function.
+
 ```{r, sra}
-dpl=u
+bd=biodyn(window(om,start=25,end=75))
+
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+
+dpl =stock(bd,0.5)
 dpl[]=NA
-dpl[,c(1:5,95:99)]=c(rep(1,5),rep(0.5,5))
+dpl[,c(1:5,dim(u)[2]-(4:0))]=c(rep(0.8,5),rep(0.5,5))
 
-sra=bd
+setParams(bd) =dpl
+setControl(bd)=params(bd)
+sra           =fit(bd,dpl)
 
-setParams(sra)=dpl
-setControl(sra)=params(sra)
-sra=fit(sra,dpl)
-
-sra=fit(sra,u)
-
-plot(as(list(true=bd,sra=sra),"biodyns"))
+print(plot(as(list("MP"=sra,"OM"=biodyn(om)),"biodyns")))
 ```
 
 **Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
 
 
 ```{r, bd-fwd}
-bd=biodyn(om)
+bd=biodyn(window(om,start=25))
 
-params(bd)["r"]=mean(prior[c("r")])
-params(bd)["k"]=1200
-params(bd)["p"]=0.000000001
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
 
 bdfwd=mlply(seq(75,50,-5),function(x) {
-          hat=window(bd,end=x)
+          hat=window(bd,            end=x)
           u  =window(stock(hat,0.5),end=x)
           
-          u[]=NA
-          u[,c(1:5,x-0:4)]=c(rep(1,5),rep(mean(stock(bd)[,x]/stock(bd)[,1]),5))
+          params(hat)=params(hat)[1:4]
           setParams(hat)=u
           setControl(hat)=params(hat)
           hat=fit(hat,u)
           
-          fwd(hat,catch=catch(bd)[,x+0:10])
-          })
+          fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])})
 
 bdfwd=as(bdfwd,"biodyns")
-
-save(bdfwd,file=file.path(dirDat,"brill/bdfwd.RData"),compress="xz")
 ```
 
 ```{r}
@@ -125,22 +130,29 @@ plot(bdfwd)
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
 
 ```{r, sra-fwd}
+bd=biodyn(window(om,start=25))
+
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+
 srafwd=mlply(seq(75,50,-5),function(x) {
           hat=window(bd,end=x)
           u  =window(stock(hat,0.5),end=x)
           u[]=NA
-          u[,c(1:5,x-4:0)]=c(rep(1,5),rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
+          u[,c(1:5,dim(u)[2]-4:0)]=c(rep(0.8,5),rep(mean(c(stock(hat)[,dim(u)[2]-0:4]/
+                                                           stock(hat)[,1:5])),5))
           
+          params(hat)=params(hat)[1:4]
           setParams(hat)=u
           setControl(hat)=params(hat)
           hat=fit(hat,u)
           
-          fwd(hat,catch=catch(bd)[,x+0:10])
+          fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])
           })
 
 srafwd=as(srafwd,"biodyns")
-
-save(srafwd,file=file.path(dirDat,"brill/srafwd.RData"),compress="xz")
 ```
 
 ```{r}
@@ -148,56 +160,3 @@ plot(srafwd)
 ```
 
 **Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis
-
-
-
-```{r, sra-fwd-p20}
-srafwdp20=mlply(seq(75,50,-5),function(x) {
-          hat=window(bd,end=x)
-          u  =window(stock(hat,0.5),end=x)
-          u[]=NA
-          u[,c(1:5,x-4:0)]=c(rep(1,5),1.2*rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
-          
-          setParams(hat)=u
-          setControl(hat)=params(hat)
-          hat=fit(hat,u)
-          
-          fwd(hat,catch=catch(bd)[,x+0:10])
-          })
-
-srafwdp20=as(srafwdp20,"biodyns")
-
-save(srafwdp20,file=file.path(dirDat,"brill/srafwdp20.RData"),compress="xz")
-```
-
-```{r}
-plot(srafwdp20)
-```
-
-**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis +20%
-
-
-```{r, sra-fwd-n20}
-srafwdn20=mlply(seq(75,50,-5),function(x) {
-          hat=window(bd,end=x)
-          u  =window(stock(hat,0.5),end=x)
-          u[]=NA
-           u[,c(1:5,x-4:0)]=c(rep(1,5),0.8*rep(mean(c(stock(hat)[,x]/stock(hat)[,1])),5))
-         
-          setParams(hat)=u
-          setControl(hat)=params(hat)
-          hat=fit(hat,u)
-          
-          fwd(hat,catch=catch(bd)[,x+0:10])
-          })
-
-srafwdn20=as(srafwdn20,"biodyns")
-
-save(srafwdn20,file=file.path(dirDat,"brill/srafwdn20.RData"),compress="xz")
-```
-
-```{r}
-plot(srafwdn20)
-```
-
-**Figure `r iFig=iFig+1; iFig`,** Stock Reduction Analysis -20%
