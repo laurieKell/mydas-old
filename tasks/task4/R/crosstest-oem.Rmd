@@ -254,7 +254,7 @@ bin=0:ceiling(max(ln)*1.10)+0.5
 
 
 ```{r, lfq}
-ggplot(lfq)+
+ggplot(subset(lfq,year%in%seq(1,100,10)))+
   geom_histogram(aes(length,weight=freq),binwidth=1)+
   facet_grid(year~.,scale="free")+
   xlab("Length (cm)")+ylab("Frequency")

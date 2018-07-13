@@ -3,7 +3,7 @@ title: "FLife: Operating Model Conditioning"
 subtitle: "Pollack"
 author: "L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: pdf_document
 ---
   
 ```{r, knitr, eval=TRUE, echo=FALSE, warning=FALSE}
@@ -46,7 +46,7 @@ library(FLife)
 ```
 ```{r devs}
 set.seed(1233)
-srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:105)),.3,b=0.0)
 ```
 
 ## Life history parameters
@@ -118,7 +118,8 @@ lh[lh$t0>=0,"t0"]=NA
 lh=sim(lh,    niters=nits)
 lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
-lh=lhPar(lh,s=0.8)
+
+lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
 ```
 
@@ -160,7 +161,7 @@ maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.75)
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                               seq(.1,maxf,length.out=40),
                                               seq(maxf,.7,length.out=gTime)[-1],
-                                              rep(.7,61)))[,1:100]
+                                              rep(.7,61)))[,1:105]
 
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)

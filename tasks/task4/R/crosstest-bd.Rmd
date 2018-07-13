@@ -107,6 +107,69 @@ plot(bdfwd)
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
 
+## Brill
+
+```{r, dir}
+dirDat="/home/laurence/Desktop/sea++/mydas/tasks/task5/data"
+
+load(file.path(dirDat,"turbot.RData"))
+
+bd=biodyn(window(om,start=25,end=75))
+
+params(bd)["r"] =mean(prior["r"])
+
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+params(bd)["q"] =1
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+control(bd)["q1","phase"]=-1
+
+bd              =fit(bd,u)
+
+print(plot(as(list("MP"=bd,"OM"=biodyn(om)),"biodyns")))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Brill Biomass dynamic
+
+```{r, prod, fig.height=6,fig.width=8}
+plotProduction(iter(bd,1))+
+  geom_path(aes(stock,catch),data=model.frame(mcf(FLQuants(iter(bd,1),"stock"=stock,"catch"=catch))))
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic production function.
+
+```{r, bd-fwd}
+bd=biodyn(window(om,start=25))
+
+params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["b0"]=0.8 
+params(bd)["k"] =1200
+params(bd)["p"] =0.00000000001
+
+bdfwd=mlply(seq(75,50,-5),function(x) {
+          hat=window(bd,            end=x)
+          u  =window(stock(hat,0.5),end=x)
+          
+          params(hat)=params(hat)[1:4]
+          setParams(hat)=u
+          setControl(hat)=params(hat)
+          hat=fit(hat,u)
+          
+          fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])})
+
+bdfwd=as(bdfwd,"biodyns")
+```
+
+```{r}
+plot(bdfwd)
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
+
 \newpage
 ## Session Info
 

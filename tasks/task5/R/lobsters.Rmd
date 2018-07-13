@@ -1,7 +1,7 @@
 ---
 title: "FLife: Operating Model Conditioning"
 subtitle: "Lobster"
-author: " L Kell & A Tidd"
+author: "L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
@@ -20,7 +20,7 @@ opts_chunk$set(comment   =NA,
                fig.height=10,
                cache     =TRUE, 
                fig.path  ="../tex/om-lobster",
-               cache.path="../cache/om-lobster-/")
+               cache.path="../cache/om-lobster/")
 
 iFig=0
 iTab=0
@@ -46,7 +46,7 @@ library(FLife)
 ```
 ```{r devs}
 set.seed(1233)
-srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:105)),.3,b=0.0)
 ```
 
 ## Life history parameters
@@ -119,7 +119,8 @@ lh=FLife:::mf2FLPar(lh)
 
 lh=sim(lh,    niters=nits)
 
-lh=lhPar(lh,s=0.8)
+
+lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
 ```
 
@@ -162,7 +163,7 @@ maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.75)
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                               seq(.1,maxf,length.out=40),
                                               seq(maxf,.7,length.out=gTime)[-1],
-                                              rep(.7,61)))[,1:100]
+                                              rep(.7,61)))[,1:105]
 
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)

@@ -46,7 +46,7 @@ library(FLife)
 ```
 ```{r devs}
 set.seed(1233)
-srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:105)),.3,b=0.0)
 ```
 
 ## Life history parameters
@@ -118,7 +118,8 @@ lh[lh$t0>=0,"t0"]=NA
 lh=sim(lh,    niters=nits)
 lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
-lh=lhPar(lh,s=0.8)
+
+lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
 ```
 

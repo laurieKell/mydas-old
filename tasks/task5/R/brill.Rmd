@@ -1,9 +1,9 @@
 ---
 title: "FLife: Operating Model Conditioning"
 subtitle: "Brill"
-author: " L Kell & A Tidd"
+author: "L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: pdf_document
 ---
 
 <!-- ###   It is not clear to me how you go from the (multiple) lh parameters from fishbase to a single set of lh parameters. I think it happens here: mf2FLPar(lh[,   -c(1,7)]). Or are you keeping them all and is that reflected in the ‘uncertainty’ in figure 2? -->
@@ -60,7 +60,7 @@ library(FLife)
 ```
 ```{r devs}
 set.seed(1233)
-srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:105)),.3,b=0.0)
 ```
 
 ## Life history parameters
@@ -126,7 +126,8 @@ lh[lh$t0>=0,"t0"]=NA
 lh=sim(lh,    niters=nits)
 lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
-lh=lhPar(lh,s=0.8)
+
+lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
 ```
 
@@ -134,7 +135,7 @@ Life history parameters from Fish Base for the Von Bertalanffy growth model were
 
 The values for the empirical Gislason natural mortality relationship $m_1$ and $m_2$ were (`r signif(mean(lh["m1"],na.rm=TRUE),4)`) and (`r signif(mean(lh["m2"],na.rm=TRUE),3)`) respectively.
 
-The fishery was aassumed to only catch mature fish and so selection pattern is modelled by a double normal equivalent to the maturity ogive,  parameters were $a_1$, $s_l$ and $s_r$ were (`r signif(mean(lh["a1"],na.rm=TRUE),3)`, `r signif(mean(lh["sl"],na.rm=TRUE),3)`, `r signif(mean(lh["sr"],na.rm=TRUE),3)`) respectively.
+The fishery was assumed to only catch mature fish and so selection pattern is modelled by a double normal equivalent to the maturity ogive,  parameters were $a_1$, $s_l$ and $s_r$ were (`r signif(mean(lh["a1"],na.rm=TRUE),3)`, `r signif(mean(lh["sl"],na.rm=TRUE),3)`, `r signif(mean(lh["sr"],na.rm=TRUE),3)`) respectively.
 
 The stock recruitment relationship is assummed to be of a Beverton and Holt functional form with a steepness and virgin biomass of `r signif(mean(lh["s"],na.rm=TRUE),3)` and `r signif(mean(lh["v"],na.rm=TRUE),3)` units respectively.
 
@@ -183,12 +184,11 @@ plot(iter(eq,1),refpts=FALSE)
 #http://www.fishbase.org/manual/Key%20Facts.htm
 
 gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
-maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.75)
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                              seq(.1,maxf,length.out=40),
-                                              seq(maxf,.7,length.out=gTime)[-1],
-                                              rep(.7,61)))[,1:100]
+                                              seq(.1,2,length.out=40),
+                                              seq(2.0,0.7,length.out=gTime)[-1],
+                                              rep(.7,61)))[,1:105]
 
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
@@ -199,3 +199,5 @@ plot(om)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Time series.
+
+
