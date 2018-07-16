@@ -126,18 +126,20 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-ray}
 load(file.path(dirDat,"ray.RData"))
 
+om=trim(om,age=3:40)
+#om=FLCore:::iter(om,1:10)
 range(om)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 
-xsaControl=FLXSA.control(tol    =1e-09, maxit   =125, 
+xsaControl=FLXSA.control(tol    =1e-09, maxit   =150, 
                          min.nse=0.3,   fse     =1.0, 
                          rage   =1,     qage    =6, 
                          shk.n  =TRUE,  shk.f   =TRUE, 
                          shk.yrs=1,     shk.ages=4, 
                          window =10,    tsrange =10, 
-                         tspower= 3,
+                         tspower= 0,
                          vpa    =FALSE)
 
-om=window(om,start=25,end=70)
+om=window(om,start=25,end=75)
 mp=xsa(om,ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
@@ -204,6 +206,8 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-lobster}
 load(file.path(dirDat,"lobster.RData"))
 
+om=trim(om,age=3:40)
+
 range(om)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 
 xsaControl=FLXSA.control(tol    =1e-09, maxit   =150, 
@@ -215,8 +219,8 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          tspower= 0,
                          vpa    =FALSE)
 
-om=window(om,start=25,end=70)
-mp=xsa(om,ctrl=xsaControl)
+om=window(om,start=25,end=75)
+mp=xsa(om,ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
