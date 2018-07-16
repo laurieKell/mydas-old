@@ -124,8 +124,8 @@ lh=FLife:::mf2FLPar(lh[,   -c(1,7)])
 lh[lh$t0>=0,"t0"]=NA
 
 lh=sim(lh,    niters=nits)
-lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
+lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
@@ -186,14 +186,16 @@ plot(iter(eq,1),refpts=FALSE)
 gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                              seq(.1,2,length.out=40),
+                                              seq(.1,2,length.out=30),
                                               seq(2.0,0.7,length.out=gTime)[-1],
                                               rep(.7,61)))[,1:105]
 
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
-save(lh,eq,om,file=file.path(dirDat,"brill.RData"),compress="xz")
+#save(lh,eq,om,file=file.path(dirDat,"brill.RData"),compress="xz")
+
+save(lh,eq,om,file="/home/laurence/Desktop/brill.RData",compress="xz")
 
 plot(om)
 ```

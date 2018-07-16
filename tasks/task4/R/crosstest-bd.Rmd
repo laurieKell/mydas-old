@@ -45,104 +45,224 @@ library(ggplotFL)
 library(mpb)
 ```
 ```{r, dir}
-dirMy ="/home/laurence/Desktop/sea++/mydas/papers/black-box"
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task5"
 dirDat=file.path(dirMy,"data")
+```
+```{r}
+FLStock2biodynSimple=function(from){
+  
+  res      =biodyn()
+  res@catch=catch(from)
+  stk      =window(stock.n(  from),end=dims(from)$maxyear+1)%*%
+            window(catch.sel(from),end=dims(from)$maxyear+1)%*%
+            window(stock.wt( from),end=dims(from)$maxyear+1)
+  res@stock=apply(stk,2:6,sum)
+  
+  dmns=dimnames(res@params)
+  
+  res@params=FLPar(as.numeric(NA),dimnames=dmns)
+  res@params[]=c(.6,2*mean(res@stock,na.rm=TRUE),1,1)
+  res@params[c("p","b0")]=c(1e-6,0.9)
+  
+  res@control[,'val']=res@params
+  res@control[,'min']=res@control[,'val']*.1
+  res@control[,'max']=res@control[,'val']*10
+  res@control[,'phase']=c(1,1,-1,-1)
+  
+  range(res)[]=range(from)[c('minyear','maxyear')]
+  
+  res}
+```
 
-load(file.path(dirDat,"plaice.RData"))
+## Cross tests
 
-load(file.path(dirDat,"plaice.RData"))
+```{r, brill}
+load(file.path(dirDat,"brill.RData"))
 
-om=omPlaice
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
 
-bd=biodyn(window(om,start=25,end=75))
-
-params(bd)["r"] =0.2 #mean(prior[c("r")])
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
 params(bd)["b0"]=0.8 
-params(bd)["k"] =1200
-params(bd)["p"] =0.00000000001
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
 
 u               =stock(bd,0.5)
 setParams(bd)   =u
 setControl(bd)  =params(bd)
 
-bd              =fit(bd,u)
-
-print(plot(as(list("MP"=bd,"OM"=biodyn(om)),"biodyns")))
+hat              =fit(bd,u)
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
-
-```{r, prod, fig.height=6,fig.width=8}
-plotProduction(iter(bd,1))+
-  geom_path(aes(stock,catch),data=model.frame(mcf(FLQuants(iter(bd,1),"stock"=stock,"catch"=catch))))
+```{r, brill-plot}
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic production function.
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for brill.
 
-```{r, bd-fwd}
-bd=biodyn(window(om,start=25))
 
-params(bd)["r"] =0.2 #mean(prior[c("r")])
-params(bd)["b0"]=0.8 
-params(bd)["k"] =1200
-params(bd)["p"] =0.00000000001
+### Turbot
 
-bdfwd=mlply(seq(75,50,-5),function(x) {
-          hat=window(bd,            end=x)
-          u  =window(stock(hat,0.5),end=x)
-          
-          params(hat)=params(hat)[1:4]
-          setParams(hat)=u
-          setControl(hat)=params(hat)
-          hat=fit(hat,u)
-          
-          fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])})
-
-bdfwd=as(bdfwd,"biodyns")
-```
-
-```{r}
-plot(bdfwd)
-```
-
-**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
-
-## Brill
-
-```{r, dir}
-dirDat="/home/laurence/Desktop/sea++/mydas/tasks/task5/data"
-
+```{r, turbot}
 load(file.path(dirDat,"turbot.RData"))
 
-bd=biodyn(window(om,start=25,end=75))
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
 
-params(bd)["r"] =mean(prior["r"])
-
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
 params(bd)["b0"]=0.8 
-params(bd)["k"] =1200
-params(bd)["p"] =0.00000000001
-params(bd)["q"] =1
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
 
 u               =stock(bd,0.5)
 setParams(bd)   =u
 setControl(bd)  =params(bd)
-control(bd)["q1","phase"]=-1
 
-bd              =fit(bd,u)
+hat              =fit(bd,u)
 
-print(plot(as(list("MP"=bd,"OM"=biodyn(om)),"biodyns")))
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Brill Biomass dynamic
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for turbot.
+
+
+### Ray
+
+```{r, ray}
+load(file.path(dirDat,"ray.RData"))
+
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
+
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
+params(bd)["b0"]=0.8 
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+
+hat              =fit(bd,u)
+
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for ray.
+
+### Pollack
+
+```{r, pollack}
+load(file.path(dirDat,"pollack.RData"))
+
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
+
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
+params(bd)["b0"]=0.8 
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+
+hat              =fit(bd,u)
+
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for pollack.
+
+### Sprat
+
+```{r, sprat}
+load(file.path(dirDat,"sprat.RData"))
+
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
+
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
+params(bd)["b0"]=0.8 
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+
+hat              =fit(bd,u)
+
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for sprat.
+
+### Lobster
+
+```{r, lobster}
+load(file.path(dirDat,"lobster.RData"))
+
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
+
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
+params(bd)["b0"]=0.8 
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+
+hat              =fit(bd,u)
+
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for lobster.
+
+### Razor
+
+```{r, razor}
+load(file.path(dirDat,"razor.RData"))
+
+om=window(om,start=20,end=55)
+bd=FLStock2biodynSimple(om)
+
+params(bd)["r"] =median(c(prior["r"]))
+params(bd)["k"] =1000
+params(bd)["b0"]=0.8 
+params(bd)["p"] =median(c(p(prior["bmsy"]/prior["v"])))
+
+u               =stock(bd,0.5)
+setParams(bd)   =u
+setControl(bd)  =params(bd)
+
+hat              =fit(bd,u)
+
+plot(as(list("MP"=hat,"OM"=bd,"biodyns"),probs=c(0.25,0.75))+
+  theme_bw()
+```
+
+**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for razor.
+
 
 ```{r, prod, fig.height=6,fig.width=8}
-plotProduction(iter(bd,1))+
-  geom_path(aes(stock,catch),data=model.frame(mcf(FLQuants(iter(bd,1),"stock"=stock,"catch"=catch))))
+plotProduction(iter(hat,1))+
+  geom_path(aes(stock,catch),data=model.frame(mcf(FLQuants(iter(hat,1),"stock"=stock,"catch"=catch))))
 ```
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic production function.
 
-```{r, bd-fwd}
+
+```{r, bd-fwd, eval=FALSE}
 bd=biodyn(window(om,start=25))
 
 params(bd)["r"] =0.2 #mean(prior[c("r")])
@@ -150,7 +270,7 @@ params(bd)["b0"]=0.8
 params(bd)["k"] =1200
 params(bd)["p"] =0.00000000001
 
-bdfwd=mlply(seq(75,50,-5),function(x) {
+bdfwd=mlply(seq(65,40,-5),function(x) {
           hat=window(bd,            end=x)
           u  =window(stock(hat,0.5),end=x)
           
@@ -162,13 +282,15 @@ bdfwd=mlply(seq(75,50,-5),function(x) {
           fwd(hat,catch=catch(bd)[,dim(u)[2]+0:10])})
 
 bdfwd=as(bdfwd,"biodyns")
-```
 
-```{r}
 plot(bdfwd)
 ```
 
 **Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
+
+
+**Figure `r iFig=iFig+1; iFig`,** Biomass dynamic
+
 
 \newpage
 ## Session Info

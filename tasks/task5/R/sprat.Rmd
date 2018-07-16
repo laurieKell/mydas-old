@@ -116,8 +116,8 @@ lh=FLife:::mf2FLPar(lh[,   -c(1,7:8)])
 lh[lh$t0>=0,"t0"]=NA
 
 lh=sim(lh,    niters=nits)
-lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
+lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
@@ -157,7 +157,7 @@ plot(iter(eq,1),refpts=FALSE)
 gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                              seq(0.1,1.5,length.out=40),
+                                              seq(0.1,1.5,length.out=30),
                                               seq(1.5,0.7,length.out=gTime)[-1],
                                               rep(0.7,61)))[,1:105]
 

@@ -18,6 +18,7 @@ source('~/Desktop/flr/mse/R/hcr.R')
 source('~/Desktop/flr/FLife/R/omOut.R')
 source('~/Desktop/flr/mpb/R/mseXSA.R')
 
+
 theme_set(theme_bw())
 
 dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task5"
@@ -32,8 +33,8 @@ xsa=function(om,pg=10,ctrl=xsaControl){
 load(file.path(dirDat,"turbot.RData"))
 
 ##OM
-om=iter(om,1:500)
-eq=iter(eq,1:500)
+om=iter(om,1:10)
+eq=iter(eq,1:10)
 
 om=window(om,start=25)
 range(om)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))

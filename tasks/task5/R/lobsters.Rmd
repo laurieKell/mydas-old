@@ -52,7 +52,7 @@ srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:105)),.3,b=0.0)
 ## Life history parameters
 
 ```{r, lh}
-ab=cbind(a=c(0.000126,0.00919,0.0017,0.0004,0.001086,0.000447),
+ab=cbind(a=c(0.00126,0.000919,0.0017,0.0004,0.001086,0.000447),
          b=c(3.36,2.922,2.797,3.123,2.896,3.01))
          
 lh=read.csv("/home/laurence/Desktop/sea++/mydas/tasks/task5/inputs/lobsterGrw.csv")
@@ -119,7 +119,6 @@ lh=FLife:::mf2FLPar(lh)
 
 lh=sim(lh,    niters=nits)
 
-
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
 ```
@@ -158,11 +157,10 @@ plot(iter(eq,1),refpts=FALSE)
 #http://www.fishbase.org/manual/Key%20Facts.htm
 
 gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
-maxf =mean(refpts(eq)["crash","harvest"]/refpts(eq)["msy","harvest"]*0.75)
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
-                                              seq(.1,maxf,length.out=40),
-                                              seq(maxf,.7,length.out=gTime)[-1],
+                                              seq(.1,2,length.out=30),
+                                              seq(2,.7,length.out=gTime)[-1],
                                               rep(.7,61)))[,1:105]
 
 om=as(eq,"FLStock")

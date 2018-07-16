@@ -20,8 +20,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-brill-",
-               cache.path="../cache/om-brill/")
+               fig.path  ="../tex/priors-",
+               cache.path="../cache/priors/")
 
 iFig=0
 ```
@@ -60,6 +60,7 @@ plot(prior)
 
 ```{r, turbot}
 load(file.path(dirDat,"turbot.RData"))
+
 
 prior=priors(lh,eq)
 save(lh,eq,om,prior,file=file.path(dirDat,"turbot.RData"),compress="xz")
