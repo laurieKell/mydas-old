@@ -3,11 +3,13 @@ title: "Management Procedure"
 subtitle: "Biomass Dynamic"
 author: "Laurence Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: rmarkdown:::html_document
+output: pdf_document
 vignette: >
+  %\VignetteIndexEntry{FLife}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+github_document:
+    mathjax: TRUE
 bibliography: refs.bib
 tags: FLPKG FLR
 license: Creative Commons Attribution-ShareAlike 4.0 International
@@ -110,6 +112,23 @@ plot(bd)
 
 ```{r example1,echo=TRUE,eval=TRUE}
 ```
+
+##  Proportional, Integral, Derivative (PID) Controller
+
+$TAC_{y+1} = min\left \{ max\left \{ exp(u^1_y), exp(u^2_y)\right \}, exp(u^3_y)\right \}TAC_y$
+
+where
+
+$u_y = K_Pe_y + K_I \sum_{z=y-\delta}^{y}e_z + K_D(e_y-e_{y-1})$
+
+and $u^1_y$ is the control signal and  $u^2_y$ and $u^3_y$ are lower and upper bounds repectively, which could be an interannual bound on the relative increase, or set to an upper or lower limit reference point.
+
+$u_y$ is the control signal in year $y$ that is used for the TAC adjustment,  in control theory this type of system is known as a proportional, integral, derivative (PID) controller. The control signal is calculated from $e_y$, giving the divergence of an index relative to a reference point. The estimate can be calculated either directly from a survey or through an assessment. The desired closed-loop behaviour is then obtained by tuning the three parameters $K_P$, $K_I$ and $K_D$ where $\delta$ denotes the historical time period used to calculate the integrated (I) part of the control signal $e_y$.  The three control parameters of the HCR ($K_P$, $K_I$ and $K_D$) can be tuned. Using a historical period $\delta$  means that “moving targets” are considered, since divergence is always relative to the index in a previous year. 
+
+<!-- A common method, named after Ziegler and Nichols and often applied in industrial engineering, is to first set $K_I$ and $K_D$ to zero and increase $K_P$ until the output of the control loop starts to oscillate with constant amplitude. The value of $K_P$ at this point is called the critical gain and can be combined with the value of the oscillation period to arrive at standard tunings for $K_P$, $K_I$ and/or $K_D$, depending on whether strictly proportional (P), proportional-integral (PI), or proportional-integral-derivative (PID) control is desirable. Here, $K_P$ represents the proportional response given the control signal, $K_I$ is the integral part of the response given the aggregation (sum) of recent control signals, and $K_D$ is the derivative part of the response driven by the rate at which the control signal varies.  -->
+
+
+
 
 
 [Back to Top](#top)

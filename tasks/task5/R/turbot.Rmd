@@ -6,7 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
  
-  
+ 
 ```{r, knitr, eval=TRUE, echo=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
@@ -40,7 +40,7 @@ library(reshape)
 library(GGally)
 
 library(FLCore)
-library(FLRP)
+library(FLBRP)
 library(FLasher)
 library(ggplotFL)
 library(FLife)
@@ -173,3 +173,28 @@ plot(om)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Time series.
+```{r, sr}
+nits=500
+set.seed(1233)
+srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),.3,b=0.0)
+```
+
+```{r om-m}
+load(file.path(dirDat,"turbot.RData"))
+
+set.seed(1234)
+omYr=om
+m(omYr)=m(om)%*%rlnoise(nits,iter(m(om)[1,],1)%=%0,sd=0.2,b=0.9,what="year")
+omYr=fwd(omYr,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
+save(omYr,file=file.path(dirDat,"omTurbotYr.RData"),compress="xz")
+
+set.seed(1234)
+omYc=om
+m(omYc)=m(om)%*%rlnoise(nits,iter(m(om)[1,],1)%=%0,sd=0.2,b=0.0,what="year")
+omYc=fwd(omYc,fbar=fbar(omYc)[,-1],sr=eq,residuals=srDev)
+save(omYc,file=file.path(dirDat,"omTurbotYc.RData"),compress="xz")
+
+plot(FLStocks("Year"=omYr,"Cohort"=omYc,"Recruitment"=om))
+```
+
+**Figure `r iFig=iFig+1; iFig`** Comparisons of Time series for different M.
