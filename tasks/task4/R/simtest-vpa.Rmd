@@ -103,6 +103,20 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-brill-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-brill-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -125,7 +139,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -145,7 +159,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -192,6 +206,13 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-turbot-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-turbot-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -214,7 +235,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -234,7 +255,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -283,6 +304,14 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-ray-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
+
 ```{r, xsa-ray-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -305,7 +334,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],        
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -325,7 +354,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],        
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -372,6 +401,13 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-pollack-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-pollack-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -394,7 +430,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],        
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -414,7 +450,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],        
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -461,6 +497,13 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-sprat-refpts-segreg}
 eqS=eqSegreg(om)  
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-sprat-refpts-bevholt}
 eqB=eqBevholt(om)   
 ```
@@ -502,7 +545,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,c(2:8)],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg   
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],        
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -552,6 +595,13 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-lobster-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-lobster-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -574,7 +624,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -594,7 +644,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],          
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -642,6 +692,13 @@ save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
 ```{r, xsa-razor-refpts-segreg}
 eqS=eqSegreg(om)
 ```
+```{r}
+#bug
+dimnames(refpts(eqS))$refpt[3]="fcrash"
+refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
+refpts(eqS)=computeRefpts(eqS)
+dimnames(refpts(eqS))$refpt[3]="crash"
+```
 ```{r, xsa-razor-refpts-bevholt}
 eqB=eqBevholt(om)
 ```
@@ -664,7 +721,7 @@ dat=rbind.fill(
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
 
-ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
@@ -684,7 +741,7 @@ ggpairs(cast(subset(dat,quant=="ssb"),iter~SRR+refpt,value="data")[,-1],
 
 ```{r, fig.height=8, fig.width =8}
 #bug no fcrash for segreg
-ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],
+ggpairs(cast(subset(dat,quant=="harvest"&refpt!="virgin"),iter~SRR+refpt,value="data")[,-1],            
   #mapping = ggplot2::aes(color=SRR),
   upper=list(continuous=wrap("cor",size=4, hjust=0.5)),
   lower = list(continuous = wrap(my_smooth,size=1)),
