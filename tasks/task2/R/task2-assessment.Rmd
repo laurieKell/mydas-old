@@ -38,7 +38,7 @@ library(reshape2)
 library(ggplot2)
 
 library(FLCore)
-library(FLRP)
+library(FLBRP)
 library(ggplotFL)
 library(diags)
 library(FLife)
@@ -47,8 +47,8 @@ theme_set(theme_bw())
 options(digits=3)
 ```
 ```{r dir}
-dirMy=dirname(dirname(FLife:::getScriptPath()))
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
+dirMy=dirname(FLife:::getScriptPath())
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
 
 dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
 dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")
@@ -304,11 +304,15 @@ ggplot(ddply(subset(bioCs,fleet==1),.(stock,fleet),transform,
 * `r version$version.string`
 * FLCore: `r packageVersion('FLCore')`
 * FLife:  `r packageVersion('FLife')`
-* FLRP:   `r packageVersion('FLRP')`
+* FLBRP:   `r packageVersion('FLBRP')`
 * **Compiled**: `r date()`
 
 ## Author information
 
-**Laurence KELL**. laurie@kell.es
+**Laurence Kell**. laurie@seaplusplus.es
+
+## Acknowledgements
+
+This vignette and many of the methods documented in it were developed under the MyDas project funded by the Irish exchequer and EMFF 2014-2020. The overall aim of MyDas is to develop and test a range of assessment models and methods to establish Maximum Sustainable Yield (MSY) reference points (or proxy MSY reference points) across the spectrum of data-limited stocks.
 
 # References {#References}

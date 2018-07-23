@@ -32,8 +32,8 @@ library(ggplot2)
 options(scipen = 999) 
 ```
 ```{r dir}
-dirMy=dirname(dirname(FLife:::getScriptPath()))
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
+dirMy=dirname(FLife:::getScriptPath())
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
 dirInp=file.path(dirMy,"inputs")
 dirDat=file.path(dirMy,"data")
 ```

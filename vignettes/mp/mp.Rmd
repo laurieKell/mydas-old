@@ -155,7 +155,7 @@ $u_y$ is the control signal in year $y$ that is used for the TAC adjustment,  in
 
 ## Author information
 
-**Laurence KELL**. laurie.kell.es
+**Laurence Kell**. laurie@seaplusplus.es
 
 
 ## Acknowledgements

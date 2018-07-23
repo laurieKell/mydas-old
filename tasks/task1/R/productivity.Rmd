@@ -115,7 +115,7 @@ eq=llply(lhpar,lhEql)
 ```
 
 ```{r, leslie}
-library(FLRP)
+library(FLBRP)
 L=llply(eq,function(x) leslie(x,fbar=c(refpts(x)["crash","harvest"])))      
 ```
 

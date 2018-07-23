@@ -49,7 +49,7 @@ library(reshape)
 library(GGally)
 
 library(FLCore)
-library(FLRP)
+library(FLBRP)
 library(FLasher)
 library(ggplotFL)
 library(FLife)

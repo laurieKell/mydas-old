@@ -1,6 +1,5 @@
 ---
-title: "Grid"
-subtitle: "Correlations between summary stats"
+title: "Priors for Operating Models"
 author: " L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -26,7 +25,8 @@ opts_chunk$set(comment   =NA,
 iFig=0
 ```
 ```{r, dir}
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task5"
+dirMy=dirname(dirname(FLife:::getScriptPath()))
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
 ```
 ```{r, pkgs}
@@ -38,7 +38,7 @@ library(GGally)
 
 library(FLCore)
 library(ggplotFL)
-library(FLRP)
+library(FLBRP)
 library(FLife)
 library(popbio)
 ```

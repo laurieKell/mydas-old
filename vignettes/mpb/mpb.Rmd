@@ -547,8 +547,7 @@ mseBiodyn
 
 ## Author information
 
-**Laurence KELL**. laurie.kell.es
-
+**Laurence Kell**. laurie@seaplusplus.es
 
 ## Acknowledgements
 

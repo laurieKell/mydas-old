@@ -60,7 +60,6 @@ library(FLife)
 
 ```{r init-2, echo=FALSE}
 library(FLCore)
-library(FLash)
 library(FLBRP)
 library(FLAssess)
 library(FLXSA)
@@ -68,7 +67,7 @@ library(FLXSA)
 library(ggplotFL)
 
 library(FLasher)
-library(FLRP)
+library(FLBRP)
 library(FLife)
 library(mpb)
 library(plyr)
@@ -383,7 +382,7 @@ plot(window(oms[["Emprirical"]],end=100))+
 
 ## Author information
 
-**Laurence KELL**. laurie.kell.es
+**Laurence Kell**. laurie@seaplusplus.es
 
 
 ## Acknowledgements

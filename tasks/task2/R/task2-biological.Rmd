@@ -38,8 +38,8 @@ library(stringr)
 theme_set(theme_bw())
 ```
 ```{r dir}
-dirMy=dirname(dirname(FLife:::getScriptPath()))
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
+dirMy=dirname(FLife:::getScriptPath())
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
 
 dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
 dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")

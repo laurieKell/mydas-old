@@ -38,7 +38,7 @@ library(reshape2)
 library(ggplot2)
 
 library(FLCore)
-library(FLRP)
+library(FLBRP)
 library(ggplotFL)
 library(diags)
 library(FLife)
@@ -48,7 +48,7 @@ options(digits=3)
 ```
 ```{r dir}
 dirMy=dirname(dirname(FLife:::getScriptPath()))
-dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
 
 dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
 dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")

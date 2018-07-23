@@ -889,7 +889,7 @@ plot(mpb:::biodyns(list("biodyn"=bd,"aspic"=as(asp2013,"biodyn"))))+
 
 ## Author information
 
-**Laurence KELL**. laurie@kell.es
+**Laurence Kell**. laurie@seaplusplus.es
 
 
 ## Acknowledgements

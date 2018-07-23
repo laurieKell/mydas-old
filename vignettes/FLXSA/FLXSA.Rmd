@@ -252,7 +252,7 @@ kobePhase(kb,xlim=c(0,2))
 
 # Harvest Control Rules
 ```{r hcr,fig.margin=TRUE,fig.width=6,fig.height=6}
-library(FLash)
+library(FLasher)
 ```
 
 ```{r kobe,fig.margin=TRUE,fig.width=6,fig.height=6}
