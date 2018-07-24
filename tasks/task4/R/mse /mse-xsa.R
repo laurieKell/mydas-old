@@ -19,7 +19,7 @@ source('~/Desktop/flr/mpb/R/mseXSA.R')
 
 theme_set(theme_bw())
 
-dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task5"
+dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
 
 xsa=function(om,pg=10,ctrl=xsaControl){
@@ -62,6 +62,7 @@ mse1=mseXSA(om,
             interval=1,start=50,end=80,
             srDev=srDev,uDev=uDev)
 
+## For later
 omYr=om
 set.seed(1234)
 m(omYr)=m(om)%*%rlnoise(nits,iter(m(om),1)%=%0,sd=0.0,b=0.0,what="year")

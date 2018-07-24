@@ -18,7 +18,7 @@ license: Creative Commons Attribution-ShareAlike 4.0 International Public Licens
 library(knitr)
 ## Global options
 opts_chunk$set(cache     =TRUE,
-               cache.path="../cache/crosstest/lbspr/",
+               cache.path="../cache/simtest/lbspr/",
                echo      =FALSE,
                eval      =TRUE,
                prompt    =FALSE,
@@ -28,7 +28,7 @@ opts_chunk$set(cache     =TRUE,
                tidy      =TRUE,
                fig.height=6,
                fig.width =8,
-               fig.path  ="../tex/FLife-OM-lbspr")
+               fig.path  ="../tex/simtest-lbspr")
 
 options(digits=3)
 
