@@ -293,6 +293,8 @@ bioCs=mdply(spictCs,
 bioCs$stock=spictCs[bioCs$X1]
 names(bioCs)=c("X1","year","yearEnd","fleet","obs","stock")
 bioCs=bioCs[c(6,2:5)]
+
+save(bioCs,bioNs,file="/home/laurence/Desktop/sea++/mydas/tasks/task2/data/bio.RData",compress="xz")
 ```
 
 ```{r}
