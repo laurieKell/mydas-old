@@ -1,7 +1,7 @@
 ---
 title: "MyDas"
 subtitle: "Stock Assssments"
-author: "Laurie Kell & Alex Tidd"
+author: "Laurie Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: rmarkdown:::pdf_document
 vignette: >
@@ -26,7 +26,7 @@ opts_chunk$set(comment=NA,
                error     =FALSE, 
                echo      =FALSE,
                cache     =TRUE,
-               cache.path=../cache/sa)
+               cache.path="../cache/sa")
 iFig=0
 iTab=0
 ```
@@ -43,16 +43,16 @@ theme_set(theme_bw())
 ```
 ```{r dir}
 dirMy=dirname(FLife:::getScriptPath())
-#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task1"
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task2"
 
-dirInp=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"inputs")
-dirDat=file.path(FLCore:::getDir(FLCore:::getDir(dirMy)),"data")
+dirInp="/home/laurence/Desktop/rfmo/ices/"
+dirDat="/home/laurence/Desktop/sea++/mydas/tasks/task2/data"
 ```
 
 # Stocks and species
 ```{r stocks}
-cs=read.csv(file.path(dirInp,"cs/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
-ns=read.csv(file.path(dirInp,"ns/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
+cs=read.csv(file.path(dirInp,"cs/2017/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
+ns=read.csv(file.path(dirInp,"ns/2017/StockAssessmentGraphs_2017128ijaewuckpic5ftyotcrcu20f.csv"))
 
 stocks=rbind(data.frame(wg="Celtic Sea",stock=unique(cs[,"FishStock"])),
              data.frame(wg="North Sea", stock=unique(ns[,"FishStock"])))
@@ -94,28 +94,28 @@ nms=data.frame(nms,spp,sea,stock)
 load("/home/laurence/Desktop/sea++/stecf/data/stk.RData")
 stk=stk["hadns"]
 
-load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/cod347/cod347_FLStockObject_wgnssk17_nscod17_ass06.RData")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/cod347/cod347_FLStockObject_wgnssk17_nscod17_ass06.RData")
 stk["codns"]=cod
 
-load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/whg3747d/whg.27.47d.stock.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/whg3747d/whg.27.47d.stock.Rdata")
 stk["whgns"]=x.stock
 
-load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/ple27420/ple27.7d_stockobject.Rdata")
-stk["plens"]=ass.stock
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/ple27420/ple.27.420_stock.object.Rdata")
+stk["plens"]=ass.stockOrigDisc
 
-load("/home/laurence/Desktop/sea++/stecf/inputs/nsea/solns/sol-nsea_ass.stock_workspace.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/solnsea/sol-nsea_ass.stock_workspace.Rdata")
 stk["solns"]=ass.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/ple27420/ple.27.420_stock.object.Rdata")
 stk["sains"]=ass.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/xsa.stock.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/cod7ek/xsa.stock.Rdata")
 stk["codcs"]=xsa.stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/whg7bk/xsa.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/whg7bk/xsa.Rdata")
 stk["whgcs"]=stock
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_stock.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/HAD_stock.RData")
 stk["hadcs"]=stock
 
 stk=llply(stk[c("codns","hadns","sains","whgns","plens","solns","codcs","hadcs","whgcs")],
@@ -224,22 +224,20 @@ ggplot(stkTs)+
 
 ##Indices
 ```{r, index-wg}
-load("/home/laurence/Desktop/sea++/mydas/inputs/ns/ple27420/ple.27.420_stock.object.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/ns/2017/ple27420/ple.27.420_stock.object.Rdata")
 idx=list("solns"=indices)
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/cod7ek/cod_idx.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/cod7ek/cod_idx.RData")
 idx["codcs"]=idx
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/HAD_tunning.RData")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/HAD_tunning.RData")
 idx["hadcs"]=tun
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/colm/PLE_tun.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/colm/PLE_tun.Rdata")
 idx["plecs"]=tun
 
-load("/home/laurence/Desktop/sea++/mydas/inputs/cs/sol7fg/INPUT/sol7fg_stock.Rdata")
+load("/home/laurence/Desktop/rfmo/ices/cs/2017/sol7fg/INPUT/sol7fg_stock.Rdata")
 idx["solcs"]=tun
-
-idx=idxs[c("solns","codcs","hadcs","plecs","solcs")]
 ```
 
 ```{r, index-sa.org}
@@ -254,7 +252,7 @@ idxNs=list(mlply(c(
 	            "sole3a2017",
 	            "witch_2018_007",
 	            "witch_2018_008"), function(x){ print(x)
-	              readFLIndices(file.path(dirInp,"ns/sa.org",x,"data/survey.dat"))}))
+	     readFLIndices(file.path("/home/laurence/Desktop/rfmo/ices","ns/2017/sa.org",x,"data/survey.dat"))}))
 ```
 
 ```{r}
@@ -263,7 +261,7 @@ idxCs=list(mlply(c(
           #"HADPia",
           #"meg_rock_2016"
           ), function(x){ print(x)
-	              readFLIndices(file.path(dirInp,"cs/sa.org",x,"data/survey.dat"))}))
+	     readFLIndices(file.path("/home/laurence/Desktop/rfmo/ices","cs/2017/sa.org",x,"data/survey.dat"))}))
 
 save(idx,idxNs,idxCs,file=file.path(dirDat,"idx.RData"),compress="xz")
 ```
@@ -277,7 +275,7 @@ idxs=ldply(idxNs, function(x)
 ```{r spict}
 bioNs=list(mdply(c("nsea-dab"), 
             function(x){ print(x)
-	              read.csv(file.path(dirInp,"ns/sa.org",x,"data/data.txt"),skip=1)}))
+read.csv(file.path("/home/laurence/Desktop/rfmo/ices","ns/2017/sa.org",x,"data/data.txt"),skip=1)}))
 
 spictCs=c("meg_rock_2016",
           "Megrim_78_ADGWW2_IBP_update_Land",
@@ -291,7 +289,7 @@ spictCs=c("meg_rock_2016",
           "ple-iris_ADGWW2")[-c(3:4,8)]
 bioCs=mdply(spictCs, 
             function(x){ print(x)
-               read.csv(file.path(dirInp,"cs/sa.org",x,"data/data.txt"),skip=1)})
+  read.csv(file.path("/home/laurence/Desktop/rfmo/ices","cs/2017/sa.org",x,"data/data.txt"),skip=1)})
 bioCs$stock=spictCs[bioCs$X1]
 names(bioCs)=c("X1","year","yearEnd","fleet","obs","stock")
 bioCs=bioCs[c(6,2:5)]
