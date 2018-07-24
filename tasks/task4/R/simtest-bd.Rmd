@@ -1,5 +1,5 @@
 ---
-title: "Cross test using Operating Model based on Life History"
+title: "Simulation test using Operating Model based on Life History"
 subtitle: "Biomass Dynamic"
 author: "L Kell"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -26,7 +26,7 @@ opts_chunk$set(cache     =TRUE,
                message   =FALSE,
                warning   =FALSE,
                tidy      =TRUE,
-               fig.height=10,
+               fig.height=9,
                fig.width =8,
                fig.path  ="../tex/simtest-bd")
 
@@ -50,7 +50,7 @@ dirMy=dirname(dirname(FLife:::getScriptPath()))
 dirDat=file.path(dirMy,"data")
 ```
 
-## Cross tests
+## Simulation tests
 
 ```{r, brill}
 load(file.path(dirDat,"brill.RData"))
@@ -75,8 +75,11 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for brill.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for brill.
 
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"brill-bd.RData"),compress="xz")
+```
 
 ### Turbot
 
@@ -95,14 +98,17 @@ u               =stock(bd,0.5)
 setParams(bd)   =u
 setControl(bd)  =params(bd)
 
-hat              =fit(bd,u)
+hat             =fit(bd,u)
 
 plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for turbot.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for turbot.
 
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"turbot-bd.RData"),compress="xz")
+```
 
 ### Ray
 
@@ -127,7 +133,11 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for ray.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for ray.
+
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"ray-bd.RData"),compress="xz")
+```
 
 ### Pollack
 
@@ -152,7 +162,11 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for pollack.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for pollack.
+
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"pollack-bd.RData"),compress="xz")
+```
 
 ### Sprat
 
@@ -177,7 +191,11 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for sprat.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for sprat.
+
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"sprat-bd.RData"),compress="xz")
+```
 
 ### Lobster
 
@@ -187,7 +205,7 @@ load(file.path(dirDat,"lobster.RData"))
 om=window(om,start=20,end=55)
 bd=as(om,"biodyn")
 
-params(bd)["r"] =0.5 #median(c(prior["r"]))
+params(bd)["r"] =median(c(prior["r"]))
 params(bd)["k"] =1000
 params(bd)["b0"]=0.8 
 params(bd)["p"] =median(c(mpb:::p(prior["bmsy"]/prior["v"])))
@@ -202,7 +220,12 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for lobster.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for lobster.
+
+
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"lobster-bd.RData"),compress="xz")
+```
 
 ### Razor
 
@@ -227,8 +250,11 @@ plot(as(list("MP"=hat,"OM"=bd),"biodyns"),probs=c(0.25,0.75))+
   theme_bw()
 ```
 
-**Figure `r iFig=iFig+1; iFig`,** Cross test of biomass dyanmic assessment for razor.
+**Figure `r iFig=iFig+1; iFig`,** Simulation test of biomass dyanmic assessment for razor.
 
+```{r}
+save(bd,hat,prior,file=file.path(dirDat,"razor-bd.RData"),compress="xz")
+```
 
 ```{r, prod, fig.height=6,fig.width=8}
 plotProduction(iter(hat,1))+
