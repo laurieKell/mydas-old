@@ -12,7 +12,7 @@ library(FLAssess)
 library(FLXSA)
 library(mpb)
 
-#source('~/Desktop/flr/mpb/R/hcr.R')
+source('~/Desktop/flr/mpb/R/hcr.R')
 source('~/Desktop/flr/mpb/R/mseXSA.R')
 #source('~/Desktop/flr/FLife/R/omOut.R')
 #source('~/Desktop/flr/mse/R/msy.R')
@@ -28,14 +28,14 @@ xsa=function(om,pg=10,ctrl=xsaControl){
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)
   stk+FLXSA(stk,idx,control=ctrl,diag.flag=FALSE)}
 
-load(file.path(dirDat,"turbot.RData"))
+load(file.path(dirDat,"ray.RData"))
 range(om)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 range(eq)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 
 ##OM
 om=window(om,start=25)
-om=iter(om,1:10)
-eq=iter(eq,1:10)
+om=iter(om,1:500)
+eq=iter(eq,1:500)
 
 ##MP
 xsaControl=FLXSA.control(tol    =1e-09, maxit   =150, 
@@ -46,7 +46,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          window =10,    tsrange =10, 
                          tspower= 0,
                          vpa    =FALSE)
-mp=xsa(window(om,end=75),ctrl=xsaControl,pg=10)
+mp=xsa(window(trim(om,age=3:20),end=75),ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -55,50 +55,32 @@ set.seed(4321)
 srDev=FLife:::rlnoise(nits,rec(    om)[,,,,,1]%=%0,0.3,b=0.0)
 uDev =FLife:::rlnoise(nits,stock.n(om)[,,,,,1]%=%0,0.2,b=0.0)
 
-mse1=mseXSA(om,
+mseRay=mseXSA(om,
             eq,
             mp,control=xsaControl,
             ftar=1.0,
             interval=1,start=50,end=80,
             srDev=srDev,uDev=uDev)
 
-## For later
+##OM
 omYr=om
 set.seed(1234)
 m(omYr)=m(om)%*%rlnoise(nits,iter(m(om),1)%=%0,sd=0.0,b=0.0,what="year")
-
 set.seed(4321)
 srDev=FLife:::rlnoise(nits,rec(    om)[,,,,,1]%=%0,0.3,b=0.0)
 
-for (i in seq(1,10,10)){
-  print(i)
-  
-  iter(omYr,0:9+i)=fwd(iter(omYr,0:9+i),
-                       catch=iter(catch(om)[,ac(26:50)],0:9+i),
-                       sr=list(model="bevholt",params=iter(params(eq),i)),
-                       residuals=iter(srDev,0:9+i))}
+omYr=fwd(omYr,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
-plot(FLStocks("Year"=omYr,"Recruitment"=om))
 
-set.seed(1234)
 omYc=om
+set.seed(1234)
 m(omYc)=m(om)%*%rlnoise(nits,iter(m(om)[1,],1)%=%0,sd=0.05,b=0.6,what="year")
-for (i in seq(1,10,10)){
-  print(i)
-  
-  iter(omYc,0:9+i)=fwd(iter(omYc,0:9+i),
-                       f=iter(f(om)[,-1],0:9+i),
-                       sr=list(model="bevholt",params=iter(params(eq),i+0:9)),
-                       residuals=iter(srDev,0:9+i))}
 
-save(omYc,file=file.path(dirDat,"omTurbotYc.RData"),compress="xz")]
+omYc=fwd(omYc,fbar=fbar(omYc)[,-1],sr=eq,residuals=srDev)
 
 plot(FLStocks("Year"=omYr[,,,,,c((stock(omYr)[,ac(55)]-stock(om)[,ac(55)])/stock(om)[,ac(55)])>-0.5],
               "AR"  =omYc[,,,,,c((stock(omYc)[,ac(55)]-stock(om)[,ac(55)])/stock(om)[,ac(55)])>-0.5],
               "Recruitment"=om))
-
-rIt=c((stock(omYr)[,ac(55)]-stock(om)[,ac(55)])/stock(om)[,ac(55)])>-0.5
-cIt=c((stock(omYc)[,ac(55)]-stock(om)[,ac(55)])/stock(om)[,ac(55)])>-0.5
 
 mse2=mseXSA(window(omYr,start=25),
             eq,
@@ -117,5 +99,4 @@ mse3=mseXSA(window(omYc,start=25),
 plot(FLStocks(llply(FLStocks("1"=mse1, "2"=mse2, "3"=mse3),window,start=20,end=80)))+
   facet_grid(qname~stock,scale="free")
 
-plot(FLStocks(llply(FLStocks("1"=mse1, "2"=mse2[,,,,,rIt], "3"=mse3[,,,,,cIt]),window,start=20,end=80)))+
-  facet_grid(qname~stock,scale="free")
+save(mse1,mse2,mse3,file="/home/laurence/Desktop/mse.RData")

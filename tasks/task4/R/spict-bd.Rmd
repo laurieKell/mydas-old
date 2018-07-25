@@ -77,7 +77,6 @@ plot(hat)
 **Figure `r iFig=iFig+1; iFig`,** Biomass dyanmic assessment
 
 
-
 \newpage
 ## Software Versions
 
