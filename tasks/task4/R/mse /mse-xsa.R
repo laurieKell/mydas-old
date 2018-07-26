@@ -28,14 +28,15 @@ xsa=function(om,pg=10,ctrl=xsaControl){
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)
   stk+FLXSA(stk,idx,control=ctrl,diag.flag=FALSE)}
 
-load(file.path(dirDat,"ray.RData"))
+load(file.path(dirDat,"brill.RData"))
+#load(file.path(dirDat,"ray.RData"))
 range(om)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 range(eq)[c("minfbar","maxfbar")]=ceiling(mean(lh["a1"]))
 
 ##OM
 om=window(om,start=25)
-om=iter(om,1:500)
-eq=iter(eq,1:500)
+om=iter(om,1:10)
+eq=iter(eq,1:10)
 
 ##MP
 xsaControl=FLXSA.control(tol    =1e-09, maxit   =150, 
@@ -46,7 +47,8 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          window =10,    tsrange =10, 
                          tspower= 0,
                          vpa    =FALSE)
-mp=xsa(window(trim(om,age=3:20),end=75),ctrl=xsaControl,pg=20)
+mp=xsa(window(om,end=60),ctrl=xsaControl,pg=10)
+#mp=xsa(window(trim(om,age=3:20),end=75),ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -59,7 +61,7 @@ mseRay=mseXSA(om,
             eq,
             mp,control=xsaControl,
             ftar=1.0,
-            interval=1,start=50,end=80,
+            interval=1,start=60,end=90,
             srDev=srDev,uDev=uDev)
 
 ##OM
