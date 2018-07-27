@@ -17,12 +17,12 @@ dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
 
 ## OM
-load(file.path(dirDat,"sprat.RData"))
+load(file.path(dirDat,"turbot.RData"))
 
 om=window(om,start=20,end=90)
 
 ## MP
-source('~/Desktop/flr/mse/R/mseEMP.R')
+source('~/Desktop/flr/mpb/R/mseEMP.R')
 
 nits=dims(om)$iter
 set.seed(1234)
