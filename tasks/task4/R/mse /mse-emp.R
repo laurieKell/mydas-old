@@ -17,7 +17,7 @@ dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
 
 ## OM
-load(file.path(dirDat,"turbot.RData"))
+load(file.path(dirDat,"sprat.RData"))
 
 om=window(om,start=20,end=90)
 
