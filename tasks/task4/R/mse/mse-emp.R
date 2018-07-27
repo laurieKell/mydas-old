@@ -30,4 +30,4 @@ srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),0.3,b=0.0)
 uDev =FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),0.2,b=0.0)
 eq=iter(eq,seq(nits))
 
-msesbt1 =mseEMP(om,eq,control=c(k1=1.5,k2=2.0,gamma=1),start=60,end=100)
+msesbt1 =mseEMP(om,eq,control=c(k1=1.5,k2=2.0,gamma=1),start=60,end=100)  
