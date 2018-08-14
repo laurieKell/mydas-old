@@ -121,7 +121,7 @@ lh=FLife:::mf2FLPar(lh)
 lh=sim(lh,    niters=nits)
 
 lh=lhPar(lh,s=0.8, sl=1)
-eq=lhEql(lh)
+eq=lhEql(lh,spwn=0)
 ```
 
 ```{r vectors}
