@@ -1,6 +1,6 @@
 ---
 title: "FLife: Operating Model Conditioning"
-subtitle: "turbot"
+subtitle: "Turbot"
 author: "L Kell & A Tidd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -20,8 +20,8 @@ opts_chunk$set(comment   =NA,
                fig.width =10, 
                fig.height=10,
                cache     =TRUE, 
-               fig.path  ="../tex/om-turbot-",
-               cache.path="../cache/om-turbot/")
+               fig.path  ="../tex/om/om-turbot-",
+               cache.path="../cache/om/turbot/")
 
 iFig=0
 iTab=0
@@ -114,7 +114,7 @@ sim<-function(x,niters=500,se=0.3){
   res}
 
 # create FLPar
-lh=FLife:::mf2FLPar(lh[,   -c(1,7)])
+lh=FLife:::mf2FLPar(lh[,-c(1,7)])
 lh[lh$t0>=0,"t0"]=NA
 
 set.seed(1234)
@@ -182,8 +182,8 @@ gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                               seq(.1,2,length.out=30),
-                                              seq(2,.7,length.out=gTime)[-1],
-                                              rep(.7,61)))[,1:105]
+                                              seq(2,1.0,length.out=gTime)[-1],
+                                              rep(1.0,61)))[,1:105]
 
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
@@ -195,6 +195,16 @@ plot(om)
 
 **Figure `r iFig=iFig+1; iFig`** Time series.
 
+```{r om-refs}
+plot(FLQuants(om, 
+          "ssb" = function(x) ssb(x)%/%refpts( eq)["msy","ssb"], 
+          "f" =   function(x) fbar(x)%/%refpts(eq)["msy","harvest"], 
+          "rec" = function(x) rec(x)%/%refpts( eq)["msy","rec"], 
+          "catch"=function(x) landings(x)%/%refpts(eq)["msy","yield"])) + 
+  geom_hline(aes(yintercept=1),col="red") 
+```
+
+**Figure `r iFig=iFig+1; iFig`** Time series relative to MSY benchmarks.
 
 \newpage
 ## Software Versions

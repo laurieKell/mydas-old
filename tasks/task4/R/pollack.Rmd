@@ -21,7 +21,7 @@ opts_chunk$set(comment   =NA,
                fig.height=10,
                cache     =TRUE, 
                fig.path  ="../tex/om-pollack-",
-               cache.path="../cache/om-pollack/")
+               cache.path="../cache/om/pollack/")
 
 iFig=0
 iTab=0
@@ -195,6 +195,16 @@ plot(om)
 
 **Figure `r iFig=iFig+1; iFig`** Time series.
 
+```{r om-refs}
+plot(FLQuants(om, 
+          "ssb" = function(x) ssb(x)%/%refpts( eq)["msy","ssb"], 
+          "f" =   function(x) fbar(x)%/%refpts(eq)["msy","harvest"], 
+          "rec" = function(x) rec(x)%/%refpts( eq)["msy","rec"], 
+          "catch"=function(x) landings(x)%/%refpts(eq)["msy","yield"])) + 
+  geom_hline(aes(yintercept=1),col="red") 
+```
+
+**Figure `r iFig=iFig+1; iFig`** Time series relative to MSY benchmarks.
 
 \newpage
 ## Software Versions
