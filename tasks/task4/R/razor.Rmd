@@ -132,7 +132,7 @@ lh=sim(lh,    niters=nits)
 lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
-eq=lhEql(lh)
+eq=lhEql(lh,spwn=0)
 ```
 
 ```{r vectors}
