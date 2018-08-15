@@ -71,7 +71,6 @@ plot(om)
 **Figure `r iFig=iFig+1; iFig`** Operating model for turbot. 
 
 ```{r, turbot-alk}
-source('~/Desktop/flr/FLife/R/oemLn.R') 
 alk=setALK(lh)  
 ```
 
