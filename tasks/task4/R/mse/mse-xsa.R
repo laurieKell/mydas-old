@@ -71,7 +71,7 @@ omYr=om
 set.seed(1234)
 m(omYr)=m(om)%*%rlnoise(nits,iter(m(om),1)%=%0,sd=0.0,b=0.0,what="year")
 set.seed(4321)
-srDev=FLife:::rlnoise(nits,rec(    om)[,,,,,1]%=%0,0.3,b=0.0)
+srDev=FLife:::rlnoise(nits,rec(     om)[,,,,,1]%=%0,0.3,b=0.0)
 
 omYr=fwd(omYr,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
