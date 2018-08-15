@@ -71,6 +71,23 @@ xsaCtrl=list("default"=FLXSA.control(
 source("/home/laurence/Desktop/sea++/mydas/R/refpts4hcr.R")
 source("/home/laurence/Desktop/sea++/mydas/R/xsaTest.R")
 source("/home/laurence/Desktop/sea++/mydas/R/my_ggpairs.R")
+
+eqSegreg<-function(object){
+  
+  sr=as.FLSR(object,model="segreg")
+  
+  lower(sr)[1:2]=c(c(min(rec(sr),na.rm=TRUE)/max(ssb(sr),na.rm=TRUE)),
+                   c(min(ssb(sr),na.rm=TRUE)))
+  upper(sr)[1:2]=c(c(max(rec(sr),na.rm=TRUE)/min(ssb(sr),na.rm=TRUE)),
+                   c(max(ssb(sr),na.rm=TRUE)))
+  sr=fmle(sr,control=list(trace=FALSE),method="L-BFGS-B")
+  
+  params(sr)["a"][is.na(params(sr)["a"])]=median(params(sr)["a"],na.rm=TRUE)
+  params(sr)["b"][is.na(params(sr)["b"])]=median(params(sr)["b"],na.rm=TRUE)
+
+  res=brp(FLBRP(object,sr=sr))
+
+  return(res)}
 ```
 
 ## Brill
