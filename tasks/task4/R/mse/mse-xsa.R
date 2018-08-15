@@ -61,11 +61,11 @@ srDev=FLife:::rlnoise(nits,rec(    om)[,,,,,1]%=%0,0.3,b=0.0)
 uDev =FLife:::rlnoise(nits,stock.n(om)[,,,,,1]%=%0,0.2,b=0.0)
 
 mseRay=mseXSA(om,
-            eq,
-            mp,control=xsaControl,
-            ftar=1.0,
-            interval=1,start=60,end=90,
-            srDev=srDev,uDev=uDev)
+             eq,
+             mp,control=xsaControl,
+             ftar=1.0,
+             interval=1,start=60,end=90,
+             srDev=srDev,uDev=uDev)
 
 ##OM
 omYr=om

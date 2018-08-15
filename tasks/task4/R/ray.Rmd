@@ -124,6 +124,8 @@ lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh,spwn=0)
+mat(eq)[1]=0
+eq=brp(eq)
 ```
 
 Life history parameters from Fish Base for the Von Bertalanffy growth model were $L_{\infty}$ `r tmp<-lh["linf"]` (`r signif(mean(lh["linf"],na.rm=TRUE),3)`), $k$  (`r signif(mean(lh["k"]),3)`), and $t_0$ (`r signif(mean(lh["t0"]),3)`), for the length/weight relationship $W=aL^b$ were $a$ (`r signif(mean(lh["a"],na.rm=TRUE),3)`) and $b$ (`r signif(mean(lh["b"],na.rm=TRUE),3)`),  and age at maturity  ($a_{50}$) was (`r signif(mean(lh["a50"],na.rm=TRUE),3)`).

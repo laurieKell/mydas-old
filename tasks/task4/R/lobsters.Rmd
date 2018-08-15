@@ -122,6 +122,8 @@ lh=sim(lh,    niters=nits)
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh,spwn=0)
+mat(eq)[1]=0
+eq=brp(eq)
 ```
 
 ```{r vectors}

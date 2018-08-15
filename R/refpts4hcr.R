@@ -24,7 +24,6 @@ eqBevholt<-function(object){
   params(sr)["a"][is.na(params(sr)["a"])]=median(params(sr)["a"],na.rm=TRUE)
   params(sr)["b"][is.na(params(sr)["b"])]=median(params(sr)["b"],na.rm=TRUE)
 
-  
   res=brp(FLBRP(object,sr=sr))
   
   return(res)}

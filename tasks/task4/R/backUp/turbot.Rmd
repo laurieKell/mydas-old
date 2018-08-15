@@ -127,6 +127,8 @@ lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh)
+mat(eq)[1]=0
+eq=brp(eq)
 ```
 
 ```{r vectors}
