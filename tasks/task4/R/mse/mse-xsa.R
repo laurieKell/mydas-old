@@ -11,6 +11,7 @@ library(FLife)
 library(FLAssess)
 library(FLXSA)
 library(mpb)
+library(mydas)
 
 source('~/Desktop/flr/mpb/R/hcr.R')
 source('~/Desktop/flr/mpb/R/mseXSA.R')

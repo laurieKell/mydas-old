@@ -521,7 +521,7 @@ refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
 refpts(eqS)=computeRefpts(eqS)
 dimnames(refpts(eqS))$refpt[3]="crash"
 ```
-```{r, xsa-sprat-refpts-bevholt}
+```{r, xsa-sprat-refpts-bevholt, eval=FALSE}
 eqB=eqBevholt(om)   
 ```
 ```{r, xsa-sprat-refpts-geomean}
@@ -536,9 +536,9 @@ dat=rbind.fill(
   cbind("SRR"="PR",
     as.data.frame(refpts(eqM)[c("f0.1","virgin"),
                             c("ssb","biomass","rec","yield","harvest")])),
-  cbind("SRR"="BH",
-    as.data.frame(refpts(eqB)[c("msy","virgin","crash"),
-                            c("ssb","biomass","rec","yield","harvest")])),
+  # cbind("SRR"="BH",
+  #   as.data.frame(refpts(eqB)[c("msy","virgin","crash"),
+  #                           c("ssb","biomass","rec","yield","harvest")])),
   cbind("SRR"="SR",
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
