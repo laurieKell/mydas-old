@@ -96,7 +96,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["brill"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Cross test for brill.
@@ -199,7 +199,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["turbot"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for turbot.
@@ -297,7 +297,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl,pg=20)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["ray"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for ray.
@@ -394,7 +394,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["pollack"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for pollack.
@@ -490,7 +490,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["sprat"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for sprat.
@@ -590,7 +590,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl,pg=20)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["lobster"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for lobster.
@@ -687,7 +687,7 @@ mp=mydas:::xsaTest(om,ctrl=xsaControl)
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
 xsaCtrl["razors"]=xsaControl
-save(xsaCtrl,file=file.path(dirDat,"xsaCtrl"),compress="xz")
+save(xsaCtrl,file=file.path(dirDat,"xsaCtrl.RData"),compress="xz")
 ```
 
 **Figure `r iFig=iFig+1; iFig`.** Simulation test for razor.
