@@ -44,6 +44,7 @@ library(FLCore)
 library(ggplotFL)
 library(FLBRP)
 library(FLife)
+library(mydas)
 
 library(LBSPR)
 ```
@@ -54,8 +55,8 @@ dirDat=file.path(dirMy,"data")
 ```
 
 ```{r}
-source('~/Desktop/flr/FLife/R/oemLn.R') 
-source('~/Desktop/flr/FLife/R/lbspr.R') 
+#source('~/Desktop/flr/FLife/R/oemLn.R') 
+#source('~/Desktop/flr/FLife/R/lbspr.R') 
 ```
 
 ## Turbot

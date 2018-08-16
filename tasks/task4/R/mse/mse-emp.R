@@ -9,7 +9,7 @@ library(FLasher)
 library(FLBRP)
 library(FLife)
 library(mpb)
-
+library(mydas)
 
 theme_set(theme_bw())
 
@@ -22,7 +22,7 @@ load(file.path(dirDat,"turbot.RData"))
 om=window(om,start=20,end=90)
 
 ## MP
-source('~/Desktop/flr/mpb/R/mseEMP.R')
+#source('~/Desktop/flr/mpb/R/mseEMP.R')
 
 nits=dims(om)$iter
 set.seed(1234)

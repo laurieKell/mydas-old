@@ -45,6 +45,7 @@ library(ggplotFL)
 library(FLBRP)
 library(FLAssess)
 library(FLXSA)
+library(mydas)
 
 library(GGally)
 
@@ -69,9 +70,9 @@ xsaCtrl=list("default"=FLXSA.control(
 
 ```{r, source}
 library(mydas)
-source("/home/laurence/Desktop/sea++/mydas/R/refpts4hcr.R")
-source("/home/laurence/Desktop/sea++/mydas/R/xsaTest.R")
-source("/home/laurence/Desktop/sea++/mydas/R/my_ggpairs.R")
+#source("/home/laurence/Desktop/sea++/mydas/R/refpts4hcr.R")
+#source("/home/laurence/Desktop/sea++/mydas/R/xsaTest.R")
+#source("/home/laurence/Desktop/sea++/mydas/R/my_ggpairs.R")
 ```
 
 ## Brill

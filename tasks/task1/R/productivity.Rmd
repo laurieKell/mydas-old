@@ -67,11 +67,12 @@ library(popbio)
 library(numDeriv)
 
 library(FLife)
+library(mydas)
 ```
 
 ```{r}
-source('~/Desktop/flr/FLife/R/sim.R')
-source('~/Desktop/flr/FLife/R/getScriptPath.R')
+#source('~/Desktop/flr/FLife/R/sim.R')
+#source('~/Desktop/flr/FLife/R/getScriptPath.R')
 ```
 
 ```{r, theme, echo=FALSE}

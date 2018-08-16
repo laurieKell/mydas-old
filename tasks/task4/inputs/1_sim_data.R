@@ -102,8 +102,8 @@ dev.off()
 rep.resid <- calc.osa.resid(rep)
 plotspict.diagnostic(rep.resid)
 
-source("myplotb2bmsy.R")
-source("myplotf2fmsy.R")
+#source("myplotb2bmsy.R")
+#source("myplotf2fmsy.R")
 
 pdf("../tex/figures/sim_b2bmsy.pdf", height = 7, width = 8)
 myplotspict.bbmsy(rep, qlegend = FALSE, ylim = c(0,2))

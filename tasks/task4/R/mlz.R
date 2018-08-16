@@ -1,11 +1,12 @@
 
-source('~/Desktop/flr/FLife/R/omOut.R') 
+#source('~/Desktop/flr/FLife/R/omOut.R') 
 
 library(reshape)
 library(FLCore)
 library(ggplotFL)
 library(FLife)
 library(MLZ)
+library(mydas)
 
 load("/home/laurence/Desktop/sea++/mydas/tasks/task4/data/turbot.RData")
 

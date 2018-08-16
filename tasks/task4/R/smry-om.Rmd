@@ -43,6 +43,7 @@ library(FLCore)
 library(ggplotFL)
 library(FLBRP)
 library(FLife)
+library(mydas)
 ```
 ```{r, dir}
 dirMy=dirname(dirname(FLife:::getScriptPath()))
@@ -67,7 +68,7 @@ my_density <- function(data,mapping,...){
 ```{r, turbot}
 load(file.path(dirDat,"turbot.RData"))
 
-source('~/Desktop/flr/FLife/R/omOut.R')
+#source('~/Desktop/flr/FLife/R/omOut.R')
 
 res=omSmry(om,eq,lh)
 res=transform(subset(res,year%in%20:90),increase=(year%in%20:49))
