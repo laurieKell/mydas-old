@@ -68,6 +68,7 @@ xsaCtrl=list("default"=FLXSA.control(
 ```
 
 ```{r, source}
+library(mydas)
 source("/home/laurence/Desktop/sea++/mydas/R/refpts4hcr.R")
 source("/home/laurence/Desktop/sea++/mydas/R/xsaTest.R")
 source("/home/laurence/Desktop/sea++/mydas/R/my_ggpairs.R")
@@ -90,7 +91,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=70)
-mp=xsaTest(om,ctrl=xsaControl)
+mp=mydas:::xsaTest(om,ctrl=xsaControl)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -193,7 +194,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=70)
-mp=xsaTest(om,ctrl=xsaControl)
+mp=mydas:::xsaTest(om,ctrl=xsaControl)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -291,7 +292,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=75)
-mp=xsaTest(om,ctrl=xsaControl,pg=20)
+mp=mydas:::xsaTest(om,ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -388,7 +389,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=70)
-mp=xsaTest(om,ctrl=xsaControl)
+mp=mydas:::xsaTest(om,ctrl=xsaControl)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -484,7 +485,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=70)
-mp=xsaTest(om,ctrl=xsaControl)
+mp=mydas:::xsaTest(om,ctrl=xsaControl)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -504,14 +505,14 @@ refpts(eqS)["fcrash","ssb"]=c(refpts(eqS)["fcrash","rec"])/c(params(eqS)["a"])
 refpts(eqS)=computeRefpts(eqS)
 dimnames(refpts(eqS))$refpt[3]="crash"
 ```
-```{r, xsa-sprat-refpts-bevholt, eval=FALSE}
+```{r, xsa-sprat-refpts-bevholt}
 eqB=eqBevholt(om)   
 ```
 ```{r, xsa-sprat-refpts-geomean}
 eqM=eqGeomean(om)  
 ```
 
-```{r, fig.height=8, fig.width =8, eval=FALSE}
+```{r, fig.height=8, fig.width =8}
 dat=rbind.fill(      
   cbind("SRR"="SR",
     as.data.frame(refpts(eqS)[c("f0.1","virgin","crash"),
@@ -519,9 +520,9 @@ dat=rbind.fill(
   cbind("SRR"="PR",
     as.data.frame(refpts(eqM)[c("f0.1","virgin"),
                             c("ssb","biomass","rec","yield","harvest")])),
-  # cbind("SRR"="BH",
-  #   as.data.frame(refpts(eqB)[c("msy","virgin","crash"),
-  #                           c("ssb","biomass","rec","yield","harvest")])),
+  cbind("SRR"="BH",
+     as.data.frame(refpts(eqB)[c("msy","virgin","crash"),
+                             c("ssb","biomass","rec","yield","harvest")])),
   cbind("SRR"="SR",
         transform(as.data.frame(params(eqS)["b"]),refpt=params,quant="ssb")))[,-6]
 dat=subset(dat,!is.na(data))
@@ -584,7 +585,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=75)
-mp=xsaTest(om,ctrl=xsaControl,pg=20)
+mp=mydas:::xsaTest(om,ctrl=xsaControl,pg=20)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 
@@ -681,7 +682,7 @@ xsaControl=FLXSA.control(tol    =1e-09, maxit   =150,
                          vpa    =FALSE)
 
 om=window(om,start=25,end=70)
-mp=xsaTest(om,ctrl=xsaControl)
+mp=mydas:::xsaTest(om,ctrl=xsaControl)
 
 plot(FLStocks(list("xsa"=mp,"om"=om)))
 

@@ -124,8 +124,6 @@ lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
 eq=lhEql(lh,spwn=0)
-mat(eq)[1]=0
-eq=brp(eq)
 ```
 
 Life history parameters from Fish Base for the Von Bertalanffy growth model were $L_{\infty}$ `r tmp<-lh["linf"]` (`r signif(mean(lh["linf"],na.rm=TRUE),3)`), $k$  (`r signif(mean(lh["k"]),3)`), and $t_0$ (`r signif(mean(lh["t0"]),3)`), for the length/weight relationship $W=aL^b$ were $a$ (`r signif(mean(lh["a"],na.rm=TRUE),3)`) and $b$ (`r signif(mean(lh["b"],na.rm=TRUE),3)`),  and age at maturity  ($a_{50}$) was (`r signif(mean(lh["a50"],na.rm=TRUE),3)`).
@@ -170,7 +168,7 @@ ggplot(res)+
 
 
 ```{r}
-plot(iter(eq,1),refpts=FALSE)
+plot(iter(eq,10),refpts=FALSE)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Example equilibrum Curve.
@@ -184,20 +182,20 @@ gTime=round(FLife:::genTime(FLPar(aaply(lh,1,mean))))
 
 eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                                 seq(0.1,2,length.out=30),
-                                                seq(2,0.7,length.out=gTime)[-1],
-                                                rep(0.7,61)))[,1:105]
+                                                seq(2,1,length.out=gTime)[-1],
+                                                rep(1,61)))[,1:105]
 om=as(eq,"FLStock")
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
 save(lh,eq,om,file=file.path(dirDat,"sprat.RData"),compress="xz")
-
+  
 plot(om)
 ```
 
 **Figure `r iFig=iFig+1; iFig`** Time series.
 
 ```{r om-refs}
-plot(FLQuants(om, 
+plot(FLQuants(om,  
           "ssb" = function(x) ssb(x)%/%refpts( eq)["msy","ssb"], 
           "f" =   function(x) fbar(x)%/%refpts(eq)["msy","harvest"], 
           "rec" = function(x) rec(x)%/%refpts( eq)["msy","rec"], 
