@@ -15,13 +15,13 @@
 
 # http://ices.dk/sites/pub/Publication%20Reports/Advice/2017/2017/12.04.03.01_Reference_points_for_category_1_and_2.pdf
 
-icesAR=function(x,ftar=1.0,fmin=0.05,btrig=0.5,blim=btrig/1.4,sigma=0.3){
+icesAR=function(x,ftar=1.0,fmin=0.05,bpa=0.5,sigma=0.3){
   
   hcrParam(
     ftar =refpts(x)["f0.1","harvest"]*ftar,
-    btrig=refpts(x)["f0.1","ssb"]*exp(-1.645*sigma),
+    btrig=refpts(x)["f0.1",    "ssb"]*exp(-1.645*sigma),
     fmin =refpts(x)["f0.1","harvest"]*fmin,
-    blim =refpts(x)["f0.1","ssb"]*blim)}
+    blim =refpts(x)["f0.1",    "ssb"]*bpa)}
 
 mseXSA<-function(  
   #OM as FLStock and FLBRP
@@ -32,7 +32,7 @@ mseXSA<-function(
   rf="missing",
   
   #HCR
-  ftar=1.0,fmin=0.05,sigma=0.3,btrig=0.5,blim=btrig/1.4,
+  ftar=1.0,fmin=0.05,bpa=0.5,sigma=0.3,
   
   #Bounds on TAC changes
   bndTac=c(0.01,100),
@@ -50,15 +50,15 @@ mseXSA<-function(
   
   ##Check last year so you dont run to the end then crash
   end=min(end,range(om)["maxyear"]-interval)
-  
+
   ## Make sure number of iterations in OM are consistent
   nits=c(om=dims(om)$iter, eq=dims(params(eq))$iter, rsdl=dims(srDev)$iter)
   if (length(unique(nits))>=2 & !(1 %in% nits)) ("Stop, iters not '1 or n' in om")
   if (nits['om']==1) stock(om)=propagate(stock(om),max(nits))
-  
+
   ## Limit on capacity, add to fwd(om,maxF=maxF) so catches dont go stuoid 
   maxF=mean(FLQuant(1,dimnames=dimnames(srDev))%*%apply(fbar(window(om,end=start)),6,max)*maxF,na.rm=TRUE)
-  
+
   ## Observation Error (OEM) setup before looping through years 
   ## this done so biology can be different from OM
   sink("/dev/null")
@@ -66,14 +66,14 @@ mseXSA<-function(
   smp =setPlusGroup(om,pGrp)
   smp=trim(smp,age=range(mp)["min"]:range(mp)["max"])
   sink(NULL)
-  
+
   cpue=window(stock.n(smp),end=start-1)[seq(dim(smp)[1]-1)]
   cpue=cpue%*%uDev[dimnames(cpue)$age,dimnames(cpue)$year]
-  
+
   ## MP, no need to add biological parameters and catch at this stage, as these are already there, 
   ## rather get rid of stuff that has to be added by OEM and stock assessment fit
   mp=window(mp,end=start-1)
-  
+
   ## Loop round years
   cat('\n==')
   for (iYr in seq(start,end,interval)){
@@ -120,7 +120,7 @@ mseXSA<-function(
       ## fit
       idx=FLIndex(index=cpue)
       range(idx)[c("startf","endf")]=c(0.01,0.1)
-      
+
       ## Bug with adding range
       xsa=FLXSA(mp,idx,control=control,diag.flag=FALSE)
       range(xsa)[c("min","max","plusgroup")]=range(mp)[c("min","max","plusgroup")]
@@ -132,7 +132,7 @@ mseXSA<-function(
       mp=trim(window(setPlusGroup(om,pGrp),end=iYr-1),age=range(mp)["min"]:range(mp)["max"])
       #sink(NULL)
     }
-    
+
     if (!("FLBRP"%in%is(rf))){
       ## Stock recruiment relationship
       if (!FALSE){
@@ -165,7 +165,7 @@ mseXSA<-function(
     print(plot(FLStocks(MP=mp,OM=window(om,start=dims(mp)$minyear,end=dims(mp)$maxyear))))
     
     ## HCR
-    hcrPar=icesAR(rf,ftar=ftar,fmin=fmin,btrig=btrig,blim=blim,sigma=sigma)
+    hcrPar=icesAR(rf,ftar=ftar,fmin=fmin,bpa=bpa,sigma=sigma)
     
     #try(save(mp,rf,hcrPar,iYr,file="/home/laurence/Desktop/tmp/mseXSA2.RData"))
     tac=hcr(mp,refs=rf,hcrPar,
