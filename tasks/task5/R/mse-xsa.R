@@ -17,10 +17,10 @@ theme_set(theme_bw())
 
 dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
+source('~/Desktop/sea++/mydas/pkgs/mydas/R/omOut.R')
 
 ## sets up intial MP 
 xsaMP=function(om,pg=10,ctrl=xsaControl){
-  
   stk  =setPlusGroup(om,pg)
   idx  =FLIndex(index=stock.n(stk))
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)
@@ -41,6 +41,7 @@ runXSA<-function(stock,ftar=1,bpa=0.5,sigma=0.3) {
   nits=dim(om)[6]
   om  =window(om,start=20)
   eq  =iter(eq,seq(nits))
+  lh  =iter(lh,seq(nits))
   
   set.seed(1234)
   srDev =FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),0.3,b=0.0)
@@ -55,7 +56,7 @@ runXSA<-function(stock,ftar=1,bpa=0.5,sigma=0.3) {
              interval=1,start=60,end=90,
              srDev=srDev,uDev=uDev)
   
-  res=data.frame("stock"=stock,"ftar"=ftar,"bpa"=bpa,mydas:::omSmry(res,eq,lh[c("a","b")]))
+  res=data.frame("stock"=stock,"ftar"=ftar,"bpa"=bpa,omSmry(res,eq,lh[c("a","b")]))
   
   res}
 
@@ -69,7 +70,7 @@ for (i in seq(dim(scen)[1])){
   
   res=with(scen[i,],runXSA(stock,ftar,bpa))
   
-  xsa=rbind(xsa,cbind(scen=i,res))
+  xsa=rbind(xsa,res)
   
   save(xsa,file="/home/laurence/Desktop/sea++/mydas/tasks/task5/data/xsa.RData")}
 
