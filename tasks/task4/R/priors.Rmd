@@ -46,7 +46,7 @@ library(mydas)
 
 ```{r, brill}
 load(file.path(dirDat,"brill.RData"))
-#source('~/Desktop/flr/FLife/R/priors.R')
+source('~/Desktop/flr/FLife/R/priors.R')
 
 growth=vonB
 

@@ -95,6 +95,8 @@ p=ggpairs(transform(lh[,-1],linf=log(linf),k=log(k),l50=log(l50)),
 
 
 ```{r eql}
+source('~/Desktop/flr/FLife/R/lhEql.R')
+
 sim<-function(x,niters=500,se=0.3){
   
   mn=aaply(x,1,mean, na.rm=TRUE)
@@ -123,7 +125,7 @@ lh=sim(lh,    niters=nits)
 lh["t0"][]   =pmin(-0.1,c(lh["t0"]))
 
 lh=lhPar(lh,s=0.8, sl=1)
-eq=lhEql(lh,spwn=0)
+eq=lhEql(lh,spwn=0) #, range=c(min=3,max=40,minfbar=3,maxfbar=40,plusgroup=40))
 ```
 
 Life history parameters from Fish Base for the Von Bertalanffy growth model were $L_{\infty}$ `r tmp<-lh["linf"]` (`r signif(mean(lh["linf"],na.rm=TRUE),3)`), $k$  (`r signif(mean(lh["k"]),3)`), and $t_0$ (`r signif(mean(lh["t0"]),3)`), for the length/weight relationship $W=aL^b$ were $a$ (`r signif(mean(lh["a"],na.rm=TRUE),3)`) and $b$ (`r signif(mean(lh["b"],na.rm=TRUE),3)`),  and age at maturity  ($a_{50}$) was (`r signif(mean(lh["a50"],na.rm=TRUE),3)`).
@@ -186,6 +188,7 @@ eq@fbar=refpts(eq)["msy","harvest"]%*%FLQuant(c(rep(.1,19),
                                               rep(.7,61)))[,1:100]
 
 om=as(eq,"FLStock")
+
 om=fwd(om,fbar=fbar(om)[,-1],sr=eq,residuals=srDev)
 
 save(lh,eq,om,file=file.path(dirDat,"ray.RData"),compress="xz")

@@ -44,10 +44,13 @@ runXSA<-function(stock,ftar=1,bpa=0.5,sigma=0.3) {
   lh  =iter(lh,seq(nits))
   
   set.seed(1234)
-  srDev =FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),0.3,b=0.0)
-  uDev  =FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100,age=dimnames(m(om))$age)),0.2,b=0.0)
+  srDev=FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100)),0.3,b=0.0)
+  uDev =FLife:::rlnoise(nits,FLQuant(0,dimnames=list(year=1:100,age=dimnames(m(om))$age)),0.2,b=0.0)
   
-  mp=xsaMP(window(om,end=60),ctrl=xsaCtrl[[stock]],pg=10)
+  if (stock=="ray")
+    mp=xsaMP(trim(window(om,end=60),age=3:40),ctrl=xsaCtrl[[stock]],pg=ifelse(stock=="ray",15,10))
+  else
+    mp=xsaMP(window(om,end=60),ctrl=xsaCtrl[[stock]],pg=ifelse(stock=="ray",15,10))
   
   res=mseXSA(om,
              eq,
@@ -63,11 +66,8 @@ runXSA<-function(stock,ftar=1,bpa=0.5,sigma=0.3) {
 scen=expand.grid(stock=c("turbot","lobster","ray","pollack","razor","brill","sprat"),
                  ftar=c(1.0),bpa=c(0.5))
 
-mse=runXSA("brill",1.0,0.5,0.3)
-
 xsa=NULL
 for (i in seq(dim(scen)[1])){
-  
   res=with(scen[i,],runXSA(stock,ftar,bpa))
   
   xsa=rbind(xsa,res)

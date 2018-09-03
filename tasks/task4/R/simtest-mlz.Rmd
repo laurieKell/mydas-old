@@ -1,0 +1,128 @@
+---
+title: "Cross test using Operating Model based on Life History"
+subtitle: "MLZ, Estimate Z from Mean Length"
+author: "L Kell"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{FLife}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+github_document:
+    mathjax: TRUE
+tags: FLife
+license: Creative Commons Attribution-ShareAlike 4.0 International Public License
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(cache     =TRUE,
+               cache.path="../cache/simtest/mlz/",
+               echo      =FALSE,
+               eval      =TRUE,
+               prompt    =FALSE,
+               comment   =NA,
+               message   =FALSE,
+               warning   =FALSE,
+               tidy      =TRUE,
+               fig.height=6,
+               fig.width =8,
+               fig.path  ="../tex/simtest-mlz")
+
+options(digits=3)
+
+iFig=0
+```
+```{r pkgs}
+library(plyr)
+library(reshape)
+library(ggplot2)
+library(dplyr)
+
+library(FLCore)
+library(ggplotFL)
+library(FLBRP)
+library(FLife)
+library(mydas)
+
+library(MLZ)
+```
+```{r, dir}
+dirMy=dirname(dirname(FLife:::getScriptPath()))
+#dirMy="/home/laurence/Desktop/sea++/mydas/tasks/task4"
+dirDat=file.path(dirMy,"data")
+```
+
+```{r}
+source('~/Desktop/sea++/mydas/pkgs/mydas/R/mlz.R')
+source('~/Desktop/sea++/mydas/pkgs/mydas/R/omOut.R')
+```
+
+## ray
+```{r, ray-om}
+load(file.path(dirDat,"lobster.RData"))
+
+om   =iter(om,   1:500)
+prior=iter(prior,1:500)
+
+plot(om)   
+```
+**Figure `r iFig=iFig+1; iFig`** Operating model for ray. 
+
+```{r, ray-length}
+ts   =omSmry(om,eq,lh)
+mnLen=as.FLQuant(with(ts,data.frame(data=cln,year=year,iter=iter)))
+
+plot(mnLen)
+```
+**Figure `r iFig=iFig+1; iFig`** Mean length of catch ray. 
+
+```{r, ray-mlz}
+source('~/Desktop/sea++/mydas/pkgs/mydas/R/mlz.R')
+
+res=mlz(mnLen[,ac(40:60)],prior)
+```
+
+```{r, ray-z}
+ggplot(melt(model.frame(res$z)))+ 
+  geom_boxplot(aes(x=variable,as.numeric(as.character(value))),outlier.colour = NA)+
+  xlab("Block")+ylab("Z")+
+  scale_y_continuous(limits=c(0,1))
+```
+**Figure `r iFig=iFig+1; iFig`** Zs
+
+```{r, ray-y}
+ggplot(model.frame(res$year))+ 
+  geom_histogram(aes(y))+
+  xlab("Year")+ylab("Count")
+```
+**Figure `r iFig=iFig+1; iFig`** Break
+
+
+
+\newpage
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+## Software Versions
+
+* `r version$version.string`
+* FLCore: `r packageVersion('FLCore')`
+* FLife:  `r packageVersion('FLife')`
+* FLBRP:  `r packageVersion('FLBRP')`
+* **Compiled**: `r date()`
+
+## Author information
+
+**Laurence Kell**. laurie@seaplusplus.es
+
+## Acknowledgements
+
+This vignette and many of the methods documented in it were developed under the MyDas project funded by the Irish exchequer and EMFF 2014-2020. The overall aim of MyDas is to develop and test a range of assessment models and methods to establish Maximum Sustainable Yield (MSY) reference points (or proxy MSY reference points) across the spectrum of data-limited stocks.
+
+# References {#References}
+
