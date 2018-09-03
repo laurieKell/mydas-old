@@ -42,7 +42,7 @@ mseSBTD<-function(
     #### Management Procedure
     ##Constant catch
     #tac=hcrConstantCatch(iYr+1,catch=catch(om)[,ac(iYr-(2:1))]) 
-    tac=hcrSBTD(iYr+1,
+    tac=hcrSBTD(iYr+seq(interval),
                 control=control,
                 cpue[,ac(ac(iYr-(3:1)))],
                 catch(om)[,ac(iYr-(2:1))])

@@ -51,7 +51,7 @@ mseSRA<-function(
     par=hcrParam(ftar =ftar*refpts( mp)["fmsy"],
                  btrig=btrig*refpts(mp)["bmsy"],
                  fmin =fmin*refpts( mp)["fmsy"],
-                 blim =blim*refpts( mp)[ "msy"])
+                 blim =blim*refpts( mp)["bmsy"])
     
     #try(save(mp,par,file="/home/laurence/Desktop/test2.RData"))
     tac=hcr(mp,refs=par,hcrYrs=iYr+seq(interval),tac=TRUE)

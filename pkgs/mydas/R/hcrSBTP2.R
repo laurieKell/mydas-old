@@ -7,12 +7,12 @@ hcrSBTP2=function(adult,  juve,
   adultIdx=adult[,ac(dims(adult)$maxyear)]
   adultRef=aaply(adult[,ac(yrAdult)],3:6,mean)
   flag    =adultIdx<adultRef
-  cBit    =tarCatch*(adultIdx/adultRef)*(1+ifelse(flag,-k1,k1))
+  cBit    =tarCatch*(adultIdx/adultRef)^W(1+ifelse(flag,-k1,k1))
   
   juveIdx =aaply(juve[,ac(dims(juve)$maxyear+refJuve)],3:6,mean)
   juveRef =aaply(juve[,ac(yrJuve) ],3:6,mean)
   flag    =juveIdx<juveRef
-  rBit    =(juveIdx/juveRef)*(1+ifelse(flag,-k2,k2))
+  rBit    =(juveIdx/juveRef)^(1+ifelse(flag,-k2,k2))
   
   # cat('ref Juve:',   as.integer(mean(refJuve)),
   #     '\t Juve:',    as.integer(mean(juve)),

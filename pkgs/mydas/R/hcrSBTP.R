@@ -6,7 +6,7 @@ hcrSBTP=function(yrs,
                   target){
   
   flag    =cpue<ref
-  bit     =target*(cpue/ref)*(1+ifelse(flag,-control[1],control[2]))
+  bit     =target*(cpue/ref)^(1+ifelse(flag,-control[1],control[2]))
   res     =(catch+bit)/2
   
   dmns=dimnames(catch)
