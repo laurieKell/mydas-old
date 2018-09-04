@@ -1,0 +1,228 @@
+% $Id: $
+\documentclass[a4paper, 10pt]{article}
+% reduced margins
+\usepackage{fullpage}
+\usepackage[authoryear,round]{natbib}
+% spacing		
+\usepackage{setspace}
+% page headings
+\usepackage{fancyhdr}
+%\usepackage{lscape}
+
+\let\subequations\relax
+
+\usepackage{pdflscape}
+\usepackage{pdfpages}
+\usepackage{grffile}
+
+
+\usepackage[acronym,toc]{glossaries} % nomain, if you define glossaries in a file, and you use \include{INP-00-glossary}
+%\input{glossary.tex}
+%\makeglossaries
+
+\usepackage{subfigure} 
+\usepackage[margin=1.0in]{geometry}
+\usepackage{url}
+%\usepackage{subeqn}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\usepackage{enumerate}
+\usepackage{enumitem}
+
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{colorlinks, urlcolor=darkblue}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+\usepackage{lscape}
+% figs to be 75% of test width
+\setkeys{Gin}{width=0.75\textwidth}
+
+
+\newcommand{\mathgloss}[2]{
+ \newglossaryentry{#1}{name={#1},description={#2}}
+ \gls{#1} = #2
+}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\eps}{\epsilon}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\wh}{\widehat}
+
+%
+\renewcommand{\abstractname}{\large SUMMARY}
+%
+\newcommand{\Keywords}[1]{\begin{center}\par\noindent{{\em KEYWORDS\/}: #1}\end{center}}
+%
+\makeatletter
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}%
+ {-1.25ex\@plus -1ex \@minus -.2ex}%
+ {1.5ex \@plus .2ex}%
+ {\normalfont\slshape}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+ {-3.25ex\@plus -1ex \@minus -.2ex}%
+ {1.5ex \@plus .2ex}%
+ {\normalfont\bfseries\slshape}}
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+ {-5.25ex\@plus -1ex \@minus -.2ex}%
+ {1.5ex \@plus .2ex}%
+ {\normalfont\bfseries}}
+\makeatother
+%
+\renewcommand\thesection{\arabic{section}.}
+\renewcommand\thesubsection{\thesection\arabic{subsection}}
+\renewcommand\thesubsubsection{\thesubsection\arabic{subsubsection}}
+%
+\renewcommand{\headrulewidth}{0pt}
+
+\usepackage{listings}
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+\usepackage{listings}
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{shadecolor}{rgb}{1,1,0.95}
+\definecolor{shade}{rgb}{1,1,0.95}
+
+
+\lstset{ %
+language=R, % the language of the code
+basicstyle=\footnotesize, % the size of the fonts that are used for the code
+numbers=left, % where to put the line-numbers
+numberstyle=\footnotesize, % the size of the fonts that are used for the line-numbers
+stepnumber=1	00, % the step between two line-numbers. If it's 1, each line 
+ % will be numbered
+numbersep=5pt, % how far the line-numbers are from the code
+backgroundcolor=\color{shade}, % choose the background color. You must add \usepackage{color}
+showspaces=false, % show spaces adding particular underscores
+showstringspaces=false, % underline spaces within strings
+showtabs=false, % show tabs within strings adding particular underscores
+frame=single, % adds a frame around the code
+tabsize=2, % sets default tabsize to 2 spaces
+captionpos=b, % sets the caption-position to bottom
+breaklines=true, % sets automatic line breaking
+breakatwhitespace=false, % sets if automatic breaks should only happen at whitespace
+title=\lstname, % show the filename of files included with \lstinputlisting;
+ % also try caption instead of title
+escapeinside={\%*}{*)}, % if you want to add a comment within your code
+morekeywords={*,...} presents % if you want to add more keywords to the set
+}
+
+%
+\title{Evaluation of Length Based Stock Assessments}
+%
+\author{Laurence T. Kell\footnote{Imperial College London; ~laurie@seaplusplus.co.uk.},
+        Alexander Tidd\footnote{GMIT;},
+        Coilin Minto\footnote{GMIT;}}
+\date{\today}
+%
+
+
+\begin{document}
+
+\onehalfspacing
+\lhead{\normalsize\textsf{Workshop on the Development of Quantitative Assessment Methodologies based on Life-history traits for stocks in categories 3-6 (WKLIFE VIII)}}
+\rhead{}
+
+\maketitle
+% gets headers on title page ...
+\thispagestyle{fancy}
+% ... but not on others
+\pagestyle{empty}
+
+
+\tableofcontents\newpage\
+%\listoffigures\newpage
+
+\section{Introduction}
+
+In this study we use Management Strategy Evaluation (MSE) to test advice rules that utilise length-based approaches and advice rules. 
+
+ICES uses a rule of the form $C_{y+1} = C_{current}rfb$.
+ 
+The specific aims of the study are to
+
+\begin{itemize}
+ \item Establish whether performance of the advice rules is correlated with life-history characteristics
+ \item If such correlations exist, develop guidelines for use of the advice rules dependent on life-history characteristics
+\end{itemize}
+ 
+\section{Material and Methods}
+
+\begin{itemize}
+ \item ~
+ \item ~
+\end{itemize}
+
+\section{Results}
+
+\begin{itemize}
+ \item ~
+ \item ~
+\end{itemize}
+
+\section{Discussion and Conclusions}
+
+\begin{itemize}
+ \item ~
+ \item ~
+\end{itemize}
+
+\section{Acknowledgements}
+
+This paper was written under the MyDas project funded by the Irish exchequer and EMFF 2014-2020. The overall aim of MyDas is to develop and test a range of assessment models and methods to establish Maximum Sustainable Yield (MSY) reference points (or proxy MSY reference points) across the spectrum of data-limited stocks.
+
+
+%\newpage\clearpage
+\bibliography{refs.bib} 
+\bibliographystyle{abbrvnat}
+
+\clearpage\newpage 
+\section{Figures}
+
+\end{document}
+
+\begin{figure}[htbp]\centering\includegraphics[width=\textwidth]{}\label{}\end{figure}
+\clearpage\newpage 
+\section{Appendices}
+\newpage 
+
+\subsection{Bibliography of materials provided for review} 
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/docs/S51DocList.pdf}
+
+\subsection{Statement of Work} 
+\includepdf[pages=2-6,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/docs/KellPOIEPR-17-052.pdf}
+
+\subsection{Panel membership.} 
+\includepdf[width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/tex/participants.pdf}
+
+\subsection{Additional Analyses.} 
+
+\newpage\clearpage\subsubsection{Indices of Abundance}
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/R/a1-cpue.pdf}
+\subsubsection{Residuals from Fits to Surveys}
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/R/a2-cpue-residuals.pdf}
+\subsubsection{ALK and Cohort Strengths}
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/R/a3-alk.pdf}
+\subsubsection{Fits to length composition data}
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/R/a4-lenComps.pdf}
+\subsubsection{Stock and recruitment}
+\includepdf[pages=-,width=\textwidth]{/home/laurence/Desktop/sea++/cie/greySnapper/R/a5-srr.pdf}
+
+\end{document}
+
