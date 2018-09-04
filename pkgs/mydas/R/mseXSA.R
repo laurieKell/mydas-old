@@ -61,11 +61,11 @@ mseXSA<-function(
 
   ## Observation Error (OEM) setup before looping through years 
   ## this done so biology can be different from OM
-  sink("/dev/null")
+  #sink("/dev/null")
   pGrp=range(mp)["plusgroup"]
   smp =setPlusGroup(om,pGrp)
   smp=trim(smp,age=range(mp)["min"]:range(mp)["max"])
-  sink(NULL)
+  #sink(NULL)
 
   cpue=window(stock.n(smp),end=start-1)[seq(dim(smp)[1]-1)]
   cpue=cpue%*%uDev[dimnames(cpue)$age,dimnames(cpue)$year]
@@ -82,9 +82,9 @@ mseXSA<-function(
     
     if (!(whitebox)){
       ## Observation Error, using data from last year back to the last assessment
-      sink("/dev/null")
+      #sink("/dev/null")
       smp =trim(setPlusGroup(om[,ac(rev(iYr-seq(interval)))],pGrp),age=range(mp)["min"]:range(mp)["max"])
-      sink(NULL)
+      #sink(NULL)
       
       ## CPUE
       cpue=window(cpue,end=iYr-1)
@@ -99,9 +99,9 @@ mseXSA<-function(
           mp=fwdWindow(mp,rf,end=iYr-1)
       
       ## Add catches and create plus group 
-      sink("/dev/null")
+      #sink("/dev/null")
       mp.=trim(setPlusGroup(om[,ac(iYr-rev(seq(interval)))],pGrp),age=range(mp)["min"]:range(mp)["max"])
-      sink(NULL)
+      #sink(NULL)
       
       ## Should really do landings and discards
       landings(   mp[,ac(iYr-(interval:1))])=landings(   mp.)
