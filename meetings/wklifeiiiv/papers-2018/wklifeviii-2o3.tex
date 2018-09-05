@@ -124,7 +124,7 @@ morekeywords={*,...} presents % if you want to add more keywords to the set
 }
 
 %
-\title{Evaluation of Biomass Dynamic Stock Assessment}
+\title{Evaluation ofICES \textit{2 over 3} Rule}
 %
 \author{Laurence T. Kell\footnote{Imperial College London; ~laurie@seaplusplus.co.uk.},
         Alexander Tidd\footnote{GMIT;},
@@ -149,28 +149,32 @@ morekeywords={*,...} presents % if you want to add more keywords to the set
 \tableofcontents\newpage\
 %\listoffigures\newpage
 
+
 \section*{Outline}
 
 \begin{itemize}
-\item Show the value-of-infomation, i.e. what if we only have 
-\begin{itemize} 
-\item catch and cpue
-\item catch 
-\item cpue
+
+ \item ICES uses a rule of the form $C_{y+1} = C_{current}rfb$ for category 3 stocks. Decompose this rule into its elements, and then look at their relative importance and interactions. 
+ \item This can be done by first by performing some simulations, i.e. use the OM/OEM without feedback to test candidate methods. If a method can not get a reasonable estimate of the stock status why use it in an MP?
+\item rfb
+\begin{description}
+ \item[Ct:] How much to change the TAC by, a lot for a short lived species with a high r and variable recruitment like sprat or only a little bit for Ray? 
+ \item[r:] (average of stock size index in the 2 most recent years)/(average of stock indexin the predeeding three years). Why 2 over 3? does it depend on life history?, why not dI/dt, i.e. slope of Index.
+ \item[f:] Length bases proxies for f/fmsy. i.e. based on length. LBSPR seems to work, but Gedamke/hoenig is not looking good      
+  \item[b:] This is a the HCR: i.e. with biomass targets and limits. These could be reference points or reference periods.
+\end{description}
+\item Once we have a better understanding of the elements we can then come up with the ones that are worth pursuing and tune some MPs. Comparing across life histories will make this work particularly useful.
+\item We can also use machine learning to come up with "better" MPs.
 \end{itemize}
-\item run
-\begin{itemize} 
-\item biomass dyamic simtest and MP 
-\item stock reduction analysis and MP 
-\item Emprirical MP 
-\end{itemize}
-\end{itemize}
+
 
 
 \section{Introduction}
 
-In this study we use Management Strategy Evaluation (MSE) to test advice rules based on a biomass dynamic production model for category 3 and 4 stocks that are inline with both the Maximum Sustainable Yield (MSY) and Precautionary Approach (PA) frameworks adopted by ICES for category 1 stocks. 
+In this study we use Management Strategy Evaluation (MSE) to test advice rules that utilise length-based approaches and advice rules. 
 
+ICES uses a rule of the form $C_{y+1} = C_{current}rfb$.
+ 
 The specific aims of the study are to
 
 \begin{itemize}
@@ -184,8 +188,6 @@ The specific aims of the study are to
  \item ~
  \item ~
 \end{itemize}
-
-\input{/home/laurence/Desktop/flr/equations/tex/mp-mpb.tex}
 
 \section{Results}
 

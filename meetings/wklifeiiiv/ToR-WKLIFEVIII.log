@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.24)  4 SEP 2018 09:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.24)  4 SEP 2018 11:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -333,297 +333,58 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/enumerate.sty
+Package: enumerate 2015/07/23 v3.00 enumerate extensions (DPC)
+\@enLab=\toks16
+)
 (./ToR-WKLIFEVIII.aux)
 \openout1 = `ToR-WKLIFEVIII.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 20.
+(Font)              <12> on input line 23.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 20.
+(Font)              <8> on input line 23.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 20.
-
-
-! Package inputenc Error: Unicode char 𝑪 (U+1D46A)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...proaches and advice rules of the form 𝑪
-                                                  𝒚+𝟏 = 𝑪𝒄𝒖�...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒚 (U+1D49A)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...ches and advice rules of the form 𝑪𝒚
-                                                  +𝟏 = 𝑪𝒄𝒖𝒓�...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝟏 (U+1D7CF)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...and advice rules of the form 𝑪𝒚+𝟏
-                                                   = 𝑪𝒄𝒖𝒓𝒓�...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝑪 (U+1D46A)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...ice rules of the form 𝑪𝒚+𝟏 = 𝑪
-                                                  𝒄𝒖𝒓𝒓𝒆𝒏�...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒄 (U+1D484)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...rules of the form 𝑪𝒚+𝟏 = 𝑪𝒄
-                                                  𝒖𝒓𝒓𝒆𝒏𝒕 �...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒖 (U+1D496)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...s of the form 𝑪𝒚+𝟏 = 𝑪𝒄𝒖
-                                                  𝒓𝒓𝒆𝒏𝒕 𝒓 ...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒓 (U+1D493)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ... the form 𝑪𝒚+𝟏 = 𝑪𝒄𝒖𝒓
-                                                  𝒓𝒆𝒏𝒕 𝒓 𝒇...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒓 (U+1D493)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ... form 𝑪𝒚+𝟏 = 𝑪𝒄𝒖𝒓𝒓
-                                                  𝒆𝒏𝒕 𝒓 𝒇 �...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒆 (U+1D486)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...m 𝑪𝒚+𝟏 = 𝑪𝒄𝒖𝒓𝒓𝒆
-                                                  𝒏𝒕 𝒓 𝒇 𝒃 (S...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒏 (U+1D48F)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...��𝒚+𝟏 = 𝑪𝒄𝒖𝒓𝒓𝒆𝒏
-                                                  𝒕 𝒓 𝒇 𝒃 (Secti...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒕 (U+1D495)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...��+𝟏 = 𝑪𝒄𝒖𝒓𝒓𝒆𝒏𝒕
-                                                   𝒓 𝒇 𝒃 (Sections ...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒓 (U+1D493)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...�� = 𝑪𝒄𝒖𝒓𝒓𝒆𝒏𝒕 𝒓
-                                                   𝒇 𝒃 (Sections 3.2.1...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒇 (U+1D487)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...𝑪𝒄𝒖𝒓𝒓𝒆𝒏𝒕 𝒓 𝒇
-                                                   𝒃 (Sections 3.2.1 and ...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! Package inputenc Error: Unicode char 𝒃 (U+1D483)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.26 ...���𝒖𝒓𝒓𝒆𝒏𝒕 𝒓 𝒇 𝒃
-                                                   (Sections 3.2.1 and 3.2.3...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-[1
+(Font)              <6> on input line 23.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 37.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 37.
+ [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-! Missing $ inserted.
-<inserted text> 
-                $
-l.51 ...l Reviewers for EU Special Request 160725_
-                                                  DataLimStocks
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 51.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 51.
-! Missing $ inserted.
-<inserted text> 
-                $
-l.62 
-     
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-
-Overfull \hbox (72.08304pt too wide) in paragraph at lines 48--62
-\OT1/cmr/m/n/10 160725$[]\OML/cmm/m/it/10 ataLimStocksSecretariatfacilities \OT
-1/cmr/m/n/10 : \OML/cmm/m/it/10 SharePointsiteandreportformattingFinancial \OT1
-/cmr/m/n/10 :
- []
-
-
-Overfull \hbox (102.53513pt too wide) in paragraph at lines 48--62
-\OML/cmm/m/it/10 FundingforreviewersLinkagestoadvisorycommittee \OT1/cmr/m/n/10
- : \OML/cmm/m/it/10 ACOMLinkagestoothercommitteesorgroups \OT1/cmr/m/n/10 :
- []
-
-
-Overfull \hbox (66.04968pt too wide) in paragraph at lines 48--62
-\OML/cmm/m/it/10 Allassessmentfishstockassessmentworkinggroups; WGMGLinkagestoo
-therorganizations \OT1/cmr/m/n/10 :
- []
-
 [2] (./ToR-WKLIFEVIII.aux) ) 
 Here is how much of TeX's memory you used:
- 533 strings out of 493029
- 4962 string characters out of 6136234
- 62619 words of memory out of 5000000
- 4130 multiletter control sequences out of 15000+600000
- 6675 words of font info for 24 fonts, out of 8000000 for 9000
+ 547 strings out of 493029
+ 5263 string characters out of 6136234
+ 60687 words of memory out of 5000000
+ 4140 multiletter control sequences out of 15000+600000
+ 7587 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 23i,4n,19p,607b,185s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 23i,6n,19p,498b,261s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r10.pfb>
-Output written on ToR-WKLIFEVIII.pdf (2 pages, 50386 bytes).
+msfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+Output written on ToR-WKLIFEVIII.pdf (2 pages, 83160 bytes).
 PDF statistics:
- 23 PDF objects out of 1000 (max. 8388607)
- 15 compressed objects within 1 object stream
+ 39 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
