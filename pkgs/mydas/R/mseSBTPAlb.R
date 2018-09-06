@@ -1,9 +1,9 @@
-mseEMPSBT1Alb<-function(
+mseEMPSBT2Alb<-function(
   #OM
   om,eq,
   
   #MP
-  control=c(k1=2.5,k2=2.5,gamma=1),
+  control=c(k1=0.25,k2=0.25),refYr="missing",
   
   #years over which to run MSE
   interval=3,start=range(om)["maxyear"]-30,end=range(om)["maxyear"]-interval,
@@ -52,12 +52,16 @@ mseEMPSBT1Alb<-function(
         cpue[[iU]][,yrs]=apply(u,2:6,sum)%*%uDev[[iU]][,yrs]}}
     
     #### Management Procedure
-    u=as.FLQuant(ddply(as.data.frame(u),.(year,iter), with, data.frame(data=mean(data))))
-    
-    tac=hcrSBT1(iYr+seq(interval),
+    u=as.FLQuant(ddply(as.data.frame(cpue),.(year,iter), with, data.frame(data=mean(data))))
+
+    tac=hcrSBT2(yrs    =iYr+seq(interval),
                 control=control,
-                u[,ac(ac(iYr-(3:1)))],
-                catch(om)[,ac(iYr-(2:1))])
+                catch  =apply(catch(om)[,ac(iYr-seq(interval)-1)],6,mean),
+                cpue   =apply(u[,        ac(iYr-1:interval)],     6,mean),
+                ref    =apply(u[,        ac(refYr[1]+-1:1)],      6,mean),
+                target =apply(catch(om)[,ac(refYr[2]+-1:1)],      6,mean))
+    
+    tac[is.na(tac)]=1
     
     #### Operating Model Projectionfor TAC
     #try(save(om,tac,sr,eq,srDev,maxF,file="/home/laurence/Desktop/test3.RData"))

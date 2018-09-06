@@ -8,7 +8,7 @@ mseSBTP<-function(
   #years over which to run MSE, doesnt work if interval==1, this is a bug
   interval=1,start=range(om)["maxyear"]-30,end=range(om)["maxyear"]-interval,
   
-  control=c(k1=0.25,k2=0.25),
+  control=c(k1=0.25,k2=0.25),refYr="missing",
   
   #Capacity, i.e. F in OM can not be greater than this
   maxF=1.5){
@@ -45,8 +45,8 @@ mseSBTP<-function(
                control=control,
                catch  =apply(catch(om)[,ac(iYr-seq(interval)-1)],6,mean),
                cpue   =apply(cpue[,     ac(iYr-1:interval)],     6,mean),
-               ref    =apply(cpue[,     ac(30+-1:1)],            6,mean),
-               target =apply(catch(om)[,ac(30+-1:1)],            6,mean))
+               ref    =apply(cpue[,     ac(refYr)],              6,mean),
+               target =apply(catch(om)[,ac(refYr)],              6,mean))
       
     #### Operating Model update
     om =fwd(om,catch=tac,sr=eq,residual=srDev,effort_max=mean(maxF))
