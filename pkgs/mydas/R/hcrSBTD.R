@@ -3,7 +3,7 @@ hcrSBTD<-function(yrs,
                   index,
                   catch,...){
 print(1)  
-  lambda=as.FLQuant(ddply(as.data.frame(index%/%apply(index,6,mean)), 
+  lambda=as.FLQuant(ddply(as.data.frame(index%/%FLCore:::apply(index,6,mean)), 
                           .(iter), with,  data.frame(data=coefficients(lm(data~year))[2])))
 print(2)  
   flag  =lambda<0
