@@ -18,7 +18,7 @@ ctrl=FLXSA.control(tol    =1e-09,maxit   =50,
                    tspower=0,
                    vpa    =FALSE)
 
-xsa=function(om,pg=10){
+xsa<-function(om,pg=10){
   stk=setPlusGroup(om,pg)
   idx=FLIndex(index=stock.n(stk))
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)

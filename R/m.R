@@ -19,7 +19,7 @@ omm2=fwd(omm2,catch=catch( om1)[,-1],sr=eq1,residuals=srDev)
 
 plot(FLStocks("Catch"=omc,"F"=omf,"1"=om1,"m"=omm,"m2"=omm2))
 
-xsa=function(om,pg=10,ctrl=xsaControl){
+xsa<-function(om,pg=10,ctrl=xsaControl){
   stk=setPlusGroup(om,pg)
   idx=FLIndex(index=stock.n(stk))
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)
