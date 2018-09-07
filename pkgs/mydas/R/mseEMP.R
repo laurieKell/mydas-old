@@ -31,7 +31,7 @@ print(FLQuant(1,dimnames=dimnames(srDev)))
 print(apply(fbar(window(om,end=start)),6,max))
 print(maxF)
   ## Limit on capacity, add to fwd(om) if you want
-  maxF=median(FLQuant(1,dimnames=dimnames(srDev))%*%apply(FLQuant(fbar(window(om,end=start)),6,max))*maxF)
+  maxF=median(FLQuant(1,dimnames=dimnames(srDev))%*%FLQuant(apply(fbar(window(om,end=start)),6,max)))*maxF)
   
   ## Observation Error (OEM) setup
   cpue=window(stock(om),end=start)
