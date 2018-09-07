@@ -27,7 +27,9 @@ mseSBTD<-function(
   nits=c(om=dims(om)$iter, eq=dims(params(eq))$iter, rsdl=dims(srDev)$iter)
   if (length(unique(nits))>=2 & !(1 %in% nits)) ("Stop, iters not '1 or n' in om")
   if (nits['om']==1) stock(om)=propagate(stock(om),max(nits))
-  
+print(FLQuant(1,dimnames=dimnames(srDev)))
+print(apply(fbar(window(om,end=start)),6,max))
+print(maxF)
   ## Limit on capacity, add to fwd(om) if you want
   maxF=median(FLQuant(1,dimnames=dimnames(srDev))%*%apply(fbar(window(om,end=start)),6,max)*maxF)
   
