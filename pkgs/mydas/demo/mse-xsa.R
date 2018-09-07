@@ -22,7 +22,7 @@ theme_set(theme_bw())
 dirMy ="/home/laurence/Desktop/sea++/mydas/tasks/task4"
 dirDat=file.path(dirMy,"data")
 
-xsa=function(om,pg=10,ctrl=xsaControl){
+xsa<-function(om,pg=10,ctrl=xsaControl){
   stk=setPlusGroup(om,pg)
   idx=FLIndex(index=stock.n(stk))
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)

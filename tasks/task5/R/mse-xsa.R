@@ -20,7 +20,7 @@ dirDat=file.path(dirMy,"data")
 source('~/Desktop/sea++/mydas/pkgs/mydas/R/omOut.R')
 
 ## sets up intial MP 
-xsaMP=function(om,pg=10,ctrl=xsaControl){
+xsaMP<-function(om,pg=10,ctrl=xsaControl){
   stk  =setPlusGroup(om,pg)
   idx  =FLIndex(index=stock.n(stk))
   range(idx)[c("plusgroup","startf","endf")]=c(pg,0.1,.2)

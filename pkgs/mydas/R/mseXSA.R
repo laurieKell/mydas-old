@@ -15,7 +15,7 @@
 
 # http://ices.dk/sites/pub/Publication%20Reports/Advice/2017/2017/12.04.03.01_Reference_points_for_category_1_and_2.pdf
 
-icesAR=function(x,ftar=1.0,fmin=0.05,bpa=0.5,sigma=0.3){
+icesAR<-function(x,ftar=1.0,fmin=0.05,bpa=0.5,sigma=0.3){
   
   hcrParam(
     ftar =refpts(x)["f0.1","harvest"]*ftar,

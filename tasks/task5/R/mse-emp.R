@@ -12,6 +12,8 @@ library(FLife)
 library(devtools)
 devtools::install_github("lauriekell/mydas", subdir="pkgs/mydas")
 
+library(mydas)
+
 sessionInfo()
 
 dirMy ="/home/laurence/Desktop/sims/wklife"

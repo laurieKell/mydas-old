@@ -1,4 +1,4 @@
-hcrSBTP=function(yrs,
+hcrSBTP<-function(yrs,
                   control=c(k1=0.25,k2=0.25),
                   catch,
                   cpue,

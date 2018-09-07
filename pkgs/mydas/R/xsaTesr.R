@@ -1,4 +1,4 @@
-xsaTest=function(om,pg=10,ctrl=FLXSA.control()){
+xsaTest<-function(om,pg=10,ctrl=FLXSA.control()){
   
   stk=setPlusGroup(om,pg)
   idx=FLIndex(index=stock.n(stk))

@@ -9,7 +9,7 @@ mpTrace<-function(mp,par,tac){
   rtn3=model.frame(tac[["stk"]])
   }
          
-icesBD=function(bd,fmsy=1.0,btrig=0.5,blim=0.3, fmin=0.05){
+icesBD<-function(bd,fmsy=1.0,btrig=0.5,blim=0.3, fmin=0.05){
   # http://ices.dk/sites/pub/Publication%20Reports/Advice/2017/2017/12.04.03.01_Reference_points_for_category_1_and_2.pdf
  
   hcrParam(
