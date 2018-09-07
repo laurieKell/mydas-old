@@ -5,7 +5,7 @@ hcrSBTD<-function(yrs,
 print(1)  
 print(index)
 print(apply(index,6,mean))
-  lambda=ddply(as.data.frame(index%/%apply(index,6,mean)), 
+  lambda=ddply(as.data.frame(index%/%FLQuant(apply(index,6,mean))), 
                           .(iter), with,  data.frame(data=coefficients(lm(data~year))[2]))
   print(lambda)
 print(2)  
