@@ -1,10 +1,10 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
 .Ruserdata
-FLife.aux
-FLife.blg
-FLife.log
-FLife.out
+*.aux
+*.blg
+*.log
+*.out
 docs
-FLife.toc
+*.toc

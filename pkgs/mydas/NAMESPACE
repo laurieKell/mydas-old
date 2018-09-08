@@ -4,5 +4,6 @@ export("mseSBTD")
 export("mseSBTP")
 export("hcrSBTD")
 export("hcrSBTP")
+export("omSmry")
 
-import(FLCore)
+import(FLCore)		
