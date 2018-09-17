@@ -1,5 +1,6 @@
 Package: mydas
-Title: What the Package Does (one line, title case)
+Title: Tools for conducting Management Strategy Evaluation for data limited
+    stocks
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
