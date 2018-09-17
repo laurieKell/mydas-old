@@ -142,6 +142,7 @@ mseMPB2<-function(
     cpue[[iU]]=apply(u,2:6,sum)%*%uDev[[iU]][,yrs]}
     
   ## Loop round years
+  cat("==")
   for (iYr in seq(start,end-interval,interval)){
     cat(iYr,", ",sep="")
 
@@ -192,6 +193,7 @@ mseMPB2<-function(
     print(plot(as(list("MP"=                     window(mp,end=iYr),
                        "OM"=as(window(om,end=iYr+interval),"biodyn")),"biodyns")))
   }
+  cat("==\n")
   
   return(om)}
 

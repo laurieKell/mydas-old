@@ -15,7 +15,7 @@ mseSBTP<-function(
   
   #Capacity, i.e. F in OM can not be greater than this
   maxF=1.5){
-  
+
   ##So you dont run to the end then crash
   end=min(end,range(om)["maxyear"]-interval)
   
@@ -29,10 +29,11 @@ mseSBTP<-function(
   
   ## Observation Error (OEM) setup
   cpue=window(stock(om),end=start)
+  
   cpue=cpue%*%uDev[,dimnames(cpue)$year]
   
   ## Loop round years
-  cat('\n==')
+  cat('==')
   for (iYr in seq(start,end,interval)){
     cat(iYr,", ",sep="")
     
@@ -40,7 +41,7 @@ mseSBTP<-function(
     ## CPUE
     cpue=window(cpue,end=iYr-1)
     cpue[,ac(iYr-(interval:1))]=stock(om)[,ac(iYr-(interval:1))]%*%uDev[,ac(iYr-(interval:1))]
-    
+
     #### Management Procedure
     ##Constant catch
     #tac=hcrConstantCatch(iYr+1,catch=catch(om)[,ac(iYr-(2:1))]) 
@@ -50,10 +51,9 @@ mseSBTP<-function(
                cpue   =apply(cpue[,     ac(iYr-1:interval)],     6,mean),
                ref    =apply(cpue[,     ac(refYr)],              6,mean),
                target =apply(catch(om)[,ac(refYr)],              6,mean))
-      
+
     #### Operating Model update
     om =fwd(om,catch=tac,sr=eq,residual=srDev,effort_max=mean(maxF))
-    
     print(plot(window(om,end=iYr+interval)))
   }
   cat('==\n')
